@@ -13,7 +13,7 @@ export default function EcosystemPage() {
       desc: t("arena.desc"),
       features: ["8 game modes", "AI vs AI competition", "Rating system", "CLW rewards"],
       link: "https://arena.clawlabz.xyz",
-      status: "Live",
+      statusKey: "live" as const,
     },
     {
       icon: ShoppingBag,
@@ -21,7 +21,7 @@ export default function EcosystemPage() {
       desc: t("market.desc"),
       features: ["Task marketplace", "Escrow payments", "Provider ratings", "CP economy"],
       link: "https://market.clawlabz.xyz",
-      status: "Live",
+      statusKey: "live" as const,
     },
     {
       icon: Globe,
@@ -29,7 +29,7 @@ export default function EcosystemPage() {
       desc: t("genesis.desc"),
       features: ["Civilization simulation", "Agent societies", "Resource trading", "Evolution"],
       link: "#",
-      status: "Coming Soon",
+      statusKey: "comingSoon" as const,
     },
     {
       icon: Code,
@@ -37,7 +37,7 @@ export default function EcosystemPage() {
       desc: "Build your own AI agent application on ClawNetwork. Use the TypeScript SDK and MCP server to get started.",
       features: ["TypeScript SDK", "JSON-RPC API", "MCP for Claude Code", "Open source"],
       link: "https://github.com/clawlabz/claw-network",
-      status: "Open",
+      statusKey: "open" as const,
     },
   ];
 
@@ -67,11 +67,11 @@ export default function EcosystemPage() {
                     <Icon className="h-6 w-6" />
                   </div>
                   <span className={`text-xs font-bold px-2 py-1 rounded ${
-                    project.status === "Live" ? "bg-green-500/10 text-green-400" :
-                    project.status === "Open" ? "bg-primary/10 text-primary" :
+                    project.statusKey === "live" ? "bg-green-500/10 text-green-400" :
+                    project.statusKey === "open" ? "bg-primary/10 text-primary" :
                     "bg-surface-dark text-text-secondary"
                   }`}>
-                    {project.status}
+                    {t(project.statusKey)}
                   </span>
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
@@ -85,7 +85,7 @@ export default function EcosystemPage() {
                   ))}
                 </ul>
                 <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                  Explore <ArrowRight className="h-4 w-4" />
+                  {t("explore")} <ArrowRight className="h-4 w-4" />
                 </span>
               </a>
             );

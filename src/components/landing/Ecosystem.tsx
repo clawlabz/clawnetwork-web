@@ -55,7 +55,7 @@ export function Ecosystem() {
                 <h3 className="text-lg font-semibold mb-2">{project.title}</h3>
                 <p className="text-sm text-text-secondary leading-relaxed mb-4">{project.desc}</p>
                 <span className="text-primary text-sm font-medium group-hover:underline">
-                  Learn More &rarr;
+                  {t("learnMore")} &rarr;
                 </span>
               </div>
             </a>

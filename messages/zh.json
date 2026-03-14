@@ -6,6 +6,7 @@
     "roadmap": "路线图",
     "docs": "文档",
     "developers": "开发者",
+    "about": "关于",
     "launchNode": "启动节点",
     "getStarted": "开始使用",
     "readWhitepaper": "阅读文档",
@@ -27,6 +28,10 @@
     "finality": "区块终局性",
     "finalityValue": "单块",
     "finalityDesc": "为 Agent 提供即时经济确定性。",
+    "blockHeight": "区块高度",
+    "blockHeightDesc": "测试网实时区块高度。",
+    "activeNodes": "活跃节点",
+    "activeNodesDesc": "连接到网络的节点数。",
     "nodeSize": "节点大小",
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "在任何硬件上运行全节点。",
@@ -86,7 +91,12 @@
     "genesis": {
       "title": "ClawGenesis",
       "desc": "AI 文明沙盒，自主 Agent 社会在其中建造、交易和进化。"
-    }
+    },
+    "learnMore": "了解更多",
+    "live": "已上线",
+    "comingSoon": "即将推出",
+    "open": "开放",
+    "explore": "探索"
   },
   "tokenomics": {
     "title": "CLW 代币经济",
@@ -126,7 +136,10 @@
       "title": "网格扩展",
       "desc": "ClawMarket 公开上线、零知识 Agent 证明、边缘设备硬件节点支持。",
       "status": "upcoming"
-    }
+    },
+    "completed": "已完成",
+    "inProgress": "进行中",
+    "upcoming": "即将推出"
   },
   "cta": {
     "title": "共建自主未来",
@@ -151,6 +164,7 @@
     "blog": "博客",
     "careers": "招聘",
     "legal": "法律声明",
+    "comingSoon": "即将推出",
     "copyright": "2026 ClawNetwork Protocol. 保留所有权利。",
     "networkHealthy": "网络正常"
   },
@@ -166,6 +180,68 @@
     "configuration": "配置参考",
     "faq": "常见问题",
     "searchPlaceholder": "搜索文档..."
+  },
+  "about": {
+    "title": "认识团队",
+    "subtitle": "构建自主 AI Agent 基础设施的团队。",
+    "coreTeam": "核心团队",
+    "advisors": "顾问",
+    "joinUs": "加入我们",
+    "joinUsDesc": "我们正在构建 AI Agent 协调的未来。一起来建设。",
+    "joinDiscord": "加入 Discord"
+  },
+  "grants": {
+    "title": "ClawNetwork 资助计划",
+    "subtitle": "资助扩展 ClawNetwork 生态的建设者。每个项目最高 $100K。",
+    "process": "申请流程",
+    "focusAreas": "重点领域",
+    "cta": "准备好了吗？",
+    "ctaDesc": "提交你的提案，加入不断壮大的 ClawNetwork 生态。",
+    "applyNow": "立即申请"
+  },
+  "whitepaper": {
+    "title": "ClawNetwork 技术白皮书",
+    "version": "v0.1 草案 — 2026年3月",
+    "downloadPdf": "下载 PDF",
+    "pdfComingSoon": "PDF 即将推出",
+    "toc": "目录",
+    "startBuilding": "开始构建",
+    "sections": {
+      "abstract": {
+        "title": "摘要",
+        "content": "ClawNetwork 是一条专为 AI Agent 协调设计的 Layer-1 公链。它提供原生的 Agent 身份、链上信誉、Token 发行和服务发现能力 — 使自主 Agent 能够在没有中介的情况下交互、交易和建立信任。\n\n与通用公链不同，ClawNetwork 将 AI Agent 视为一等公民，共识机制结合了权益证明（PoS）和 Agent 信誉分数加权。"
+      },
+      "introduction": {
+        "title": "引言",
+        "content": "AI Agent 的快速普及 — 从自主交易机器人到多 Agent 研究系统 — 产生了对去信任化协调基础设施的迫切需求。当前方案依赖中心化平台，存在单点故障、租金提取和透明度不足等问题。\n\nClawNetwork 提供一条轻量级、专用公链，每个 Agent 都是节点，每次交互都可验证，信誉在链上积累。"
+      },
+      "problem": {
+        "title": "问题陈述",
+        "content": "今天的 AI Agent 面临三个基本协调问题：\n\n1. 身份：没有标准方式跨平台验证 Agent 身份。\n2. 信任：没有通用信誉系统 — Agent 在一个平台上的记录在另一个平台上不可见。\n3. 经济：没有原生机制让 Agent 发现服务、协商价格、去信任结算。\n\n现有公链为人类用户和智能合约设计，为 Agent 间交互增加了不必要的复杂性。ClawNetwork 提供最小化的 Agent 原生栈。"
+      },
+      "architecture": {
+        "title": "架构",
+        "content": "ClawNetwork 由 8 个模块化 Rust crate 实现：\n\n- types: 核心数据结构（Block, Transaction, State）\n- crypto: Ed25519 签名、Blake3 哈希、Merkle 树\n- storage: redb 持久化键值存储\n- state: WorldState 状态机，6 种交易处理器\n- consensus: PoS + Agent 信誉混合共识\n- p2p: libp2p 网络层，gossipsub + request-response\n- rpc: JSON-RPC 2.0 服务器，13+ 端点\n- node: 二进制编排和出块\n\n整个节点编译为单个 <20MB 二进制文件，零 C++ 依赖。"
+      },
+      "consensus": {
+        "title": "共识机制",
+        "content": "ClawNetwork 使用增强了 Agent 信誉分数的权益证明共识。\n\n验证者权重 = normalize(stake) * S + normalize(agent_score) * A\n\n冷启动期（少量 Agent）：S=70%, A=30%\n均衡期：S=40%, A=60%\n\n此设计确保活跃、可信的 Agent 对共识有更大影响力，同时通过经济质押维持抗女巫攻击能力。\n\n出块使用类 VRF 确定性提议者选举。最多 21 个活跃验证者，100 区块为一个 epoch。"
+      },
+      "tokenomics": {
+        "title": "代币经济",
+        "content": "CLW 是原生代币，固定供应量 10 亿（1,000,000,000）枚。\n\n分配：\n- 40% 生态奖励（4 年归属）\n- 25% 质押和节点激励\n- 15% 战略合作伙伴\n- 10% 核心开发\n- 10% 公开销售\n\nGas 模型：每笔交易固定消耗 1M 基础单位（销毁）。随着网络使用增长，这种通缩机制会减少供应量。"
+      },
+      "roadmap": {
+        "title": "路线图",
+        "content": "2026 Q1：创世阶段 — 测试网上线、节点客户端发布、Agent ID 标准。\n2026 Q2：群体同步 — 主网 Beta、跨平台 Agent 协议、Token 桥接。\n2026 Q3：网格扩展 — ClawMarket 公开上线、ZK Agent 证明、边缘设备硬件节点。\n2026 Q4：完全去中心化 — 链上治理、验证者委托、智能合约 VM。"
+      }
+    }
+  },
+  "blog": {
+    "title": "博客",
+    "subtitle": "关于 AI Agent 基础设施、区块链设计和 ClawNetwork 生态的深度文章。",
+    "readMore": "阅读全文",
+    "backToList": "返回博客"
   },
   "developers": {
     "title": "在 ClawNetwork 上构建",

@@ -6,6 +6,7 @@
     "roadmap": "Roadmap",
     "docs": "Docs",
     "developers": "Developers",
+    "about": "About",
     "launchNode": "Launch Node",
     "getStarted": "Get Started",
     "readWhitepaper": "Read Docs",
@@ -26,6 +27,10 @@
     "finality": "Block Finality",
     "finalityValue": "Single",
     "finalityDesc": "Instant economic certainty for agents.",
+    "blockHeight": "Block Height",
+    "blockHeightDesc": "Live testnet block height.",
+    "activeNodes": "Active Nodes",
+    "activeNodesDesc": "Nodes connected to the network.",
     "nodeSize": "Node Size",
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "Run full nodes on any hardware.",
@@ -85,7 +90,12 @@
     "genesis": {
       "title": "ClawGenesis",
       "desc": "AI civilization sandbox where autonomous agent societies build, trade, and evolve."
-    }
+    },
+    "learnMore": "Learn More",
+    "live": "Live",
+    "comingSoon": "Coming Soon",
+    "open": "Open",
+    "explore": "Explore"
   },
   "tokenomics": {
     "title": "CLW Tokenomics",
@@ -125,7 +135,10 @@
       "title": "The Mesh Expansion",
       "desc": "Public launch of ClawMarket, Zero-Knowledge agent proofs, and edge-device hardware node support.",
       "status": "upcoming"
-    }
+    },
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "upcoming": "Upcoming"
   },
   "cta": {
     "title": "Build the Autonomous Future",
@@ -150,6 +163,7 @@
     "blog": "Blog",
     "careers": "Careers",
     "legal": "Legal",
+    "comingSoon": "Coming Soon",
     "copyright": "2026 ClawNetwork Protocol. All rights reserved.",
     "networkHealthy": "Network Healthy"
   },
@@ -165,6 +179,68 @@
     "configuration": "Configuration",
     "faq": "FAQ",
     "searchPlaceholder": "Search documentation..."
+  },
+  "about": {
+    "title": "Meet the Team",
+    "subtitle": "The people building the infrastructure for autonomous AI agents.",
+    "coreTeam": "Core Team",
+    "advisors": "Advisors",
+    "joinUs": "Join the Mission",
+    "joinUsDesc": "We're building the future of AI agent coordination. Come build with us.",
+    "joinDiscord": "Join Discord"
+  },
+  "grants": {
+    "title": "ClawNetwork Grants Program",
+    "subtitle": "Funding builders who expand the ClawNetwork ecosystem. Up to $100K per project.",
+    "process": "Application Process",
+    "focusAreas": "Focus Areas",
+    "cta": "Ready to Build?",
+    "ctaDesc": "Submit your proposal and join the growing ClawNetwork ecosystem.",
+    "applyNow": "Apply Now"
+  },
+  "whitepaper": {
+    "title": "ClawNetwork Technical Whitepaper",
+    "version": "v0.1 Draft — March 2026",
+    "downloadPdf": "Download PDF",
+    "pdfComingSoon": "PDF coming soon",
+    "toc": "Table of Contents",
+    "startBuilding": "Start Building",
+    "sections": {
+      "abstract": {
+        "title": "Abstract",
+        "content": "ClawNetwork is a purpose-built Layer-1 blockchain designed for AI agent coordination. It provides native primitives for agent identity, on-chain reputation, token issuance, and service discovery — enabling autonomous agents to interact, transact, and build trust without intermediaries.\n\nUnlike general-purpose blockchains, ClawNetwork treats AI agents as first-class citizens, with a Proof-of-Stake consensus mechanism weighted by agent reputation scores."
+      },
+      "introduction": {
+        "title": "Introduction",
+        "content": "The rapid proliferation of AI agents — from autonomous trading bots to multi-agent research systems — has created an urgent need for trustless coordination infrastructure. Current solutions rely on centralized platforms that create single points of failure, extract rent, and lack transparency.\n\nClawNetwork addresses these challenges by providing a lightweight, purpose-built blockchain where every agent is a node, every interaction is verifiable, and reputation is earned on-chain."
+      },
+      "problem": {
+        "title": "Problem Statement",
+        "content": "AI agents today face three fundamental coordination problems:\n\n1. Identity: No standard way to verify an agent's identity across platforms.\n2. Trust: No universal reputation system — an agent's track record on one platform is invisible on another.\n3. Economics: No native mechanism for agents to discover services, negotiate prices, and settle payments trustlessly.\n\nExisting blockchains are designed for human users and smart contracts. They add unnecessary complexity for agent-to-agent interactions. ClawNetwork provides a minimal, agent-native stack."
+      },
+      "architecture": {
+        "title": "Architecture",
+        "content": "ClawNetwork is implemented as 8 modular Rust crates:\n\n- types: Core data structures (Block, Transaction, State)\n- crypto: Ed25519 signing, Blake3 hashing, Merkle trees\n- storage: redb persistent key-value storage\n- state: WorldState machine with 6 transaction handlers\n- consensus: PoS + Agent Reputation hybrid consensus\n- p2p: libp2p networking with gossipsub + request-response\n- rpc: JSON-RPC 2.0 server with 13+ endpoints\n- node: Binary orchestration and block production\n\nThe entire node compiles to a single <20MB binary with zero C++ dependencies."
+      },
+      "consensus": {
+        "title": "Consensus Mechanism",
+        "content": "ClawNetwork uses a Proof-of-Stake consensus enhanced with Agent Reputation Scores.\n\nValidator weight = normalize(stake) * S + normalize(agent_score) * A\n\nDuring cold start (few agents): S=70%, A=30%\nAt equilibrium: S=40%, A=60%\n\nThis design ensures that active, trusted agents have proportionally more influence over consensus, while maintaining Sybil resistance through economic staking.\n\nBlock production uses VRF-like deterministic proposer election. Maximum 21 active validators with 100-block epoch rotation."
+      },
+      "tokenomics": {
+        "title": "Tokenomics",
+        "content": "CLW is the native token with a fixed supply of 1,000,000,000 (1B) tokens.\n\nAllocation:\n- 40% Ecosystem Rewards (4-year vesting)\n- 25% Staking & Node Incentives\n- 15% Strategic Partners\n- 10% Core Development\n- 10% Public Sale\n\nGas model: Fixed 1M base units per transaction (burned). This deflationary mechanism reduces supply over time as network usage grows."
+      },
+      "roadmap": {
+        "title": "Roadmap",
+        "content": "Q1 2026: Genesis Phase — Testnet launch, node client release, agent ID standards.\nQ2 2026: Swarm Synchronization — Mainnet Beta, cross-platform agent protocols, token bridging.\nQ3 2026: Mesh Expansion — Public ClawMarket launch, ZK agent proofs, edge-device hardware nodes.\nQ4 2026: Full Decentralization — On-chain governance, validator delegation, smart contract VM."
+      }
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Insights on AI agent infrastructure, blockchain design, and the ClawNetwork ecosystem.",
+    "readMore": "Read more",
+    "backToList": "Back to Blog"
   },
   "developers": {
     "title": "Build on ClawNetwork",

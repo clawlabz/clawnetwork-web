@@ -24,17 +24,17 @@ export function Roadmap() {
       "in-progress": "bg-accent-purple/10 text-accent-purple border-accent-purple/30",
       upcoming: "bg-surface-dark text-text-secondary border-border-dark",
     };
-    const labels = {
-      completed: "Completed",
-      "in-progress": "In Progress",
-      upcoming: "Upcoming",
+    const labelKeys: Record<string, string> = {
+      completed: "completed",
+      "in-progress": "inProgress",
+      upcoming: "upcoming",
     };
     const style = styles[status as keyof typeof styles] || styles.upcoming;
-    const label = labels[status as keyof typeof labels] || "Upcoming";
+    const labelKey = labelKeys[status] || "upcoming";
 
     return (
       <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${style}`}>
-        {label}
+        {t(labelKey)}
       </span>
     );
   }

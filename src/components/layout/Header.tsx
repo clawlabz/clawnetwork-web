@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/lib/i18n/navigation";
 import { Menu, X, Globe } from "lucide-react";
 import { GITHUB_URL } from "@/lib/constants";
@@ -19,19 +19,22 @@ export function Header() {
     { href: "/#roadmap", label: t("roadmap") },
     { href: "/docs/quickstart", label: t("docs") },
     { href: "/developers", label: t("developers") },
+    { href: "/about", label: t("about") },
   ];
 
+  const locale = useLocale();
+
   function switchLocale() {
-    const nextLocale = pathname.startsWith("/zh") ? "en" : "zh";
+    const nextLocale = locale === "zh" ? "en" : "zh";
     router.replace(pathname, { locale: nextLocale });
   }
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border-dark bg-bg-dark/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2" aria-label="ClawNetwork Home">
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary" aria-hidden="true">
               <path d="M12 2L2 7l10 5 10-5-10-5z" />
               <path d="M2 17l10 5 10-5" />
               <path d="M2 12l10 5 10-5" />
@@ -55,6 +58,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <button
             onClick={switchLocale}
+            aria-label="Switch language between English and Chinese"
             className="flex items-center gap-1 rounded-lg border border-border-dark px-2 py-1.5 text-xs text-text-secondary transition-colors hover:border-primary hover:text-primary"
           >
             <Globe className="h-3.5 w-3.5" />
@@ -65,6 +69,7 @@ export function Header() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="View ClawNetwork on GitHub"
             className="hidden rounded-lg border border-border-dark px-4 py-2 text-sm font-semibold transition-colors hover:border-primary hover:text-primary sm:block"
           >
             GitHub
@@ -79,6 +84,7 @@ export function Header() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
             className="text-text-secondary md:hidden"
           >
             {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

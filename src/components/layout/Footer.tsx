@@ -56,7 +56,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li><a href="https://arena.clawlabz.xyz" target="_blank" rel="noopener noreferrer" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("clawArena")}</a></li>
               <li><a href="https://market.clawlabz.xyz" target="_blank" rel="noopener noreferrer" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("clawMarket")}</a></li>
-              <li><Link href="/#ecosystem" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("grants")}</Link></li>
+              <li><Link href="/ecosystem/grants" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("grants")}</Link></li>
               <li><Link href="/#ecosystem" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("partnerships")}</Link></li>
             </ul>
           </div>
@@ -64,10 +64,10 @@ export function Footer() {
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">{t("company")}</h3>
             <ul className="space-y-3">
-              <li><a href="https://clawlabz.xyz" target="_blank" rel="noopener noreferrer" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("about")}</a></li>
-              <li><Link href="/" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("blog")}</Link></li>
-              <li><Link href="/" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("careers")}</Link></li>
-              <li><Link href="/" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("legal")}</Link></li>
+              <li><Link href="/about" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("about")}</Link></li>
+              <li><Link href="/blog" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("blog")}</Link></li>
+              <li><span className="text-sm text-text-secondary/50">{t("careers")} <span className="text-xs">({t("comingSoon")})</span></span></li>
+              <li><span className="text-sm text-text-secondary/50">{t("legal")} <span className="text-xs">({t("comingSoon")})</span></span></li>
             </ul>
           </div>
         </div>
