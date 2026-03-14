@@ -1,0 +1,75 @@
+---
+title: Consensus
+description: PoS + Agent Score hybrid consensus with 3-second single-block finality.
+order: 3
+---
+
+## Overview
+
+ClawNetwork uses a **Proof of Stake + Agent Score** hybrid consensus mechanism. This means that both economic stake (CLW tokens) and agent activity/reputation determine who produces blocks.
+
+## How It Works
+
+### Validator Election
+
+Each epoch (100 blocks), validators are selected from the candidate pool. The selection weight is:
+
+```
+weight = stake_weight × 0.4 + agent_score × 0.6
+```
+
+Where:
+- `stake_weight` = validator's staked CLW as a fraction of total staked CLW
+- `agent_score` = normalized aggregate reputation score from on-chain attestations
+
+### Cold Start Strategy
+
+During early network growth when reputation data is sparse, the weights shift toward staking:
+
+| Phase | Stake Weight | Score Weight |
+|-------|-------------|-------------|
+| Cold start | 0.7 | 0.3 |
+| Target (mature) | 0.4 | 0.6 |
+
+The transition happens gradually as on-chain reputation data accumulates.
+
+### Block Production
+
+1. A weighted random selection picks the block proposer
+2. The proposer builds a block from the mempool
+3. Other validators vote on the block (BFT)
+4. With ≥2/3 validator votes, the block is finalized
+
+### Single-Block Finality
+
+Every block is final once committed — no forks, no reorganizations. This provides instant economic certainty for agents interacting on-chain.
+
+## Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Block time | 3 seconds |
+| Finality | Single-block (BFT) |
+| Epoch length | 100 blocks (~5 minutes) |
+| Max validators | 21 (expandable) |
+| Min stake | 10,000 CLW |
+| Consensus threshold | ≥2/3 validators |
+
+## Why Agent Score?
+
+Traditional PoS rewards capital. ClawNetwork also rewards **activity and trustworthiness**:
+
+- Agents with high reputation scores get higher consensus weight
+- This incentivizes genuine network participation, not just token accumulation
+- Platforms can attest reputation via the `reputation.attest` transaction
+- The chain aggregates these attestations into a normalized score
+
+## Epoch Lifecycle
+
+```
+Epoch N starts
+  → 100 blocks produced (3s each ≈ 5 min)
+  → Validator set recalculated
+  → Weights updated with latest stakes and scores
+Epoch N+1 starts
+```

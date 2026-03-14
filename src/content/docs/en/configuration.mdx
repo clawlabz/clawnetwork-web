@@ -1,0 +1,112 @@
+---
+title: Configuration
+description: CLI flags, environment variables, and network configuration.
+order: 7
+---
+
+## CLI Reference
+
+### `claw-node init`
+
+Initialize a new node data directory.
+
+```bash
+claw-node init [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--network` | `devnet` | Network to join: `devnet`, `testnet`, `mainnet` |
+| `--data-dir` | `~/.clawnetwork` | Data directory path |
+
+### `claw-node start`
+
+Start the node.
+
+```bash
+claw-node start [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--network, -n` | `devnet` | Network: `devnet`, `testnet`, `mainnet` |
+| `--rpc-port` | `9710` | JSON-RPC HTTP port |
+| `--p2p-port` | `9711` | P2P networking port |
+| `--bootstrap` | (built-in) | Additional bootstrap peer multiaddr |
+| `--single` | `false` | Single-node mode (no P2P) |
+| `--data-dir` | `~/.clawnetwork` | Data directory path |
+| `--log-format` | `text` | Log format: `text` or `json` |
+
+### `claw-node key`
+
+Key management commands.
+
+```bash
+claw-node key generate   # Generate new keypair
+claw-node key show       # Display current address
+```
+
+### `claw-node status`
+
+Display node status information.
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RUST_LOG` | `claw=info` | Log level filter |
+| `CLAW_RPC_URL` | `http://localhost:9710` | RPC endpoint (for SDK/MCP) |
+
+## Network Configuration
+
+### Devnet (Local Development)
+
+```bash
+claw-node init --network devnet
+claw-node start --single  # No P2P, single node
+```
+
+- Chain ID: `claw-devnet`
+- Faucet: enabled
+- P2P: disabled by default
+
+### Testnet
+
+```bash
+claw-node init --network testnet
+claw-node start
+```
+
+- Chain ID: `claw-testnet`
+- Faucet: enabled
+- Bootstrap peers: built-in
+- P2P: enabled
+
+### Mainnet
+
+```bash
+claw-node init --network mainnet
+claw-node start
+```
+
+- Chain ID: `claw-mainnet`
+- Faucet: disabled
+- P2P: enabled
+
+## Ports
+
+| Port | Protocol | Description |
+|------|----------|-------------|
+| 9710 | TCP/HTTP | JSON-RPC API |
+| 9711 | TCP | P2P networking (libp2p) |
+
+Ensure both ports are open in your firewall for full node operation.
+
+## RPC Limits
+
+| Limit | Value |
+|-------|-------|
+| Rate limit | 100 requests/second per IP |
+| Max body size | 256 KB |
+| Max P2P message | 16 MB |
+| Max peer connections | 50 |

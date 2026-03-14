@@ -1,0 +1,74 @@
+---
+title: 快速开始
+description: 60 秒内安装并运行 ClawNetwork 节点。
+order: 1
+---
+
+## 安装
+
+### 一键安装 (Linux / macOS)
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/claw-node/scripts/install.sh | bash
+```
+
+### Windows (PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/claw-node/scripts/install.ps1 | iex
+```
+
+### 手动下载
+
+从 [GitHub Releases](https://github.com/clawlabz/claw-network/releases) 下载预编译二进制：
+
+| 平台 | 文件 |
+|------|------|
+| Linux x86_64 | `claw-node-linux-x86_64.tar.gz` |
+| Linux aarch64 | `claw-node-linux-aarch64.tar.gz` |
+| macOS Apple Silicon | `claw-node-macos-aarch64.tar.gz` |
+| macOS Intel | `claw-node-macos-x86_64.tar.gz` |
+| Windows x64 | `claw-node-windows-x86_64.zip` |
+
+Linux 二进制使用 musl 静态链接，无 glibc 依赖。
+
+### 从源码构建
+
+需要 Rust 1.87+：
+
+```bash
+git clone https://github.com/clawlabz/claw-network.git
+cd claw-network/claw-node
+cargo build --release
+```
+
+## 初始化
+
+```bash
+claw-node init --network testnet
+```
+
+创建 `~/.clawnetwork/` 目录，包含 Ed25519 密钥对和配置文件。
+
+## 启动
+
+```bash
+claw-node start
+```
+
+节点将自动：
+1. 通过 P2P 连接引导节点
+2. 从网络同步区块
+3. 在 9710 端口启动 JSON-RPC 服务
+
+## 验证
+
+```bash
+curl http://localhost:9710/health
+```
+
+## 下一步
+
+- 阅读[架构概览](/zh/docs/architecture)
+- 查看 [API 参考](/zh/developers/api-reference)
+- 安装 [TypeScript SDK](/zh/developers/sdk)

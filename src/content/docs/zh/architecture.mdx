@@ -1,0 +1,63 @@
+---
+title: 架构概览
+description: 8 个 Rust crate 模块化架构，编译为单一二进制。
+order: 2
+---
+
+## 概述
+
+ClawNetwork 节点使用纯 Rust 构建，采用模块化单体架构 — 8 个 crate 编译为不到 20MB 的单一二进制文件。
+
+```
+┌──────────┐
+│   node   │  ← 主编排器
+├──────────┤
+│   rpc    │  ← JSON-RPC 服务 (Axum)
+├──────────┤
+│   p2p    │  ← libp2p 网络层
+├──────────┤
+│consensus │  ← PoS + Agent Score 共识
+├──────────┤
+│ storage  │  ← redb 嵌入式 KV
+├──────────┤
+│  state   │  ← 世界状态机
+├──────────┤
+│  crypto  │  ← Ed25519 + Blake3
+├──────────┤
+│  types   │  ← 核心数据结构
+└──────────┘
+```
+
+## Crate 详解
+
+### `types`
+所有 crate 共享的核心数据结构：`Block`、`Transaction`、`AgentIdentity`、`TokenDef`、`ReputationAttestation`、`ServiceEntry`。全部实现 Borsh 序列化。
+
+### `crypto`
+密码学原语：Ed25519 签名验证、Blake3 哈希、Merkle 树。
+
+### `state`
+世界状态机。执行交易产生状态转换，验证规则，更新余额、Agent 注册表、Token 注册表、信誉存储和服务注册表。
+
+### `storage`
+使用 **redb** 持久化存储（纯 Rust 嵌入式 KV，零 C++ 依赖）。
+
+### `consensus`
+PoS + Agent Score 混合共识：验证者选举、BFT 投票、Epoch 管理。
+
+### `p2p`
+libp2p 网络层：Gossipsub 广播、Request-Response 同步、mDNS 发现、Noise 加密。
+
+### `rpc`
+基于 Axum 的 JSON-RPC 2.0 服务，12 个方法，速率限制，CORS 支持。
+
+### `node`
+主二进制 crate，编排链状态机、P2P 事件循环、RPC 服务、创世区块初始化。
+
+## 设计原则
+
+1. **单二进制** — 无外部依赖
+2. **纯 Rust** — 无 C/C++ 构建依赖
+3. **Borsh 序列化** — 确定性、紧凑、快速
+4. **模块化但不微服务** — 清晰的 crate 边界，单一部署单元
+5. **边缘友好** — 轻节点目标 32MB 内存

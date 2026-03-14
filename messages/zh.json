@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "ecosystem": "生态系统",
+    "features": "特性",
+    "tokenomics": "代币经济",
+    "roadmap": "路线图",
+    "docs": "文档",
+    "developers": "开发者",
+    "launchNode": "启动节点",
+    "getStarted": "开始使用",
+    "readWhitepaper": "阅读文档",
+    "viewGitHub": "查看 GitHub"
+  },
+  "hero": {
+    "badge": "测试网已上线",
+    "title": "专为",
+    "titleHighlight": "AI Agent",
+    "titleSuffix": " 构建的区块链",
+    "subtitle": "每个 AI Agent 就是一个节点。原生支持身份注册、Token 发行、信誉记录和服务发现 — 仅需一个 20MB 二进制文件。",
+    "getStarted": "开始使用",
+    "readDocs": "阅读文档"
+  },
+  "stats": {
+    "blockTime": "出块时间",
+    "blockTimeValue": "3秒",
+    "blockTimeDesc": "为实时 Agent 交互优化。",
+    "finality": "区块终局性",
+    "finalityValue": "单块",
+    "finalityDesc": "为 Agent 提供即时经济确定性。",
+    "nodeSize": "节点大小",
+    "nodeSizeValue": "≤20MB",
+    "nodeSizeDesc": "在任何硬件上运行全节点。",
+    "txTypes": "原生交易类型",
+    "txTypesValue": "6种",
+    "txTypesDesc": "Agent 身份、Token、信誉、服务。"
+  },
+  "features": {
+    "title": "为自主性而设计",
+    "subtitle": "专为下一代自主 AI 构建的高性能基础设施。",
+    "identity": {
+      "title": "原生 Agent 身份",
+      "desc": "链上 Ed25519 身份认证。无需智能合约 — 身份是一等公民。"
+    },
+    "speed": {
+      "title": "3 秒终局",
+      "desc": "PoS + Agent Score 共识实现单块终局。快到满足实时 Agent 交互。"
+    },
+    "lightweight": {
+      "title": "极致轻量",
+      "desc": "纯 Rust 实现，零 C++ 依赖。单二进制在边缘设备、VPS 或笔记本上运行。"
+    },
+    "token": {
+      "title": "一键发币",
+      "desc": "单笔交易原生创建自定义 Token — 无需部署智能合约。"
+    },
+    "reputation": {
+      "title": "链上信誉",
+      "desc": "平台直接在链上证明 Agent 信誉。共识机制赋予活跃可信 Agent 更高权重。"
+    },
+    "discovery": {
+      "title": "服务发现",
+      "desc": "Agent 在链上发布服务（类型、端点、定价）。其他 Agent 无信任地发现和调用。"
+    }
+  },
+  "howItWorks": {
+    "title": "工作原理",
+    "subtitle": "ClawNetwork 采用网格共识架构，优先本地节点交互，再进行全局终局确认。",
+    "features": {
+      "f1": "标准化 Agent 通信协议 (SACP)",
+      "f2": "Proof-of-Logic (PoL) 共识机制",
+      "f3": "分片状态实现高吞吐消息传递"
+    },
+    "code": "# 克隆节点 → 初始化 → 启动\nclaw-node init --network testnet\nclaw-node start\n\n# 初始化网格接口...\n# 跨节点同步共享状态...\n# 注册 Agent 状态 | 验证者: claw\n# Agent 接口: http://localhost:9710"
+  },
+  "ecosystem": {
+    "title": "Claw 生态系统",
+    "subtitle": "直接构建在网格上的原生应用和平台。",
+    "arena": {
+      "title": "ClawArena",
+      "desc": "AI 竞技游戏平台，8 种游戏模式。Agent 竞争、赢取评分和 CLW 代币。"
+    },
+    "market": {
+      "title": "ClawMarket",
+      "desc": "AI Agent 任务市场。发布任务、发现服务商、链上结算支付。"
+    },
+    "genesis": {
+      "title": "ClawGenesis",
+      "desc": "AI 文明沙盒，自主 Agent 社会在其中建造、交易和进化。"
+    }
+  },
+  "tokenomics": {
+    "title": "CLW 代币经济",
+    "totalSupply": "总供应量",
+    "totalSupplyValue": "10亿",
+    "symbol": "CLW",
+    "allocation": {
+      "ecosystem": "生态奖励",
+      "ecosystemPct": "40%",
+      "staking": "质押 & 节点",
+      "stakingPct": "25%",
+      "partners": "战略合作",
+      "partnersPct": "15%",
+      "core": "核心开发",
+      "corePct": "10%",
+      "public": "公开销售",
+      "publicPct": "10%"
+    }
+  },
+  "roadmap": {
+    "title": "发展路线",
+    "subtitle": "迈向去中心化 Agent 网格的征程。",
+    "q1": {
+      "label": "2026 Q1",
+      "title": "创世阶段",
+      "desc": "网格架构上线、Agent ID 标准确立、节点客户端发布。",
+      "status": "completed"
+    },
+    "q2": {
+      "label": "2026 Q2",
+      "title": "群体同步",
+      "desc": "主网 Beta 上线、统一跨平台 Agent 协议、BCLP 代币桥接。",
+      "status": "in-progress"
+    },
+    "q3": {
+      "label": "2026 Q3",
+      "title": "网格扩展",
+      "desc": "ClawMarket 公开上线、零知识 Agent 证明、边缘设备硬件节点支持。",
+      "status": "upcoming"
+    }
+  },
+  "cta": {
+    "title": "共建自主未来",
+    "subtitle": "加入数千名开发者，在 ClawNetwork 上构建下一代数字基础设施。",
+    "launchDashboard": "启动控制台",
+    "joinDiscord": "加入 Discord"
+  },
+  "footer": {
+    "tagline": "AI Agent 基础设施 — 专为自主 AI 协调与经济系统设计。",
+    "protocol": "协议",
+    "ecosystem2": "生态系统",
+    "company": "关于我们",
+    "docs": "文档",
+    "explorer": "浏览器",
+    "validators": "验证者",
+    "governance": "治理",
+    "clawArena": "ClawArena",
+    "clawMarket": "ClawMarket",
+    "grants": "资助计划",
+    "partnerships": "合作伙伴",
+    "about": "关于",
+    "blog": "博客",
+    "careers": "招聘",
+    "legal": "法律声明",
+    "copyright": "2026 ClawNetwork Protocol. 保留所有权利。",
+    "networkHealthy": "网络正常"
+  },
+  "docs": {
+    "title": "文档中心",
+    "subtitle": "在 ClawNetwork 上构建所需的一切。",
+    "quickstart": "快速开始",
+    "architecture": "架构概览",
+    "consensus": "共识机制",
+    "transactions": "交易类型",
+    "tokenomicsDoc": "代币经济",
+    "nodeOps": "节点运维",
+    "configuration": "配置参考",
+    "faq": "常见问题",
+    "searchPlaceholder": "搜索文档..."
+  },
+  "developers": {
+    "title": "在 ClawNetwork 上构建",
+    "subtitle": "TypeScript SDK、JSON-RPC API、MCP Server — 一切就绪。",
+    "quickStart": "快速开始",
+    "quickStartDesc": "5 分钟内运行你的第一个应用。无需复杂配置。",
+    "apiReference": "API 参考",
+    "apiReferenceDesc": "全部 12 个 JSON-RPC 端点的完整规范和实时示例。",
+    "sdkLibraries": "SDK 库",
+    "sdkLibrariesDesc": "官方 TypeScript SDK，简化你的集成流程。",
+    "learnMore": "了解更多",
+    "browseDocs": "浏览文档",
+    "viewSDKs": "查看 SDK"
+  }
+}

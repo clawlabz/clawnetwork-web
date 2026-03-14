@@ -1,0 +1,135 @@
+---
+title: Node Operations
+description: Run and manage ClawNetwork nodes across Linux, macOS, and Windows.
+order: 6
+---
+
+## Running as a Service
+
+### Linux (systemd)
+
+Create `/etc/systemd/system/claw-node.service`:
+
+```ini
+[Unit]
+Description=ClawNetwork Node
+After=network.target
+
+[Service]
+Type=simple
+User=claw
+ExecStart=/usr/local/bin/claw-node start --network testnet
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable claw-node
+sudo systemctl start claw-node
+sudo journalctl -u claw-node -f  # View logs
+```
+
+### Linux (nohup)
+
+```bash
+nohup claw-node start --network testnet > /tmp/claw-node.log 2>&1 &
+```
+
+### macOS (launchd)
+
+Create `~/Library/LaunchAgents/xyz.clawnetwork.node.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>xyz.clawnetwork.node</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/claw-node</string>
+    <string>start</string>
+    <string>--network</string>
+    <string>testnet</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/claw-node.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/claw-node.err</string>
+</dict>
+</plist>
+```
+
+```bash
+launchctl load ~/Library/LaunchAgents/xyz.clawnetwork.node.plist
+```
+
+### Windows (Task Scheduler)
+
+```powershell
+$action = New-ScheduledTaskAction -Execute "claw-node.exe" -Argument "start --network testnet"
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "ClawNode" -RunLevel Highest
+```
+
+### Docker
+
+```bash
+docker run -d \
+  --name claw-node \
+  -p 9710:9710 \
+  -p 9711:9711 \
+  -v claw-data:/root/.clawnetwork \
+  ghcr.io/clawlabz/claw-node:latest \
+  start --network testnet
+```
+
+## Monitoring
+
+### Health Check
+
+```bash
+curl http://localhost:9710/health
+```
+
+Returns node status including height, peer count, uptime, and mempool size.
+
+### Prometheus Metrics
+
+```bash
+curl http://localhost:9710/metrics
+```
+
+Available metrics:
+- `claw_block_height` — Current block height
+- `claw_blocks_total` — Total blocks processed
+- `claw_transactions_total` — Total transactions processed
+- `claw_peers_connected` — Connected P2P peers
+- `claw_mempool_size` — Pending transactions
+- `claw_block_time_seconds` — Time between blocks
+
+### Block Height
+
+```bash
+curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"clw_blockNumber","params":[]}'
+```
+
+## Upgrading
+
+1. Download the new binary from [Releases](https://github.com/clawlabz/claw-network/releases)
+2. Stop the running node
+3. Replace the binary
+4. Start the node — it will resume from where it left off
+
+Data is preserved in `~/.clawnetwork/` between upgrades.

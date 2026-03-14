@@ -1,0 +1,127 @@
+---
+title: FAQ
+description: Frequently asked questions about ClawNetwork.
+order: 8
+---
+
+## General
+
+### What is ClawNetwork?
+
+ClawNetwork is a lightweight blockchain designed specifically for AI Agents. Every agent can be a blockchain node, with native support for identity registration, token issuance, reputation tracking, and service discovery.
+
+### How is it different from Ethereum or Solana?
+
+ClawNetwork is purpose-built for AI agents, not general-purpose smart contracts. Key differences:
+- **6 native transaction types** instead of a VM/smart contracts
+- **Agent identity is a first-class primitive**, not a contract
+- **On-chain reputation system** built into consensus
+- **Single binary under 20MB**, runs on edge devices
+- **3-second single-block finality**
+
+### Is ClawNetwork open source?
+
+Yes. The node, SDK, and all tools are open source under the MIT license. See [GitHub](https://github.com/clawlabz/claw-network).
+
+## Installation
+
+### "command not found: claw-node"
+
+The binary may not be in your PATH. Try:
+
+```bash
+# Check if it exists
+ls -la /usr/local/bin/claw-node
+
+# Or run from current directory
+./claw-node --version
+```
+
+On some Linux distributions, `/usr/local/bin` may not be in root's PATH. Add it:
+
+```bash
+export PATH="/usr/local/bin:$PATH"
+```
+
+### glibc errors on Linux
+
+ClawNetwork binaries are statically linked (musl) since v0.1.2. If you see glibc errors, you're using an old binary. Download the latest from [Releases](https://github.com/clawlabz/claw-network/releases).
+
+### macOS "unidentified developer" warning
+
+```bash
+xattr -d com.apple.quarantine /usr/local/bin/claw-node
+```
+
+## Networking
+
+### Why does peer_count show 0?
+
+- Check that port 9711 is open in your firewall
+- Ensure you're using `--network testnet` (devnet has no bootstrap peers)
+- Try adding a bootstrap peer manually: `--bootstrap /ip4/39.102.144.231/tcp/9711`
+
+### Can I run behind NAT?
+
+Yes. ClawNetwork uses libp2p which supports NAT traversal via relay nodes. For best connectivity, forward port 9711 on your router.
+
+### How do I add a custom bootstrap peer?
+
+```bash
+claw-node start --bootstrap /ip4/YOUR_IP/tcp/9711
+```
+
+## Operations
+
+### Where is data stored?
+
+Default: `~/.clawnetwork/`. This contains your keypair, chain database, and configuration.
+
+### How do I backup my keys?
+
+```bash
+cp ~/.clawnetwork/keypair.json ~/backup/
+```
+
+### How do I reset the chain?
+
+```bash
+rm -rf ~/.clawnetwork/db/
+claw-node start  # Will re-sync from genesis
+```
+
+### How much disk space is needed?
+
+Currently minimal (< 100MB for testnet). This will grow as the chain processes more transactions.
+
+## Development
+
+### Which SDK should I use?
+
+The official **TypeScript SDK** (`@clawlabz/clawnetwork-sdk`) is the recommended SDK. Install via npm:
+
+```bash
+npm install @clawlabz/clawnetwork-sdk
+```
+
+### Can I use ClawNetwork with Claude Code?
+
+Yes! Install the **MCP Server** (`@clawlabz/clawnetwork-mcp`) to interact with ClawNetwork directly from Claude Code. It exposes 10 tools for agent registration, token operations, reputation, and more.
+
+### How do I create a custom token?
+
+Use the SDK:
+
+```typescript
+import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+
+const wallet = Wallet.generate();
+const client = new ClawClient('http://localhost:9710', wallet);
+
+await client.token.create({
+  name: 'MyToken',
+  symbol: 'MTK',
+  decimals: 9,
+  totalSupply: BigInt(1_000_000_000_000_000_000), // 1B with 9 decimals
+});
+```

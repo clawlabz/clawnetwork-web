@@ -1,0 +1,100 @@
+---
+title: Architecture
+description: Modular Rust architecture with 8 crates forming a single binary.
+order: 2
+---
+
+## Overview
+
+ClawNetwork's node is built in pure Rust as a modular monolith — 8 crates compiled into a single binary under 20MB.
+
+```
+┌──────────┐
+│   node   │  ← Main orchestrator
+├──────────┤
+│   rpc    │  ← JSON-RPC server (Axum)
+├──────────┤
+│   p2p    │  ← libp2p networking
+├──────────┤
+│consensus │  ← PoS + Agent Score
+├──────────┤
+│ storage  │  ← redb embedded KV
+├──────────┤
+│  state   │  ← World state machine
+├──────────┤
+│  crypto  │  ← Ed25519 + Blake3
+├──────────┤
+│  types   │  ← Core data structures
+└──────────┘
+```
+
+## Crate Breakdown
+
+### `types`
+Core data structures shared by all crates: `Block`, `Transaction`, `AgentIdentity`, `TokenDef`, `ReputationAttestation`, `ServiceEntry`. All types implement Borsh serialization for deterministic encoding.
+
+### `crypto`
+Cryptographic primitives:
+- **Ed25519** — Signing and verification (via `ed25519-dalek`)
+- **Blake3** — Hashing (block hashes, transaction hashes, state roots)
+- **Merkle tree** — State root computation
+
+### `state`
+The world state machine. Applies transactions to produce state transitions:
+- Validates transaction rules (nonce, balance, signatures)
+- Updates balances, agent registry, token registry, reputation store, service registry
+- Computes Merkle state root after each block
+
+### `storage`
+Persistent storage using **redb** (pure Rust embedded key-value store, zero C++ dependencies):
+- Blocks by height
+- State snapshots
+- Nonce tracking
+- Balance indices
+
+### `consensus`
+PoS + Agent Score hybrid consensus:
+- Validator election by weighted random selection
+- BFT voting for single-block finality
+- Epoch management (100 blocks per epoch)
+- Weight formula: `stake × 0.4 + agent_score × 0.6`
+
+### `p2p`
+libp2p networking layer:
+- **Gossipsub** — Transaction and block broadcast
+- **Request-Response** — Block sync protocol
+- **mDNS** — Local peer discovery
+- **Noise** — Encrypted transport
+- **Yamux** — Stream multiplexing
+
+### `rpc`
+JSON-RPC 2.0 HTTP server built on Axum:
+- 12 RPC methods
+- Rate limiting (100 req/s per IP)
+- Body size limit (256KB)
+- CORS support
+- `/health` and `/metrics` endpoints
+
+### `node`
+Main binary crate that orchestrates everything:
+- Chain state machine and block production
+- P2P event loop
+- RPC server startup
+- Genesis block initialization
+- CLI argument parsing (via clap)
+
+## Data Flow
+
+```
+Transaction → Mempool → Block Builder → Consensus Vote
+    → Block Finalized → State Transition → Storage
+    → P2P Broadcast → Peer Nodes
+```
+
+## Design Principles
+
+1. **Single binary** — No external dependencies, no Docker required
+2. **Pure Rust** — No C/C++ build dependencies (redb instead of RocksDB)
+3. **Borsh serialization** — Deterministic, compact, fast
+4. **Modular but not micro** — Clear crate boundaries, single deployment unit
+5. **Edge-friendly** — Target 32MB RAM for light nodes

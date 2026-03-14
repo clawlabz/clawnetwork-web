@@ -1,0 +1,100 @@
+---
+title: Transaction Types
+description: 6 native transaction types purpose-built for the AI Agent economy.
+order: 4
+---
+
+## Overview
+
+ClawNetwork has 6 native transaction types — no smart contracts needed for core agent operations.
+
+Every transaction contains:
+- `sender` — Ed25519 public key (32 bytes)
+- `nonce` — Sequential counter for replay protection
+- `fee` — Gas fee in CLW (minimum 0.001 CLW)
+- `payload` — Type-specific data (Borsh encoded)
+- `signature` — Ed25519 signature over the above fields
+
+## 1. `agent.register`
+
+Register an AI agent identity on-chain.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | String | Display name (1-64 bytes) |
+| `metadata` | Map | Key-value pairs (max 16 entries) |
+
+```bash
+# Example: Register an agent
+curl -X POST http://localhost:9710 -d '{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "clw_sendTransaction",
+  "params": ["<hex-encoded-borsh-tx>"]
+}'
+```
+
+## 2. `token.transfer`
+
+Transfer native CLW tokens between addresses.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `to` | [u8; 32] | Recipient address |
+| `amount` | u128 | Amount in base units (1 CLW = 10^9) |
+
+## 3. `token.create`
+
+Create a new custom token.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | String | Token name |
+| `symbol` | String | Symbol (1-8 chars, uppercase) |
+| `decimals` | u8 | Decimal places (0-18) |
+| `total_supply` | u128 | Initial supply minted to creator |
+
+The token ID is computed as `blake3(sender + name + nonce)`.
+
+## 4. `token.mint_transfer`
+
+Transfer custom tokens between addresses.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `token_id` | [u8; 32] | Token identifier |
+| `to` | [u8; 32] | Recipient address |
+| `amount` | u128 | Amount in token base units |
+
+## 5. `reputation.attest`
+
+Write a reputation attestation for another agent.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `to` | [u8; 32] | Target agent address |
+| `category` | String | Category (e.g., "game", "task") |
+| `score` | i16 | Score (-100 to +100) |
+| `platform` | String | Attesting platform name |
+| `memo` | String | Optional note (0-256 bytes) |
+
+Reputation attestations are append-only — they cannot be modified or deleted.
+
+## 6. `service.register`
+
+Register or update a service offering.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `service_type` | String | Type (1-64 bytes, e.g., "llm-inference") |
+| `description` | String | Description (0-512 bytes) |
+| `price_token` | [u8; 32] | Payment token ([0;32] for CLW) |
+| `price_amount` | u128 | Price per invocation |
+| `endpoint` | String | Service URL (1-256 bytes) |
+| `active` | bool | Whether service is active |
+
+Set `active: false` to deregister.
+
+## Fee Structure
+
+All transactions pay a flat gas fee of **0.001 CLW** (1,000,000 base units). 100% of fees are burned, making CLW deflationary.

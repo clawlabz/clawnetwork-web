@@ -1,0 +1,61 @@
+---
+title: 常见问题
+description: ClawNetwork 常见问题解答。
+order: 8
+---
+
+## 基础问题
+
+### ClawNetwork 是什么？
+
+ClawNetwork 是专为 AI Agent 设计的轻量级公链。每个 Agent 都可以是区块链节点，原生支持身份注册、Token 发行、信誉记录和服务发现。
+
+### 和以太坊、Solana 有什么区别？
+
+- **6 种原生交易类型**，而非通用智能合约
+- **Agent 身份是一等公民**
+- **链上信誉系统**融入共识
+- **≤20MB 单二进制**，边缘设备可运行
+- **3 秒单块终局**
+
+## 安装问题
+
+### "command not found: claw-node"
+
+二进制可能不在 PATH 中：
+
+```bash
+# 使用绝对路径
+/usr/local/bin/claw-node --version
+
+# 或当前目录
+./claw-node --version
+```
+
+### macOS 提示"无法验证开发者"
+
+```bash
+xattr -d com.apple.quarantine /usr/local/bin/claw-node
+```
+
+## 网络问题
+
+### peer_count 显示 0
+
+- 检查防火墙是否开放 9711 端口
+- 确认使用 `--network testnet`
+- 手动添加引导节点：`--bootstrap /ip4/39.102.144.231/tcp/9711`
+
+## 开发问题
+
+### 使用哪个 SDK？
+
+官方 TypeScript SDK：
+
+```bash
+npm install @clawlabz/clawnetwork-sdk
+```
+
+### 可以在 Claude Code 中使用吗？
+
+可以！安装 MCP Server：`@clawlabz/clawnetwork-mcp`，直接在 Claude Code 中操作链上数据。

@@ -1,0 +1,74 @@
+---
+title: 节点运维
+description: 在 Linux、macOS 和 Windows 上运行和管理节点。
+order: 6
+---
+
+## 后台运行
+
+### Linux (systemd)
+
+创建 `/etc/systemd/system/claw-node.service`：
+
+```ini
+[Unit]
+Description=ClawNetwork Node
+After=network.target
+
+[Service]
+Type=simple
+User=claw
+ExecStart=/usr/local/bin/claw-node start --network testnet
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl enable --now claw-node
+sudo journalctl -u claw-node -f
+```
+
+### macOS (launchd)
+
+创建 `~/Library/LaunchAgents/xyz.clawnetwork.node.plist`（详见英文文档），然后：
+
+```bash
+launchctl load ~/Library/LaunchAgents/xyz.clawnetwork.node.plist
+```
+
+### Windows (任务计划程序)
+
+```powershell
+$action = New-ScheduledTaskAction -Execute "claw-node.exe" -Argument "start --network testnet"
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "ClawNode" -RunLevel Highest
+```
+
+### Docker
+
+```bash
+docker run -d --name claw-node -p 9710:9710 -p 9711:9711 ghcr.io/clawlabz/claw-node:latest start --network testnet
+```
+
+## 监控
+
+```bash
+# 健康检查
+curl http://localhost:9710/health
+
+# Prometheus 指标
+curl http://localhost:9710/metrics
+
+# 区块高度
+curl -X POST http://localhost:9710 -d '{"jsonrpc":"2.0","id":1,"method":"clw_blockNumber","params":[]}'
+```
+
+## 升级
+
+1. 下载新二进制
+2. 停止节点
+3. 替换二进制
+4. 启动节点（自动从中断处恢复）

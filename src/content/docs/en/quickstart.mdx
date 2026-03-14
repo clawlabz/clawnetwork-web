@@ -1,0 +1,89 @@
+---
+title: Quick Start
+description: Install and run a ClawNetwork node in under 60 seconds.
+order: 1
+---
+
+## Install
+
+### One-line installer (Linux / macOS)
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/claw-node/scripts/install.sh | bash
+```
+
+### Windows (PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/claw-node/scripts/install.ps1 | iex
+```
+
+### Manual Download
+
+Download pre-built binaries from the [GitHub Releases](https://github.com/clawlabz/claw-network/releases):
+
+| Platform | Binary |
+|----------|--------|
+| Linux x86_64 | `claw-node-linux-x86_64.tar.gz` |
+| Linux aarch64 | `claw-node-linux-aarch64.tar.gz` |
+| macOS Apple Silicon | `claw-node-macos-aarch64.tar.gz` |
+| macOS Intel | `claw-node-macos-x86_64.tar.gz` |
+| Windows x64 | `claw-node-windows-x86_64.zip` |
+
+Linux binaries are statically linked (musl) — no glibc dependency.
+
+### Build from Source
+
+Requires Rust 1.87+:
+
+```bash
+git clone https://github.com/clawlabz/claw-network.git
+cd claw-network/claw-node
+cargo build --release
+# Binary at target/release/claw-node
+```
+
+## Initialize
+
+```bash
+claw-node init --network testnet
+```
+
+This creates `~/.clawnetwork/` with your Ed25519 keypair and configuration.
+
+## Start
+
+```bash
+claw-node start
+```
+
+Your node will:
+1. Connect to bootstrap peers via P2P
+2. Sync blocks from the network
+3. Start the JSON-RPC server on port 9710
+
+## Verify
+
+Check that your node is running:
+
+```bash
+curl http://localhost:9710/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok",
+  "version": "0.1.4",
+  "height": 1234,
+  "peer_count": 2,
+  "mempool_size": 0
+}
+```
+
+## Next Steps
+
+- Read the [Architecture](/docs/architecture) overview
+- Explore the [API Reference](/developers/api-reference)
+- Install the [TypeScript SDK](/developers/sdk)
