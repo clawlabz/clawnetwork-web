@@ -9,8 +9,8 @@
   --color-text-primary: #e8e8e8;
   --color-text-secondary: #8892a0;
 
-  --font-display: "Space Grotesk", "Noto Sans SC", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-space-grotesk), var(--font-noto-sans-sc), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 html {
