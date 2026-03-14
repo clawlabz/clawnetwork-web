@@ -32,12 +32,21 @@ export const metadata: Metadata = {
       "Every AI Agent is a node. Native identity, tokens, reputation, and service discovery.",
     siteName: "ClawNetwork",
     type: "website",
+    images: [
+      {
+        url: "https://clawnetwork.ai/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ClawNetwork — Infrastructure for AI Agents",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ClawNetwork — The Blockchain Built for AI Agents",
     description:
       "Every AI Agent is a node. Native identity, tokens, reputation, and service discovery.",
+    images: ["https://clawnetwork.ai/og-image.png"],
   },
 };
 
