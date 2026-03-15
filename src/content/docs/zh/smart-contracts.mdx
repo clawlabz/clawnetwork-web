@@ -1,0 +1,358 @@
+---
+title: 智能合约
+description: 基于 Wasm 的智能合约，原生访问 Agent 身份、信誉和代币系统。
+order: 5
+---
+
+## 概述
+
+ClawNetwork 在 6 种原生交易类型之外，支持基于 Wasm 的智能合约。VM 使用 **wasmer singlepass** 编译器，提供快速单遍编译，无 JIT 开销。
+
+核心特性：
+
+- 使用 **Rust** 编写合约，编译到 `wasm32-unknown-unknown`
+- **17 个宿主函数**，分为 5 大类
+- **原生访问 Agent 身份和信誉** — ClawNetwork 独有
+- 基于燃料（Fuel）的 Gas 计量（杜绝无限循环）
+- VM 仅为节点增加约 4MB 体积（总计 17MB）
+- 沙箱执行：每次调用创建全新 Wasm 实例
+
+## 架构
+
+```
+交易 (Deploy/Call)
+        │
+        ▼
+┌─────────────────┐
+│   World State   │  ← 合约代码、存储、余额
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│    VM Engine     │  ← wasmer singlepass 编译器
+│                  │
+│  ┌────────────┐  │
+│  │  Wasm Inst │  │  ← 每次调用创建新实例
+│  └─────┬──────┘  │
+│        │         │
+│  ┌─────▼──────┐  │
+│  │ Host Funcs │  │  ← 17 个 "env" 命名空间导入
+│  └────────────┘  │
+└────────┬─────────┘
+         │
+         ▼
+   状态变更
+   (存储、转账、日志)
+```
+
+每次合约调用都会编译 Wasm 字节码，创建全新的 `Store` 和 `Instance`，执行目标方法，并收集结果（存储变更、代币转账、日志、返回数据）。不会在内存中缓存实例——确保完全沙箱隔离。
+
+## 交易类型
+
+两种交易类型用于智能合约操作：
+
+### ContractDeploy (TxType = 6)
+
+部署新合约到链上。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `code` | `Vec<u8>` | Wasm 字节码（最大 512KB） |
+| `init_method` | `String` | 构造函数名（空字符串表示无构造函数） |
+| `init_args` | `Vec<u8>` | 构造函数参数（Borsh 编码） |
+
+### ContractCall (TxType = 7)
+
+调用已部署合约的方法。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `contract` | `[u8; 32]` | 合约地址 |
+| `method` | `String` | 要调用的方法名 |
+| `args` | `Vec<u8>` | 方法参数（Borsh 编码） |
+| `value` | `u128` | 随调用发送的原生 CLW |
+
+### 地址推导
+
+合约地址由部署者地址和 nonce 确定性推导：
+
+```
+address = blake3("claw_contract_v1:" + deployer_pubkey + nonce_le_bytes)
+```
+
+## 宿主函数
+
+合约通过 17 个从 `"env"` 命名空间导入的宿主函数与链交互。
+
+### 存储（4 个函数）
+
+| 函数 | 签名 | 燃料 | 说明 |
+|------|------|------|------|
+| `storage_read` | `(key_ptr, key_len, val_ptr) -> i32` | 10,000 | 按键读取值。返回字节长度，不存在返回 -1。 |
+| `storage_write` | `(key_ptr, key_len, val_ptr, val_len)` | 50,000 | 写入键值对。 |
+| `storage_has` | `(key_ptr, key_len) -> i32` | 10,000 | 检查键是否存在。返回 1 或 0。 |
+| `storage_delete` | `(key_ptr, key_len)` | 10,000 | 删除键。 |
+
+### 上下文（6 个函数）
+
+| 函数 | 签名 | 燃料 | 说明 |
+|------|------|------|------|
+| `caller` | `(out_ptr)` | 5,000 | 将 32 字节调用者地址写入内存。 |
+| `block_height` | `() -> i64` | 5,000 | 当前区块高度。 |
+| `block_timestamp` | `() -> i64` | 5,000 | 当前区块时间戳。 |
+| `contract_address` | `(out_ptr)` | 5,000 | 将 32 字节合约地址写入内存。 |
+| `value_lo` | `() -> i64` | 5,000 | 转入 CLW 值的低 64 位。 |
+| `value_hi` | `() -> i64` | 5,000 | 转入 CLW 值的高 64 位。 |
+
+### Agent 原生（2 个函数）
+
+这是 **ClawNetwork 独有的特性** — 没有其他链能让 VM 直接访问链上 Agent 身份和信誉。
+
+| 函数 | 签名 | 燃料 | 说明 |
+|------|------|------|------|
+| `agent_get_score` | `(addr_ptr) -> i64` | 10,000 | 获取 Agent 的信誉分。 |
+| `agent_is_registered` | `(addr_ptr) -> i32` | 10,000 | 检查地址是否为已注册 Agent。返回 1 或 0。 |
+
+### 代币（2 个函数）
+
+| 函数 | 签名 | 燃料 | 说明 |
+|------|------|------|------|
+| `token_balance` | `(addr_ptr) -> i64` | 5,000 | 获取地址 CLW 余额的低 64 位。 |
+| `token_transfer` | `(to_ptr, amount_lo, amount_hi) -> i32` | 100,000 | 向地址转账 CLW。成功返回 0，失败返回 -1。 |
+
+### 工具（3 个函数）
+
+| 函数 | 签名 | 燃料 | 说明 |
+|------|------|------|------|
+| `log_msg` | `(ptr, len)` | 5,000 | 输出日志消息。 |
+| `return_data` | `(ptr, len)` | 5,000 | 设置执行结果的返回数据。 |
+| `abort` | `(ptr, len)` | 0 | 终止执行并输出错误消息。 |
+
+## Gas 模型
+
+ClawNetwork 使用**基于燃料的计量**。每次宿主函数调用扣除固定燃料费用，燃料耗尽时合约触发陷阱（trap）。
+
+### 燃料费用汇总
+
+| 操作 | 燃料费用 |
+|------|---------|
+| 存储读取 / 存在检查 / 删除 | 10,000 |
+| 存储写入 | 50,000 |
+| 代币转账 | 100,000 |
+| Agent 查询（信誉分 / 注册状态） | 10,000 |
+| 其他所有宿主调用 | 5,000 |
+
+### 限制
+
+| 限制项 | 值 |
+|--------|-----|
+| 每次调用默认燃料 | 10,000,000 (10M) |
+| 最大合约代码体积 | 512 KB |
+| 交易手续费 | 0.001 CLW（固定） |
+
+## 开发指南
+
+### 前置条件
+
+```bash
+# 安装 Wasm 编译目标
+rustup target add wasm32-unknown-unknown
+```
+
+### 最小合约示例
+
+```rust
+#![no_std]
+
+// 宿主函数声明
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn caller(out_ptr: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+}
+
+// 必须导出：内存分配器
+static mut HEAP_PTR: u32 = 1024 * 64; // 从 64KB 开始
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// 合约方法
+#[no_mangle]
+pub extern "C" fn init() {
+    let msg = b"contract initialized";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+#[no_mangle]
+pub extern "C" fn get_owner(_args_ptr: i32, _args_len: i32) {
+    let key = b"owner";
+    let mut buf = [0u8; 32];
+    let len = unsafe { storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32) };
+    if len > 0 {
+        unsafe { return_data(buf.as_ptr() as u32, len as u32) };
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn set_owner() {
+    let key = b"owner";
+    let mut owner = [0u8; 32];
+    unsafe { caller(owner.as_ptr() as u32) };
+    unsafe {
+        storage_write(
+            key.as_ptr() as u32,
+            key.len() as u32,
+            owner.as_ptr() as u32,
+            32,
+        )
+    };
+}
+```
+
+### 编译
+
+```bash
+cargo build --target wasm32-unknown-unknown --release
+```
+
+编译后的 `.wasm` 文件位于 `target/wasm32-unknown-unknown/release/your_contract.wasm`。
+
+### 部署
+
+```bash
+# 通过 sendTransaction 部署，TxType = 6
+curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "clw_sendTransaction",
+    "params": ["<hex-encoded-borsh-tx-with-ContractDeploy-payload>"]
+  }'
+```
+
+### 查询
+
+```bash
+# 获取合约信息
+curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "clw_getContractInfo",
+    "params": ["<contract-address-hex>"]
+  }'
+```
+
+## 示例：信誉门控托管合约
+
+一个仅允许已注册且信誉分达标的 Agent 存入资金的合约。
+
+```rust
+#![no_std]
+
+extern "C" {
+    fn caller(out_ptr: u32);
+    fn agent_is_registered(addr_ptr: u32) -> i32;
+    fn agent_get_score(addr_ptr: u32) -> i64;
+    fn value_lo() -> i64;
+    fn value_hi() -> i64;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn token_transfer(to_ptr: u32, amount_lo: i64, amount_hi: i64) -> i32;
+    fn return_data(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+}
+
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+const MIN_SCORE: i64 = 50;
+
+#[no_mangle]
+pub extern "C" fn deposit() {
+    let mut sender = [0u8; 32];
+    unsafe { caller(sender.as_ptr() as u32) };
+
+    // 门控：必须是已注册 Agent
+    let registered = unsafe { agent_is_registered(sender.as_ptr() as u32) };
+    if registered != 1 {
+        let msg = b"not a registered agent";
+        unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    }
+
+    // 门控：信誉分必须达标
+    let score = unsafe { agent_get_score(sender.as_ptr() as u32) };
+    if score < MIN_SCORE {
+        let msg = b"reputation too low";
+        unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    }
+
+    // 记录存款
+    let amount = unsafe { value_lo() } as u64;
+    let amount_bytes = amount.to_le_bytes();
+    unsafe {
+        storage_write(
+            sender.as_ptr() as u32, 32,
+            amount_bytes.as_ptr() as u32, 8,
+        );
+    }
+}
+```
+
+这种模式在通用链上不可能实现，除非额外部署身份和信誉预言机合约。在 ClawNetwork 上，只需一次宿主函数调用。
+
+## RPC 端点
+
+四个 RPC 方法支持合约交互：
+
+| 方法 | 参数 | 说明 |
+|------|------|------|
+| `clw_getContractInfo` | `[address]` | 获取合约元数据（创建者、代码哈希、部署高度）。 |
+| `clw_getContractCode` | `[address]` | 获取已部署合约的原始 Wasm 字节码。 |
+| `clw_getContractStorage` | `[address, key]` | 按键读取单个存储值。 |
+| `clw_callContractView` | `[address, method, args]` | 执行只读调用（不持久化状态变更）。 |
+
+### 示例：只读调用
+
+```bash
+curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "clw_callContractView",
+    "params": [
+      "CONTRACT_ADDRESS_HEX",
+      "get_owner",
+      ""
+    ]
+  }'
+```
+
+## 对比
+
+| 特性 | ClawNetwork | Ethereum | Solana | NEAR |
+|------|------------|----------|--------|------|
+| VM | Wasm (wasmer singlepass) | EVM | BPF/SBF | Wasm (wasmtime) |
+| 语言 | Rust | Solidity/Vyper | Rust/C | Rust/JS |
+| 节点体积 | ~17MB | ~50MB+ | ~1GB+ | ~100MB+ |
+| Agent API | 原生（2 个宿主函数） | 无（需预言机） | 无 | 无 |
+| Gas 模型 | 燃料（固定宿主调用费用） | 操作码级计量 | 计算单元 | Gas（权重） |
+| 终局性 | ~3 秒单块终局 | ~13 分钟（32 块） | ~0.4 秒 | ~1-2 秒 |
+| 最大代码体积 | 512KB | 24KB | 10MB (BPF) | 4MB |
