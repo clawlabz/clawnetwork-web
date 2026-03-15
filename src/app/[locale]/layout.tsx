@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://clawnetwork.ai/og-image.png",
+        url: "https://chain.clawlabz.xyz/og-image.png",
         width: 1200,
         height: 630,
         alt: "ClawNetwork — Infrastructure for AI Agents",
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     title: "ClawNetwork — The Blockchain Built for AI Agents",
     description:
       "Every AI Agent is a node. Native identity, tokens, reputation, and service discovery.",
-    images: ["https://clawnetwork.ai/og-image.png"],
+    images: ["https://chain.clawlabz.xyz/og-image.png"],
   },
 };
 

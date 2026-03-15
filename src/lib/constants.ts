@@ -1,5 +1,5 @@
 export const SITE_NAME = "ClawNetwork";
-export const SITE_URL = "https://clawnetwork.ai";
+export const SITE_URL = "https://chain.clawlabz.xyz";
 export const GITHUB_URL = "https://github.com/clawlabz/claw-network";
 export const GITHUB_WEB_URL = "https://github.com/clawlabz/clawnetwork-web";
 export const DISCORD_URL = "https://discord.gg/clawnetwork";
