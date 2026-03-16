@@ -36,8 +36,8 @@
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "在任何硬件上运行全节点。",
     "txTypes": "原生交易类型",
-    "txTypesValue": "6种",
-    "txTypesDesc": "Agent 身份、Token、信誉、服务。"
+    "txTypesValue": "9种",
+    "txTypesDesc": "Agent 身份、Token、信誉、服务、质押。"
   },
   "features": {
     "title": "为自主性而设计",
@@ -225,11 +225,11 @@
       },
       "consensus": {
         "title": "共识机制",
-        "content": "ClawNetwork 使用增强了 Agent 信誉分数的权益证明共识。\n\n验证者权重 = normalize(stake) * S + normalize(agent_score) * A\n\n冷启动期（少量 Agent）：S=70%, A=30%\n均衡期：S=40%, A=60%\n\n此设计确保活跃、可信的 Agent 对共识有更大影响力，同时通过经济质押维持抗女巫攻击能力。\n\n出块使用类 VRF 确定性提议者选举。最多 21 个活跃验证者，100 区块为一个 epoch。"
+        "content": "ClawNetwork 使用增强了 Agent 信誉分数的权益证明共识。\n\n验证者权重 = normalize(stake) * S + normalize(agent_score) * A\n\n冷启动期（少量 Agent）：S=70%, A=30%\n均衡期：S=40%, A=60%\n\n此设计确保活跃、可信的 Agent 对共识有更大影响力，同时通过经济质押维持抗女巫攻击能力。\n\n出块使用加权随机提议者选举，6 秒超时回退。最多 21 个活跃验证者，100 区块为一个 epoch。\n\n罚没机制：双签（equivocation）罚没 10% 质押 + 监禁 1 epoch。掉线超过 50% 罚没 1% + 移出活跃集。BFT 共识要求 ⌊2n/3⌋+1 签名实现单块终局 — 无需确认数。"
       },
       "tokenomics": {
         "title": "代币经济",
-        "content": "CLW 是原生代币，固定供应量 10 亿（1,000,000,000）枚。\n\n分配：\n- 40% 生态奖励（4 年归属）\n- 25% 质押和节点激励\n- 15% 战略合作伙伴\n- 10% 核心开发\n- 10% 公开销售\n\nGas 模型：每笔交易固定消耗 1M 基础单位（销毁）。随着网络使用增长，这种通缩机制会减少供应量。"
+        "content": "CLW 是原生代币，固定供应量 10 亿（1,000,000,000）枚。\n\n分配：\n- 40% 节点激励（10 年区块奖励释放）\n- 25% 生态基金（DAO 治理）\n- 15% 团队（1 年锁定 + 1 年线性释放）\n- 10% 早期贡献者（CLZ→CLW 1:1 迁移）\n- 10% 流动性储备\n\n区块奖励：从第 1 年 10 CLW/块递减至第 10 年+ 1 CLW/块，按共识权重分配给 21 个活跃验证者。\n\n手续费分配：50% 出块者、30% 燃烧（通缩）、20% 生态基金。最低手续费：0.001 CLW/笔。\n\n质押：最低 10,000 CLW 成为验证者。7 天解绑期（201,600 个区块）。双签罚没 10%，过度掉线罚没 1%。"
       },
       "roadmap": {
         "title": "路线图",
@@ -249,7 +249,7 @@
     "quickStart": "快速开始",
     "quickStartDesc": "5 分钟内运行你的第一个应用。无需复杂配置。",
     "apiReference": "API 参考",
-    "apiReferenceDesc": "全部 12 个 JSON-RPC 端点的完整规范和实时示例。",
+    "apiReferenceDesc": "全部 15 个 JSON-RPC 端点的完整规范和实时示例。",
     "sdkLibraries": "SDK 库",
     "sdkLibrariesDesc": "官方 TypeScript SDK，简化你的集成流程。",
     "learnMore": "了解更多",

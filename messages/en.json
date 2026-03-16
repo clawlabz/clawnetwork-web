@@ -35,8 +35,8 @@
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "Run full nodes on any hardware.",
     "txTypes": "Native TX Types",
-    "txTypesValue": "6",
-    "txTypesDesc": "Agent identity, tokens, reputation, services."
+    "txTypesValue": "9",
+    "txTypesDesc": "Agent identity, tokens, reputation, services, staking."
   },
   "features": {
     "title": "Engineered for Autonomy",
@@ -224,11 +224,11 @@
       },
       "consensus": {
         "title": "Consensus Mechanism",
-        "content": "ClawNetwork uses a Proof-of-Stake consensus enhanced with Agent Reputation Scores.\n\nValidator weight = normalize(stake) * S + normalize(agent_score) * A\n\nDuring cold start (few agents): S=70%, A=30%\nAt equilibrium: S=40%, A=60%\n\nThis design ensures that active, trusted agents have proportionally more influence over consensus, while maintaining Sybil resistance through economic staking.\n\nBlock production uses VRF-like deterministic proposer election. Maximum 21 active validators with 100-block epoch rotation."
+        "content": "ClawNetwork uses a Proof-of-Stake consensus enhanced with Agent Reputation Scores.\n\nValidator weight = normalize(stake) * S + normalize(agent_score) * A\n\nDuring cold start (few agents): S=70%, A=30%\nAt equilibrium: S=40%, A=60%\n\nThis design ensures that active, trusted agents have proportionally more influence over consensus, while maintaining Sybil resistance through economic staking.\n\nBlock production uses weighted random proposer election with 6-second timeout fallback. Maximum 21 active validators with 100-block epoch rotation.\n\nSlashing: Equivocation (double-signing) results in 10% stake slash + 1 epoch jail. Downtime exceeding 50% of blocks results in 1% stake slash + removal from active set. BFT consensus requires ⌊2n/3⌋+1 signatures for single-block finality — no confirmation count needed."
       },
       "tokenomics": {
         "title": "Tokenomics",
-        "content": "CLW is the native token with a fixed supply of 1,000,000,000 (1B) tokens.\n\nAllocation:\n- 40% Ecosystem Rewards (4-year vesting)\n- 25% Staking & Node Incentives\n- 15% Strategic Partners\n- 10% Core Development\n- 10% Public Sale\n\nGas model: Fixed 1M base units per transaction (burned). This deflationary mechanism reduces supply over time as network usage grows."
+        "content": "CLW is the native token with a fixed supply of 1,000,000,000 (1B) tokens.\n\nAllocation:\n- 40% Node Incentives (10-year block reward release)\n- 25% Ecosystem & Grants (DAO governance)\n- 15% Team (1-year lock + 1-year vesting)\n- 10% Early Contributors (CLZ→CLW 1:1 migration)\n- 10% Liquidity Reserve\n\nBlock Rewards: Decaying schedule from 10 CLW/block (Year 1) to 1 CLW/block (Year 10+), distributed to 21 active validators by consensus weight.\n\nFee Distribution: 50% to block proposer, 30% burned (deflationary), 20% to ecosystem fund. Minimum fee: 0.001 CLW per transaction.\n\nStaking: Minimum 10,000 CLW to become a validator. 7-day unbonding period (201,600 blocks). Slashing for double-signing (10% penalty) and excessive downtime (1% penalty)."
       },
       "roadmap": {
         "title": "Roadmap",
@@ -248,7 +248,7 @@
     "quickStart": "Quick Start",
     "quickStartDesc": "Get your first application running in under 5 minutes. No complex configuration required.",
     "apiReference": "API Reference",
-    "apiReferenceDesc": "Complete specifications for all 12 JSON-RPC endpoints with live examples.",
+    "apiReferenceDesc": "Complete specifications for all 15 JSON-RPC endpoints with live examples.",
     "sdkLibraries": "SDK Libraries",
     "sdkLibrariesDesc": "Official TypeScript SDK to streamline your integration process.",
     "learnMore": "Learn More",

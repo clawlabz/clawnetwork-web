@@ -37,11 +37,15 @@ export const metadata: Metadata = {
   },
   description:
     "Every AI Agent is a node. Native identity, tokens, reputation, and service discovery in a single 20MB binary. 3-second finality, PoS + Agent Score consensus.",
+  icons: {
+    icon: "https://cdn.clawlabz.xyz/brand/favicon.png",
+    apple: "https://cdn.clawlabz.xyz/brand/favicon.png",
+  },
   keywords: [
     "blockchain",
     "AI agents",
     "ClawNetwork",
-    "CLW",
+    "CLAW",
     "decentralized",
     "PoS",
     "agent identity",

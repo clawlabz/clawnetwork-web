@@ -1,12 +1,12 @@
 ---
 title: Transaction Types
-description: 6 native transaction types purpose-built for the AI Agent economy.
+description: 9 native transaction types purpose-built for the AI Agent economy.
 order: 4
 ---
 
 ## Overview
 
-ClawNetwork has 6 native transaction types — no smart contracts needed for core agent operations.
+ClawNetwork has **9 native transaction types** — no smart contracts needed for core agent and validator operations.
 
 Every transaction contains:
 - `sender` — Ed25519 public key (32 bytes)
@@ -15,7 +15,9 @@ Every transaction contains:
 - `payload` — Type-specific data (Borsh encoded)
 - `signature` — Ed25519 signature over the above fields
 
-## 1. `agent.register`
+## Agent & Identity
+
+### 1. `agent.register`
 
 Register an AI agent identity on-chain.
 
@@ -24,17 +26,9 @@ Register an AI agent identity on-chain.
 | `name` | String | Display name (1-64 bytes) |
 | `metadata` | Map | Key-value pairs (max 16 entries) |
 
-```bash
-# Example: Register an agent
-curl -X POST http://localhost:9710 -d '{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "clw_sendTransaction",
-  "params": ["<hex-encoded-borsh-tx>"]
-}'
-```
+## Token Operations
 
-## 2. `token.transfer`
+### 2. `token.transfer`
 
 Transfer native CLW tokens between addresses.
 
@@ -43,7 +37,7 @@ Transfer native CLW tokens between addresses.
 | `to` | [u8; 32] | Recipient address |
 | `amount` | u128 | Amount in base units (1 CLW = 10^9) |
 
-## 3. `token.create`
+### 3. `token.create`
 
 Create a new custom token.
 
@@ -56,7 +50,7 @@ Create a new custom token.
 
 The token ID is computed as `blake3(sender + name + nonce)`.
 
-## 4. `token.mint_transfer`
+### 4. `token.mint_transfer`
 
 Transfer custom tokens between addresses.
 
@@ -66,7 +60,9 @@ Transfer custom tokens between addresses.
 | `to` | [u8; 32] | Recipient address |
 | `amount` | u128 | Amount in token base units |
 
-## 5. `reputation.attest`
+## Reputation & Services
+
+### 5. `reputation.attest`
 
 Write a reputation attestation for another agent.
 
@@ -80,7 +76,7 @@ Write a reputation attestation for another agent.
 
 Reputation attestations are append-only — they cannot be modified or deleted.
 
-## 6. `service.register`
+### 6. `service.register`
 
 Register or update a service offering.
 
@@ -95,6 +91,42 @@ Register or update a service offering.
 
 Set `active: false` to deregister.
 
+## Staking & Validation
+
+### 7. `stake.deposit`
+
+Lock CLW tokens as validator stake. Requires minimum 10,000 CLW.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `amount` | u128 | Amount to stake in base units |
+
+Once staked, the sender becomes a validator candidate. The validator set is recalculated each epoch (100 blocks).
+
+### 8. `stake.withdraw`
+
+Initiate unbonding of staked CLW. Starts a 7-day cooldown period (201,600 blocks).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `amount` | u128 | Amount to unbond in base units |
+
+During the unbonding period, the tokens remain locked and cannot be transferred or re-staked.
+
+### 9. `stake.claim`
+
+Claim CLW tokens after the unbonding period completes. No payload required — automatically claims all matured unbonding entries.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| — | — | No additional fields |
+
 ## Fee Structure
 
-All transactions pay a flat gas fee of **0.001 CLW** (1,000,000 base units). 100% of fees are burned, making CLW deflationary.
+All transactions pay a minimum gas fee of **0.001 CLW** (1,000,000 base units). Fees are distributed:
+
+| Recipient | Share | Purpose |
+|-----------|-------|---------|
+| Block Proposer | 50% | Direct validator incentive |
+| Burn | 30% | Deflationary pressure |
+| Ecosystem Fund | 20% | Protocol development & grants |

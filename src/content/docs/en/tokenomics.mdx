@@ -14,13 +14,13 @@ order: 6
 | Total Supply | 1,000,000,000 (1 billion) |
 | Decimals | 9 |
 | Minimum Fee | 0.001 CLW |
-| Fee Model | 100% burned (deflationary) |
+| Fee Model | 50% to proposer, 30% burned, 20% ecosystem fund |
 
 ## Distribution
 
 | Allocation | Percentage | Amount | Vesting |
 |-----------|-----------|--------|---------|
-| Node Incentives | 40% | 400M | 10-year linear release |
+| Node Incentives | 40% | 400M | 10-year block reward release |
 | Ecosystem & Grants | 25% | 250M | DAO governance (initially multi-sig) |
 | Team (ClawLabz) | 15% | 150M | 1-year lock + 1-year linear |
 | Early Contributors | 10% | 100M | CLZ→CLW 1:1 migration |
@@ -28,21 +28,64 @@ order: 6
 
 ## Block Rewards
 
-Validators earn CLW from the Node Incentives pool:
-- **Year 1**: ~40M CLW distributed
-- Emission decreases annually
-- 10-year total distribution of 400M CLW
+Validators earn CLW from the 400M Node Incentives pool via a **decaying emission schedule**:
 
-## Fee Burning
+| Year | Reward per Block | Annual Emission (~10.5M blocks/yr) |
+|------|-----------------|-----------------------------------|
+| 1 | 10 CLW | ~105M CLW |
+| 2 | 8 CLW | ~84M CLW |
+| 3 | 6 CLW | ~63M CLW |
+| 4 | 4 CLW | ~42M CLW |
+| 5–9 | 2 CLW | ~21M CLW/yr |
+| 10+ | 1 CLW | ~10.5M CLW/yr |
 
-Every transaction burns its gas fee (0.001 CLW minimum). This creates deflationary pressure as network usage grows.
+Block rewards are distributed proportionally to all 21 active validators based on their consensus weight. Once the Node Incentives pool is exhausted, validators earn solely from transaction fees.
+
+## Fee Distribution
+
+Every transaction pays a minimum fee of **0.001 CLW** (1,000,000 base units). Fees are split:
+
+| Recipient | Share | Purpose |
+|-----------|-------|---------|
+| Block Proposer | 50% | Direct validator incentive |
+| Burn | 30% | Deflationary pressure |
+| Ecosystem Fund | 20% | Protocol development & grants |
+
+This model balances validator incentives with long-term token scarcity.
+
+## Staking
+
+| Parameter | Value |
+|-----------|-------|
+| Minimum Stake | 10,000 CLW |
+| Unbonding Period | 7 days (201,600 blocks) |
+| Max Validators | 21 |
+| Epoch Length | 100 blocks (~5 minutes) |
+
+### Staking Transactions
+
+- **`stake.deposit`** — Lock CLW as validator stake
+- **`stake.withdraw`** — Initiate unbonding (7-day cooldown)
+- **`stake.claim`** — Claim CLW after unbonding completes
+
+### Slashing
+
+Validators face penalties for misbehavior:
+
+| Offense | Penalty | Additional |
+|---------|---------|------------|
+| Double signing (equivocation) | 10% of stake slashed | Jailed for 1 epoch |
+| Downtime (>50% missed blocks) | 1% of stake slashed | Removed from active set |
+
+Slashed tokens are burned permanently.
 
 ## Economic Flywheel
 
 ```
-More agents → more transactions → more fees burned
-  → CLW becomes scarcer → higher incentive to stake
-  → more validators → stronger network → more agents
+More agents → more transactions → more fees
+  → 50% rewards validators → stronger incentive to stake
+  → 30% burned → CLW becomes scarcer
+  → 20% funds ecosystem → more development → more agents
 ```
 
 ## CLW Utility
