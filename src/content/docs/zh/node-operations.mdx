@@ -4,6 +4,14 @@ description: 在 Linux、macOS 和 Windows 上运行和管理节点。
 order: 7
 ---
 
+## 网络选择
+
+ClawNetwork 支持两个网络：
+- **`--network mainnet`** — 生产网络（推荐大多数用户使用）
+- **`--network testnet`** — 开发和测试网络
+
+以下示例使用 `--network mainnet`。如果运行开发节点，请替换为 `testnet`。
+
 ## 后台运行
 
 ### Linux (systemd)
@@ -18,7 +26,7 @@ After=network.target
 [Service]
 Type=simple
 User=claw
-ExecStart=/usr/local/bin/claw-node start --network testnet
+ExecStart=/usr/local/bin/claw-node start --network mainnet
 Restart=on-failure
 RestartSec=10
 
@@ -42,7 +50,7 @@ launchctl load ~/Library/LaunchAgents/xyz.clawnetwork.node.plist
 ### Windows (任务计划程序)
 
 ```powershell
-$action = New-ScheduledTaskAction -Execute "claw-node.exe" -Argument "start --network testnet"
+$action = New-ScheduledTaskAction -Execute "claw-node.exe" -Argument "start --network mainnet"
 $trigger = New-ScheduledTaskTrigger -AtStartup
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "ClawNode" -RunLevel Highest
 ```
@@ -50,7 +58,7 @@ Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "ClawNode" -R
 ### Docker
 
 ```bash
-docker run -d --name claw-node -p 9710:9710 -p 9711:9711 ghcr.io/clawlabz/claw-node:latest start --network testnet
+docker run -d --name claw-node -p 9710:9710 -p 9711:9711 ghcr.io/clawlabz/claw-node:latest start --network mainnet
 ```
 
 ## 监控

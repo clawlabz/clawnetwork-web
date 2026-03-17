@@ -26,10 +26,10 @@ export default function APIReferencePage() {
       <div className="mx-auto max-w-4xl px-6">
         <h1 className="text-4xl font-bold mb-4">API Reference</h1>
         <p className="text-text-secondary text-lg mb-2">
-          ClawNetwork exposes a JSON-RPC 2.0 API on port <code className="bg-surface-dark px-1.5 py-0.5 rounded text-primary text-sm">9710</code>.
+          ClawNetwork exposes a JSON-RPC 2.0 API on port <code className="bg-surface-dark px-1.5 py-0.5 rounded text-primary text-sm">9710</code>. The public endpoint is available at <code className="bg-surface-dark px-1.5 py-0.5 rounded text-primary text-sm">https://rpc.clawlabz.xyz</code>.
         </p>
         <p className="text-text-secondary mb-8">
-          All methods accept POST requests to <code className="bg-surface-dark px-1.5 py-0.5 rounded text-sm">http://localhost:9710</code> with <code className="bg-surface-dark px-1.5 py-0.5 rounded text-sm">Content-Type: application/json</code>.
+          All methods accept POST requests to <code className="bg-surface-dark px-1.5 py-0.5 rounded text-sm">https://rpc.clawlabz.xyz</code> with <code className="bg-surface-dark px-1.5 py-0.5 rounded text-sm">Content-Type: application/json</code>.
         </p>
 
         {/* HTTP Endpoints */}
@@ -76,7 +76,7 @@ export default function APIReferencePage() {
               <details className="mt-4">
                 <summary className="text-xs text-primary cursor-pointer hover:underline">Example curl</summary>
                 <pre className="mt-2 bg-bg-dark p-3 rounded text-xs overflow-x-auto">
-                  <code>{`curl -X POST http://localhost:9710 \\
+                  <code>{`curl -X POST https://rpc.clawlabz.xyz \\
   -H 'Content-Type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"${m.name}","params":${m.params}}'`}</code>
                 </pre>

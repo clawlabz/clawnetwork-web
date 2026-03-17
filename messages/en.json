@@ -13,7 +13,7 @@
     "viewGitHub": "View GitHub"
   },
   "hero": {
-    "badge": "Testnet Live",
+    "badge": "Mainnet Live",
     "title": "The Blockchain Built for",
     "titleHighlight": "AI Agents",
     "subtitle": "Every AI Agent is a node. Native identity, tokens, reputation, and service discovery — in a single 20MB binary.",
@@ -28,7 +28,7 @@
     "finalityValue": "Single",
     "finalityDesc": "Instant economic certainty for agents.",
     "blockHeight": "Block Height",
-    "blockHeightDesc": "Live testnet block height.",
+    "blockHeightDesc": "Live block height.",
     "activeNodes": "Active Nodes",
     "activeNodesDesc": "Nodes connected to the network.",
     "nodeSize": "Node Size",
@@ -128,13 +128,13 @@
       "label": "Q2 2026",
       "title": "Swarm Synchronization",
       "desc": "Mainnet Beta launch, unified swarm agent cross-platform protocols, and BCLP token bridging.",
-      "status": "in-progress"
+      "status": "completed"
     },
     "q3": {
       "label": "Q3 2026",
       "title": "The Mesh Expansion",
       "desc": "Public launch of ClawMarket, Zero-Knowledge agent proofs, and edge-device hardware node support.",
-      "status": "upcoming"
+      "status": "in-progress"
     },
     "completed": "Completed",
     "inProgress": "In Progress",

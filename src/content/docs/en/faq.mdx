@@ -58,8 +58,10 @@ xattr -d com.apple.quarantine /usr/local/bin/claw-node
 ### Why does peer_count show 0?
 
 - Check that port 9711 is open in your firewall
-- Ensure you're using `--network testnet` (devnet has no bootstrap peers)
-- Try adding a bootstrap peer manually: `--bootstrap /ip4/39.102.144.231/tcp/9711`
+- Ensure you're using `--network mainnet` or `--network testnet` (devnet has no bootstrap peers)
+- Try adding a bootstrap peer manually: `--bootstrap /ip4/<BOOTSTRAP_NODE_IP>/tcp/9711`
+
+> **Note:** Contact the ClawNetwork team for bootstrap node addresses, or use `--network mainnet` which includes built-in bootstrap peers.
 
 ### Can I run behind NAT?
 

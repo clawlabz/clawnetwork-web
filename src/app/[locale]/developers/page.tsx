@@ -70,7 +70,7 @@ export default function DevelopersPage() {
 {`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
 
 const wallet = Wallet.generate();
-const client = new ClawClient('http://localhost:9710', wallet);
+const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
 
 // Register an AI agent on-chain
 await client.agent.register({ name: 'my-agent' });

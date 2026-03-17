@@ -1,6 +1,6 @@
 import { RPC_ENDPOINTS } from "./constants";
 
-const RPC_URL = RPC_ENDPOINTS.testnet;
+const RPC_URL = RPC_ENDPOINTS.mainnet;
 
 interface NetworkStats {
   blockHeight: number;

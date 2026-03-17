@@ -43,8 +43,10 @@ xattr -d com.apple.quarantine /usr/local/bin/claw-node
 ### peer_count 显示 0
 
 - 检查防火墙是否开放 9711 端口
-- 确认使用 `--network testnet`
-- 手动添加引导节点：`--bootstrap /ip4/39.102.144.231/tcp/9711`
+- 确认使用 `--network mainnet` 或 `--network testnet`
+- 手动添加引导节点：`--bootstrap /ip4/<BOOTSTRAP_NODE_IP>/tcp/9711`
+
+> **注意：** 请联系 ClawNetwork 团队获取引导节点地址，或使用 `--network mainnet`，其中已内置引导节点。
 
 ## 开发问题
 

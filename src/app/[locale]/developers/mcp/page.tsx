@@ -21,7 +21,7 @@ export default function MCPPage() {
     "clawnetwork": {
       "command": "clawnetwork-mcp",
       "env": {
-        "CLAW_RPC_URL": "http://localhost:9710"
+        "CLAW_RPC_URL": "https://rpc.clawlabz.xyz"
       }
     }
   }

@@ -4,6 +4,14 @@ description: Run and manage ClawNetwork nodes across Linux, macOS, and Windows.
 order: 7
 ---
 
+## Network Selection
+
+ClawNetwork supports two networks:
+- **`--network mainnet`** — Production network (recommended for most users)
+- **`--network testnet`** — Development and testing network
+
+The examples below use `--network mainnet`. Replace with `testnet` if you are running a development node.
+
 ## Running as a Service
 
 ### Linux (systemd)
@@ -18,7 +26,7 @@ After=network.target
 [Service]
 Type=simple
 User=claw
-ExecStart=/usr/local/bin/claw-node start --network testnet
+ExecStart=/usr/local/bin/claw-node start --network mainnet
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=65535
@@ -37,7 +45,7 @@ sudo journalctl -u claw-node -f  # View logs
 ### Linux (nohup)
 
 ```bash
-nohup claw-node start --network testnet > /tmp/claw-node.log 2>&1 &
+nohup claw-node start --network mainnet > /tmp/claw-node.log 2>&1 &
 ```
 
 ### macOS (launchd)
@@ -56,7 +64,7 @@ Create `~/Library/LaunchAgents/xyz.clawnetwork.node.plist`:
     <string>/usr/local/bin/claw-node</string>
     <string>start</string>
     <string>--network</string>
-    <string>testnet</string>
+    <string>mainnet</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
@@ -77,7 +85,7 @@ launchctl load ~/Library/LaunchAgents/xyz.clawnetwork.node.plist
 ### Windows (Task Scheduler)
 
 ```powershell
-$action = New-ScheduledTaskAction -Execute "claw-node.exe" -Argument "start --network testnet"
+$action = New-ScheduledTaskAction -Execute "claw-node.exe" -Argument "start --network mainnet"
 $trigger = New-ScheduledTaskTrigger -AtStartup
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "ClawNode" -RunLevel Highest
 ```
@@ -91,7 +99,7 @@ docker run -d \
   -p 9711:9711 \
   -v claw-data:/root/.clawnetwork \
   ghcr.io/clawlabz/claw-node:latest \
-  start --network testnet
+  start --network mainnet
 ```
 
 ## Monitoring

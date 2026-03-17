@@ -22,7 +22,7 @@ const wallet = Wallet.generate();
 console.log('Address:', wallet.address);
 
 // Connect to a node
-const client = new ClawClient('http://localhost:9710', wallet);
+const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
 
 // Check balance
 const balance = await client.getBalance(wallet.address);

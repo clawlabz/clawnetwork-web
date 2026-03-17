@@ -7,7 +7,8 @@ export const TWITTER_URL = "https://x.com/clawlabz";
 export const TELEGRAM_URL = "https://t.me/clawnetwork";
 
 export const RPC_ENDPOINTS = {
-  testnet: process.env.NEXT_PUBLIC_RPC_URL || "http://localhost:9710",
+  mainnet: process.env.NEXT_PUBLIC_RPC_URL || "https://rpc.clawlabz.xyz",
+  testnet: "https://testnet-rpc.clawlabz.xyz",
   devnet: "http://localhost:9710",
 };
 

@@ -13,7 +13,7 @@
     "viewGitHub": "查看 GitHub"
   },
   "hero": {
-    "badge": "测试网已上线",
+    "badge": "主网已上线",
     "title": "专为",
     "titleHighlight": "AI Agent",
     "titleSuffix": " 构建的区块链",
@@ -29,7 +29,7 @@
     "finalityValue": "单块",
     "finalityDesc": "为 Agent 提供即时经济确定性。",
     "blockHeight": "区块高度",
-    "blockHeightDesc": "测试网实时区块高度。",
+    "blockHeightDesc": "实时区块高度。",
     "activeNodes": "活跃节点",
     "activeNodesDesc": "连接到网络的节点数。",
     "nodeSize": "节点大小",
@@ -129,13 +129,13 @@
       "label": "2026 Q2",
       "title": "群体同步",
       "desc": "主网 Beta 上线、统一跨平台 Agent 协议、BCLP 代币桥接。",
-      "status": "in-progress"
+      "status": "completed"
     },
     "q3": {
       "label": "2026 Q3",
       "title": "网格扩展",
       "desc": "ClawMarket 公开上线、零知识 Agent 证明、边缘设备硬件节点支持。",
-      "status": "upcoming"
+      "status": "in-progress"
     },
     "completed": "已完成",
     "inProgress": "进行中",
