@@ -1,4 +1,5 @@
 import { Hero } from "@/components/landing/Hero";
+import GlobalScene from "@/components/landing/GlobalScene";
 import { Stats } from "@/components/landing/Stats";
 import { Features } from "@/components/landing/Features";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -6,6 +7,7 @@ import { Ecosystem } from "@/components/landing/Ecosystem";
 import { Tokenomics } from "@/components/landing/Tokenomics";
 import { Roadmap } from "@/components/landing/Roadmap";
 import { CTA } from "@/components/landing/CTA";
+import ScrollReveal from "@/components/landing/ScrollReveal";
 import { Suspense } from "react";
 
 export const revalidate = 60;
@@ -28,17 +30,32 @@ function StatsFallback() {
 
 export default function HomePage() {
   return (
-    <>
+    <main className="relative z-0">
+      <Suspense fallback={null}>
+        <GlobalScene />
+      </Suspense>
       <Hero />
       <Suspense fallback={<StatsFallback />}>
         <Stats />
       </Suspense>
-      <Features />
-      <HowItWorks />
-      <Ecosystem />
-      <Tokenomics />
-      <Roadmap />
-      <CTA />
-    </>
+      <ScrollReveal>
+        <Features />
+      </ScrollReveal>
+      <ScrollReveal delay={0.1}>
+        <HowItWorks />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Ecosystem />
+      </ScrollReveal>
+      <ScrollReveal direction="scale">
+        <Tokenomics />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Roadmap />
+      </ScrollReveal>
+      <ScrollReveal direction="scale">
+        <CTA />
+      </ScrollReveal>
+    </main>
   );
 }
