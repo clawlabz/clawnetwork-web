@@ -41,9 +41,9 @@ export function Tokenomics() {
           <div className="relative">
             <svg width="240" height="240" viewBox="0 0 240 240">
               {/* Background circle */}
-              <circle cx="120" cy="120" r="100" fill="none" stroke="#1d3d3f" strokeWidth="24" />
+              <circle cx="120" cy="120" r="100" fill="none" stroke="#2d231a" strokeWidth="24" />
               {/* Segments */}
-              <circle cx="120" cy="120" r="100" fill="none" stroke="#00eeff" strokeWidth="24"
+              <circle cx="120" cy="120" r="100" fill="none" stroke="#F96706" strokeWidth="24"
                 strokeDasharray={`${40 * 6.28} ${60 * 6.28}`} strokeDashoffset="0" transform="rotate(-90 120 120)" />
               <circle cx="120" cy="120" r="100" fill="none" stroke="#a855f7" strokeWidth="24"
                 strokeDasharray={`${25 * 6.28} ${75 * 6.28}`} strokeDashoffset={`${-40 * 6.28}`} transform="rotate(-90 120 120)" />

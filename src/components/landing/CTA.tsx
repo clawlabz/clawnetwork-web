@@ -16,7 +16,7 @@ export function CTA() {
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             href="/docs/quickstart"
-            className="bg-primary text-bg-dark px-8 py-4 text-base font-bold rounded-xl shadow-[0_0_20px_rgba(0,238,255,0.3)] hover:scale-105 transition-transform"
+            className="bg-primary text-bg-dark px-8 py-4 text-base font-bold rounded-xl shadow-[0_0_20px_rgba(249,103,6,0.3)] hover:scale-105 transition-transform"
           >
             {t("launchDashboard")}
           </Link>
