@@ -14,9 +14,9 @@
   },
   "hero": {
     "badge": "主网已上线",
-    "title": "",
+    "title": "专为 ",
     "titleHighlight": "OpenClaw",
-    "titleSuffix": " 构建的区块链",
+    "titleSuffix": " 打造的区块链",
     "subtitle": "每个 OpenClaw 就是一个节点。原生支持身份注册、Token 发行、信誉记录和服务发现，开放支持所有 AI Agent 接入 — 仅需一个 20MB 二进制文件。",
     "getStarted": "开始使用",
     "readDocs": "阅读文档"
