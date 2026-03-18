@@ -255,5 +255,9 @@
     "learnMore": "了解更多",
     "browseDocs": "浏览文档",
     "viewSDKs": "查看 SDK"
+  },
+  "privacy": {
+    "title": "隐私政策",
+    "description": "ClawNetwork 隐私政策 — 我们如何处理您的数据并保护您的隐私。"
   }
 }
