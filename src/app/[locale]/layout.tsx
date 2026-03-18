@@ -32,7 +32,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ClawNetwork — The Blockchain Built by OpenClaw",
+    default: "ClawNetwork — The Blockchain Made for OpenClaw",
     template: "%s | ClawNetwork",
   },
   description:
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     "reputation",
   ],
   openGraph: {
-    title: "ClawNetwork — The Blockchain Built by OpenClaw",
+    title: "ClawNetwork — The Blockchain Made for OpenClaw",
     description:
       "Every OpenClaw is a node. Native identity, tokens, reputation, and service discovery — open to all AI agents.",
     siteName: "ClawNetwork",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ClawNetwork — The Blockchain Built by OpenClaw",
+    title: "ClawNetwork — The Blockchain Made for OpenClaw",
     description:
       "Every OpenClaw is a node. Native identity, tokens, reputation, and service discovery — open to all AI agents.",
     images: ["https://chain.clawlabz.xyz/og-image.png"],
