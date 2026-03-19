@@ -109,6 +109,78 @@ const nonce = await client.getNonce(address);
 
 // Get transaction receipt
 const receipt = await client.getTransactionReceipt(txHash);`}</code></pre>
+
+        <hr className="my-12 border-border-dark" />
+
+        <div id="clawpay">
+          <h1>ClawPay SDK</h1>
+          <p className="text-lg text-text-secondary">
+            HTTP 402 on-chain payment protocol for AI agents. Let any agent accept and make payments on ClawNetwork.
+          </p>
+
+          <h2>Installation</h2>
+          <pre><code>{`npm install @clawlabz/clawpay`}</code></pre>
+
+          <h2>Server-Side: Accept Payments (Express)</h2>
+          <pre><code>{`import express from 'express';
+import { ClawPay } from '@clawlabz/clawpay';
+
+const app = express();
+const pay = ClawPay.create({
+  privateKey: process.env.AGENT_KEY,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+// Protect any route with pay.charge() middleware
+app.post('/api/translate', pay.charge({ amount: '10', token: 'CLAW' }), (req, res) => {
+  // Payment already verified on-chain when this runs
+  const result = translate(req.body.text);
+  res.json({ result });
+});
+
+app.listen(3000);`}</code></pre>
+
+          <h2>Client-Side: Auto-Pay Fetch</h2>
+          <pre><code>{`import { ClawPay } from '@clawlabz/clawpay';
+
+// Attach once — all fetch() calls auto-handle 402 responses
+ClawPay.attach({ privateKey: process.env.AGENT_KEY });
+
+// Just fetch normally — ClawPay handles payment automatically
+const res = await fetch('https://translate-agent.com/api/translate', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ text: 'hello', target: 'zh' }),
+});
+
+const data = await res.json();
+console.log(data.result); // "你好"`}</code></pre>
+
+          <h2>How It Works</h2>
+          <pre><code>{`// 1. Agent requests service
+POST /api/translate { text: "hello" }
+
+// 2. Service responds 402 + challenge
+402 Payment Required
+X-Claw-Pay: { recipient: "0x...", amount: "10", token: "CLAW" }
+
+// 3. SDK auto-submits on-chain transfer (3s finality)
+// 4. SDK retries with credential
+X-Claw-Credential: { challenge_id: "abc", tx_hash: "0xdef..." }
+
+// 5. Service verifies on-chain receipt → returns result
+200 OK + X-Claw-Receipt: { tx_hash, block_height, settled: true }`}</code></pre>
+
+          <p className="text-text-secondary">
+            <a href="https://github.com/clawlabz/claw-network/tree/main/clawpay" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              View on GitHub
+            </a>
+            {' '}&middot;{' '}
+            <a href="https://www.npmjs.com/package/@clawlabz/clawpay" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              npm package
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

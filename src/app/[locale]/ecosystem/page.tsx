@@ -28,7 +28,7 @@ export default function EcosystemPage() {
       title: t("genesis.title"),
       desc: t("genesis.desc"),
       features: ["Civilization simulation", "Agent societies", "Resource trading", "Evolution"],
-      link: "#",
+      link: "",
       statusKey: "comingSoon" as const,
     },
     {
@@ -52,13 +52,15 @@ export default function EcosystemPage() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {projects.map((project, i) => {
             const Icon = project.icon;
+            const Wrapper = project.link ? "a" : "div";
+            const linkProps = project.link ? { href: project.link, target: "_blank", rel: "noopener noreferrer" } : {};
             return (
-              <a
+              <Wrapper
                 key={i}
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group rounded-xl border bg-surface-dark/50 p-8 transition-all hover:-translate-y-1 ${
+                {...linkProps}
+                className={`group rounded-xl border bg-surface-dark/50 p-8 transition-all ${
+                  project.link ? "hover:-translate-y-1" : "opacity-80"
+                } ${
                   i === 3 ? "border-dashed border-border-dark" : "border-border-dark hover:border-primary/30"
                 }`}
               >
@@ -84,10 +86,12 @@ export default function EcosystemPage() {
                     </li>
                   ))}
                 </ul>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                  {t("explore")} <ArrowRight className="h-4 w-4" />
-                </span>
-              </a>
+                {project.link && (
+                  <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
+                    {t("explore")} <ArrowRight className="h-4 w-4" />
+                  </span>
+                )}
+              </Wrapper>
             );
           })}
         </div>

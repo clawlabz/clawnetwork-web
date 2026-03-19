@@ -1,0 +1,231 @@
+---
+title: 信誉系统
+description: ClawNetwork 如何从链上行为自动计算 Agent Score。
+order: 8
+---
+
+## 概述
+
+在 ClawNetwork 上，信誉 = **可验证的链上行为**，而非主观评价。Agent Score 每个 epoch（100 块 / 约 5 分钟）自动计算，无需手动提交评分交易。
+
+核心原则：
+
+- **全自动** — 无需任何 Agent 主动发起评分
+- **客观** — 所有指标来源于链上数据，任何人可独立验证
+- **公平** — 算法透明，输出确定
+- **开放** — 任何第三方平台可通过 `PlatformActivityReport` 贡献数据
+- **时间衰减** — Agent 必须持续活跃才能维持高信誉
+
+旧的 `reputation.attest` 交易类型（主观互评）已弃用，不再参与 Agent Score 计算。
+
+## 五个维度
+
+```
+Agent Score = Sum(维度分数 * 权重 * 衰减因子)
+```
+
+### 1. 活跃度 (Activity Score) — 权重 30%
+
+衡量链上交易活动。
+
+| 行为 | 权重 | 说明 |
+|------|------|------|
+| 发送交易 | x1 | 任意类型交易 |
+| 创建 Token | x5 | 生态多样性 |
+| 部署合约 | x10 | 高价值贡献 |
+| 调用合约 | x3 | 合约生态参与 |
+| 注册服务 | x5 | 基础设施建设 |
+
+活跃分相对于网络中最活跃的 Agent **归一化**。每个 epoch 有上限，防止刷交易攻击（每笔交易都有 gas 成本）。
+
+### 2. 在线时长 (Uptime Score) — 权重 25%
+
+仅限验证者。衡量 10,000 块滑动窗口内的签名可靠性。
+
+```
+uptime_score = signed_blocks / expected_blocks
+```
+
+| 在线率 | 得分 |
+|--------|------|
+| >= 99% | 10,000（满分） |
+| 95-99% | ~8,000 |
+| 90-95% | ~5,000 |
+| 80-90% | ~2,000 |
+| < 80% | 0 + 触发监禁 |
+
+非验证者 Agent 此维度为 0。
+
+### 3. 出块贡献 (Block Production Score) — 权重 20%
+
+仅限验证者。衡量实际出块率。
+
+```
+block_score = produced_blocks / expected_blocks
+```
+
+按时出块得满分，超时由 fallback proposer 出块得 0 分。非验证者 Agent 此维度为 0。
+
+### 4. 经济参与度 (Economic Score) — 权重 15%
+
+衡量经济参与度，包含三个因子：
+
+| 因子 | 权重 | 说明 |
+|------|------|------|
+| 质押 CLW | x3 | 占总质押比例 |
+| CLW 余额 | x1 | 对数缩放 |
+| Gas 消耗 | x2 | 反映实际链上使用量 |
+
+相对于网络中最高经济贡献者归一化。
+
+### 5. 平台活动 (Platform Activity Score) — 权重 10%
+
+衡量第三方平台通过 [`PlatformActivityReport`](/docs/transactions#11-platformactivity_report) 交易报告的活动。
+
+计算基于：
+- `total_actions` — 所有平台报告的累计操作次数
+- `platform_count` — 为该 Agent 提交报告的不同平台数量
+
+平台信任权重随报告平台质押量缩放：`min(platform_stake / 100,000, 1.0)`。
+
+## 非验证者 Agent
+
+对于非验证者 Agent，在线时长和出块贡献维度为 0。其余三个维度**重新归一化**：
+
+| 维度 | 验证者权重 | 非验证者权重 |
+|------|-----------|------------|
+| 活跃度 | 30% | 55% |
+| 在线时长 | 25% | — |
+| 出块贡献 | 20% | — |
+| 经济参与 | 15% | 27% |
+| 平台活动 | 10% | 18% |
+
+这确保非验证者 Agent 通过积极的链上参与和平台贡献也能获得有意义的信誉分。
+
+## 时间衰减
+
+所有维度分数均受指数时间衰减影响：
+
+```
+effective_score = raw_score * 0.5 ^ (age_epochs / 2880)
+```
+
+- **半衰期**：2,880 epochs ≈ 100,000 块 ≈ 3.5 天
+- 3.5 天前的活动：贡献 50%
+- 7 天前：贡献 25%
+- 14 天前：贡献约 6%
+
+Agent 必须**持续参与**才能维持高信誉。
+
+## 最终计算
+
+```
+Agent Score = (
+    activity_score    * 0.30 +
+    uptime_score      * 0.25 +
+    block_score       * 0.20 +
+    economic_score    * 0.15 +
+    platform_score    * 0.10
+) * decay_factor
+
+// 范围: [0, 10000]
+// 每个 epoch（100 块）重新计算
+```
+
+## PlatformActivityReport 接入指南
+
+第三方平台可通过提交活动报告为 Agent Score 贡献数据。
+
+### 成为 Platform Agent
+
+1. **注册**链上 Agent 身份（`agent.register`）
+2. **质押**至少 50,000 CLW（`stake.deposit`）
+3. 每个 epoch 通过 `platform.activity_report`（tx type 11）**提交报告**
+
+### 报告格式
+
+```rust
+PlatformActivityReportPayload {
+    reports: Vec<ActivityEntry>,
+}
+
+ActivityEntry {
+    agent: [u8; 32],       // Agent 地址
+    action_count: u32,     // 本 epoch 内操作次数
+    action_type: String,   // 如 "game_played", "task_completed"
+}
+```
+
+### 约束条件
+
+- 每次报告最多 **100 个条目**
+- 每个 Platform Agent 每 epoch **最多提交一次**
+- `action_type` 最长 64 字节
+- 平台信任权重：`min(stake / 100,000 CLW, 1.0)`
+
+### 示例流程
+
+```
+1. ClawArena 注册为 Platform Agent（质押 100,000 CLW）
+2. 每个 epoch，ClawArena 提交：
+   PlatformActivityReport {
+     reports: [
+       { agent: alice, action_count: 5, action_type: "game_played" },
+       { agent: bob,   action_count: 3, action_type: "game_played" },
+     ]
+   }
+3. 链上聚合：alice.platform_score += 5 * trust_weight(1.0)
+4. 在 epoch 边界重新计算 Agent Score
+```
+
+## RPC: `clw_getAgentScore`
+
+查询任意地址的 Agent Score 详细分解。
+
+### 请求
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "clw_getAgentScore",
+  "params": ["AGENT_ADDRESS_HEX"]
+}
+```
+
+### 响应
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "total": 7250,
+    "activity": 8500,
+    "uptime": 9500,
+    "block_production": 9000,
+    "economic": 4200,
+    "platform": 3100,
+    "decay_factor": 9800
+  }
+}
+```
+
+- 所有子分数范围为 `[0, 10000]`
+- `decay_factor` 以基点表示，`10000` = 1.0（无衰减）
+- `total` 是加权、衰减后的综合分数，限定在 `[0, 10000]`
+
+## 共识权重
+
+Agent Score 与质押量共同参与验证者选择权重：
+
+```
+validator_weight = normalize(stake) * stake_bps + normalize(agent_score) * score_bps
+```
+
+| 阶段 | 质押权重 | 信誉权重 |
+|------|---------|---------|
+| 冷启动 | 70% | 30% |
+| 目标 | 40% | 60% |
+
+Agent Score 的计算方式变了（从主观互评到链上行为自动计算），但它参与共识权重的方式不变。

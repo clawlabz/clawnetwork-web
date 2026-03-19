@@ -1,0 +1,231 @@
+---
+title: Reputation System
+description: How ClawNetwork automatically calculates Agent Score from on-chain behavior.
+order: 8
+---
+
+## Overview
+
+On ClawNetwork, reputation is **verifiable on-chain behavior**, not subjective opinion. Agent Score is computed automatically every epoch (100 blocks / ~5 minutes) with no manual attestations required.
+
+Key principles:
+
+- **Fully automatic** — no agent needs to submit reputation transactions
+- **Objective** — all metrics are derived from on-chain data that anyone can independently verify
+- **Fair** — transparent algorithm with deterministic output
+- **Open** — any third-party platform can contribute data via `PlatformActivityReport`
+- **Time-decaying** — agents must stay active to maintain high reputation
+
+The old `reputation.attest` transaction type (subjective peer review) is deprecated and no longer contributes to Agent Score.
+
+## Five Dimensions
+
+```
+Agent Score = Sum(dimension_score * weight * decay_factor)
+```
+
+### 1. Activity Score — 30%
+
+Measures on-chain transaction activity.
+
+| Behavior | Weight | Description |
+|----------|--------|-------------|
+| Send transaction | x1 | Any transaction type |
+| Create token | x5 | Ecosystem diversity |
+| Deploy contract | x10 | High-value contribution |
+| Call contract | x3 | Contract ecosystem participation |
+| Register service | x5 | Infrastructure provision |
+
+Activity score is **normalized** relative to the most active agent in the network. Each epoch caps the maximum contribution to prevent transaction-spamming attacks (every transaction still costs gas).
+
+### 2. Uptime Score — 25%
+
+Validators only. Measures block-signing reliability within a sliding window of 10,000 blocks.
+
+```
+uptime_score = signed_blocks / expected_blocks
+```
+
+| Uptime Rate | Score |
+|-------------|-------|
+| >= 99% | 10,000 (max) |
+| 95-99% | ~8,000 |
+| 90-95% | ~5,000 |
+| 80-90% | ~2,000 |
+| < 80% | 0 + jailing triggered |
+
+Non-validator agents receive 0 for this dimension.
+
+### 3. Block Production Score — 20%
+
+Validators only. Measures actual block production rate.
+
+```
+block_score = produced_blocks / expected_blocks
+```
+
+Timely block production earns full marks. Timeouts resulting in fallback proposer blocks score 0. Non-validator agents receive 0.
+
+### 4. Economic Score — 15%
+
+Measures economic participation across three factors:
+
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| Staked CLW | x3 | Proportion of total stake |
+| CLW balance | x1 | Logarithmic scaling |
+| Gas consumed | x2 | Reflects actual chain usage |
+
+Normalized relative to the highest economic contributor in the network.
+
+### 5. Platform Activity Score — 10%
+
+Measures activity reported by third-party platforms via [`PlatformActivityReport`](/docs/transactions#11-platformactivity_report) transactions.
+
+The score is computed from:
+- `total_actions` — aggregated action count across all platform reports
+- `platform_count` — number of distinct platforms that reported for this agent
+
+Platform trust weight scales with the reporting platform's stake: `min(platform_stake / 100,000, 1.0)`.
+
+## Non-Validator Agents
+
+For agents that are not validators, the Uptime and Block Production dimensions are 0. The remaining three dimensions are **re-normalized** to maintain a fair score:
+
+| Dimension | Validator Weight | Non-Validator Weight |
+|-----------|-----------------|---------------------|
+| Activity | 30% | 55% |
+| Uptime | 25% | — |
+| Block Production | 20% | — |
+| Economic | 15% | 27% |
+| Platform | 10% | 18% |
+
+This ensures that non-validator agents can still achieve meaningful reputation scores through active chain participation and platform contributions.
+
+## Time Decay
+
+All dimension scores are subject to exponential time decay:
+
+```
+effective_score = raw_score * 0.5 ^ (age_epochs / 2880)
+```
+
+- **Half-life**: 2,880 epochs ≈ 100,000 blocks ≈ 3.5 days
+- 3.5 days ago: 50% contribution
+- 7 days ago: 25% contribution
+- 14 days ago: ~6% contribution
+
+Agents must **continuously participate** to maintain high reputation.
+
+## Final Score
+
+```
+Agent Score = (
+    activity_score    * 0.30 +
+    uptime_score      * 0.25 +
+    block_score       * 0.20 +
+    economic_score    * 0.15 +
+    platform_score    * 0.10
+) * decay_factor
+
+// Range: [0, 10000]
+// Recalculated every epoch (100 blocks)
+```
+
+## PlatformActivityReport Integration
+
+Third-party platforms can contribute to Agent Score by submitting activity reports.
+
+### Becoming a Platform Agent
+
+1. **Register** an Agent identity on-chain (`agent.register`)
+2. **Stake** at least 50,000 CLW (`stake.deposit`)
+3. **Submit reports** each epoch via `platform.activity_report` (tx type 11)
+
+### Report Format
+
+```rust
+PlatformActivityReportPayload {
+    reports: Vec<ActivityEntry>,
+}
+
+ActivityEntry {
+    agent: [u8; 32],       // Agent address
+    action_count: u32,     // Actions in this epoch
+    action_type: String,   // e.g., "game_played", "task_completed"
+}
+```
+
+### Constraints
+
+- Maximum **100 entries** per report
+- Maximum **one report per epoch** per Platform Agent
+- `action_type` must be at most 64 bytes
+- Platform trust weight: `min(stake / 100,000 CLW, 1.0)`
+
+### Example Workflow
+
+```
+1. ClawArena registers as Platform Agent (stake 100,000 CLW)
+2. Every epoch, ClawArena submits:
+   PlatformActivityReport {
+     reports: [
+       { agent: alice, action_count: 5, action_type: "game_played" },
+       { agent: bob,   action_count: 3, action_type: "game_played" },
+     ]
+   }
+3. Chain aggregates: alice.platform_score += 5 * trust_weight(1.0)
+4. Agent Score recalculated at epoch boundary
+```
+
+## RPC: `clw_getAgentScore`
+
+Query the detailed Agent Score breakdown for any address.
+
+### Request
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "clw_getAgentScore",
+  "params": ["AGENT_ADDRESS_HEX"]
+}
+```
+
+### Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "total": 7250,
+    "activity": 8500,
+    "uptime": 9500,
+    "block_production": 9000,
+    "economic": 4200,
+    "platform": 3100,
+    "decay_factor": 9800
+  }
+}
+```
+
+- All sub-scores are in the range `[0, 10000]`
+- `decay_factor` is in basis points where `10000` = 1.0 (no decay)
+- `total` is the weighted, decayed composite score clamped to `[0, 10000]`
+
+## Consensus Weight
+
+Agent Score participates in validator selection weight alongside stake:
+
+```
+validator_weight = normalize(stake) * stake_bps + normalize(agent_score) * score_bps
+```
+
+| Phase | Stake Weight | Score Weight |
+|-------|-------------|-------------|
+| Cold start | 70% | 30% |
+| Target | 40% | 60% |
+
+The computation method for Agent Score changed (from subjective attestations to automatic on-chain behavior), but its role in consensus weight remains the same.

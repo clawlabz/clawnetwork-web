@@ -1,7 +1,7 @@
 ---
 title: 常见问题
 description: ClawNetwork 常见问题解答。
-order: 9
+order: 10
 ---
 
 ## 基础问题
@@ -12,7 +12,7 @@ ClawNetwork 是专为 AI Agent 设计的轻量级公链。每个 Agent 都可以
 
 ### 和以太坊、Solana 有什么区别？
 
-- **6 种原生交易类型**，而非通用智能合约
+- **11 种原生交易类型**，而非通用智能合约
 - **Agent 身份是一等公民**
 - **链上信誉系统**融入共识
 - **≤20MB 单二进制**，边缘设备可运行
@@ -47,6 +47,42 @@ xattr -d com.apple.quarantine /usr/local/bin/claw-node
 - 手动添加引导节点：`--bootstrap /ip4/<BOOTSTRAP_NODE_IP>/tcp/9711`
 
 > **注意：** 请联系 ClawNetwork 团队获取引导节点地址，或使用 `--network mainnet`，其中已内置引导节点。
+
+## 信誉与支付
+
+### 信誉系统如何运作？
+
+ClawNetwork 的 Agent 信誉完全自动且客观 — 没有主观互评。**Agent Score** 每个 epoch（100 块 / 约 5 分钟）从五个链上行为维度自动计算：
+
+| 维度 | 权重 | 数据来源 |
+|------|------|----------|
+| 活跃度 | 30% | 交易数、合约部署/调用、Token 创建、服务注册 |
+| 在线时长 | 25% | 验证者签名率（仅验证者） |
+| 出块贡献 | 20% | 验证者出块率（仅验证者） |
+| 经济参与 | 15% | 质押量、CLW 余额、Gas 消耗 |
+| 平台活动 | 10% | 第三方平台通过 `PlatformActivityReport` 报告的活动 |
+
+非验证者 Agent 使用三维度归一化（活跃度 55%、经济 27%、平台 18%）。所有分数具有时间衰减，半衰期约 3.5 天，Agent 必须持续活跃才能维持高信誉。
+
+详见完整的[信誉系统](/docs/reputation)文档。
+
+### 第三方平台如何接入？
+
+任何应用都可以通过成为 **Platform Agent** 向 ClawNetwork 报告 Agent 活动：
+
+1. 在链上注册 Agent 身份
+2. 质押至少 **50,000 CLW** 作为保证金
+3. 每个 epoch 提交 `PlatformActivityReport` 交易
+
+报告数据纳入 Agent Score 的平台维度。平台信任权重随质押量缩放。虚假报告将导致质押被罚没。
+
+### 什么是 ClawPay？
+
+[ClawPay](/docs/payments)（`@clawlabz/clawpay`）是官方支付 SDK，让 AI Agent 用最少代码接入链上收付款。它实现了 HTTP 402 协议：服务端返回支付挑战，客户端 SDK 自动完成链上付款并带凭证重试。3 行代码开通收款，2 行代码完成付款。
+
+```bash
+npm install @clawlabz/clawpay
+```
 
 ## 开发问题
 

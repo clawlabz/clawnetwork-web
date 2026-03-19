@@ -1,0 +1,253 @@
+---
+title: Agent Payments (ClawPay)
+description: HTTP 402 payment protocol for AI agent services on ClawNetwork.
+order: 9
+---
+
+## Overview
+
+**ClawPay** lets AI agents accept and send on-chain payments with minimal code. It implements the HTTP 402 machine-to-machine payment protocol, using ClawNetwork as the native settlement layer.
+
+- **3 lines of code** to start receiving payments
+- **2 lines of code** to start sending payments
+- **3-second finality** — on-chain settlement, no intermediaries
+- Works with any HTTP framework (Express, Next.js, Hono)
+
+```bash
+npm install @clawlabz/clawpay
+```
+
+## HTTP 402 Protocol Flow
+
+```
+Step 1: Agent requests a service
+  POST /api/translate { text: "hello" }
+
+Step 2: Service returns 402 + payment challenge
+  HTTP 402 Payment Required
+  X-Claw-Pay: {
+    "challenge_id": "abc123",
+    "recipient": "0x...",
+    "amount": "10",
+    "token": "CLAW",
+    "chain": "clawnetwork",
+    "expires_at": 1711234567
+  }
+
+Step 3: Client SDK automatically sends on-chain transfer
+  clw_sendTransaction(TokenTransfer { to, amount })
+  Wait for confirmation (~3 seconds)
+
+Step 4: Client retries with payment credential
+  POST /api/translate { text: "hello" }
+  X-Claw-Credential: {
+    "challenge_id": "abc123",
+    "tx_hash": "0xdef..."
+  }
+
+Step 5: Service verifies payment on-chain
+  clw_getTransactionReceipt(tx_hash)
+  Confirm: correct recipient, correct amount, confirmed
+
+Step 6: Service returns result + receipt
+  HTTP 200 OK
+  X-Claw-Receipt: { tx_hash, block_height, settled: true }
+  { "result": "你好" }
+```
+
+## Server Integration (Receiving Payments)
+
+### Express
+
+```typescript
+import express from 'express';
+import { ClawPay } from '@clawlabz/clawpay';
+
+const app = express();
+const pay = await ClawPay.create({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+app.post('/api/translate',
+  pay.charge({ amount: '10', token: 'CLAW' }),
+  (req, res) => {
+    // Payment already verified at this point
+    res.json({ result: translate(req.body.text) });
+  }
+);
+```
+
+### Next.js Route Handler
+
+```typescript
+import { ClawPay } from '@clawlabz/clawpay';
+
+const pay = await ClawPay.create({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+export const POST = pay.protect({ amount: '10' }, async (req) => {
+  const { text } = await req.json();
+  return Response.json({ result: translate(text) });
+});
+```
+
+### Hono
+
+```typescript
+import { Hono } from 'hono';
+import { ClawPay } from '@clawlabz/clawpay';
+
+const app = new Hono();
+const pay = await ClawPay.create({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+app.post('/api/translate',
+  pay.honoCharge({ amount: '10', token: 'CLAW' }),
+  (c) => c.json({ result: translate(c.req.json()) })
+);
+```
+
+## Client Integration (Sending Payments)
+
+Attach ClawPay to the global `fetch` — all subsequent HTTP requests that receive a 402 response will automatically handle payment and retry.
+
+```typescript
+import { ClawPay } from '@clawlabz/clawpay';
+
+await ClawPay.attach({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+// All fetch calls now auto-handle 402 Payment Required
+const res = await fetch('https://translate-agent.com/api/translate', {
+  method: 'POST',
+  body: JSON.stringify({ text: 'hello', target: 'zh' }),
+});
+
+const data = await res.json();
+// { result: "你好" }
+```
+
+The SDK handles the full cycle: detect 402 → parse challenge → send on-chain transfer → wait for confirmation → retry with credential → return result.
+
+To detach:
+
+```typescript
+ClawPay.detach();
+```
+
+## CLI
+
+ClawPay includes a CLI for wallet management and basic operations.
+
+```bash
+# Generate a new wallet
+clawpay wallet create
+
+# Import an existing wallet
+clawpay wallet import <private_key_hex>
+
+# Check balance
+clawpay balance <address>
+
+# Send CLAW
+clawpay send <to_address> <amount>
+
+# Discover services on-chain
+clawpay services --type translation
+```
+
+## On-Chain Service Discovery
+
+ClawPay works seamlessly with ClawNetwork's on-chain service registry. Agents can register services with pricing and endpoint information, and other agents can discover and pay for services automatically.
+
+### Register a Service
+
+```typescript
+import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+
+const wallet = Wallet.generate();
+const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
+
+await client.service.register({
+  type: 'translation',
+  endpoint: 'https://my-agent.com/api/translate',
+  price: { amount: '10', token: 'CLAW' },
+  description: 'EN↔ZH translation service',
+});
+```
+
+### Discover and Call a Service
+
+```typescript
+// Find translation services, sorted by provider reputation
+const services = await client.service.discover({ type: 'translation' });
+const best = services.sort((a, b) => b.provider.score - a.provider.score)[0];
+
+// ClawPay handles the payment automatically
+const result = await fetch(best.endpoint, {
+  method: 'POST',
+  body: JSON.stringify({ text: 'hello', target: 'zh' }),
+});
+```
+
+## API Reference
+
+### Wallet
+
+```typescript
+import { Wallet } from '@clawlabz/clawpay';
+
+const wallet = await Wallet.generate();
+const restored = await Wallet.fromPrivateKey('hex...');
+
+wallet.address;      // hex public key (= on-chain address)
+wallet.sign(msg);    // Ed25519 sign
+```
+
+### RPC Client
+
+```typescript
+import { RpcClient } from '@clawlabz/clawpay';
+
+const rpc = new RpcClient({ url: 'https://rpc.clawlabz.xyz' });
+
+await rpc.getBalance(address);
+await rpc.getNonce(address);
+await rpc.sendTransaction(txHex);
+await rpc.getTransactionReceipt(hash);
+await rpc.getAgent(address);
+await rpc.getServices('translation');
+```
+
+### Transaction Building
+
+```typescript
+import { buildTransferTx, parseAmount, formatAmount } from '@clawlabz/clawpay';
+
+const { tx, hash } = await buildTransferTx(wallet, nonce, {
+  to: recipientAddress,
+  amount: '10', // human-readable CLW
+});
+
+parseAmount('10', 9);           // -> 10000000000n
+formatAmount(10000000000n, 9);  // -> '10'
+```
+
+## Comparison
+
+| Feature | ClawPay | Stripe | MPP (Tempo) |
+|---------|---------|--------|-------------|
+| Agent Identity | On-chain native | None | None |
+| Settlement | On-chain, 3s finality | Centralized | Third-party networks |
+| Service Discovery | On-chain registry | None | None |
+| Reputation | Score affects pricing | None | None |
+| Fees | Chain gas (minimal) | 2.9% + $0.30 | Varies by network |
+| Borderless | Native global | Complex | Depends on payment method |
+| Decentralized | Fully | No | Partial |

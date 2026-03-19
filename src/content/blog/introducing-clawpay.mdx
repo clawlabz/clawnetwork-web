@@ -1,0 +1,111 @@
+---
+title: "Introducing ClawPay: 3 Lines of Code to Accept Agent Payments"
+date: 2026-03-19
+summary: "Traditional payment systems were built for humans. ClawPay brings HTTP 402-based, zero-registration payments to AI agents with native on-chain settlement on ClawNetwork."
+---
+
+## The Agent Payment Problem
+
+When an AI agent needs to pay for a service — a translation API, an LLM inference endpoint, a data query — the current options are painful.
+
+**Stripe** requires KYC, API keys, webhook handlers, and a human to approve the merchant account. **PayPal** demands a verified business entity. Even crypto payment processors assume a human will configure wallets and manage keys through a dashboard.
+
+None of these were designed for a world where the buyer and seller are both autonomous software. Agents need payments that are **zero-registration** (no signup flow), **auto-discoverable** (the price is part of the protocol), and **instantly settled** (no pending states, no reconciliation).
+
+The Machine Payments Protocol (MPP) by Tempo recognized this gap. Their insight: use HTTP 402 — the "Payment Required" status code that has been in the HTTP spec since 1997 but never standardized — as the protocol layer for machine-to-machine payments. We agree with the protocol design. But MPP settles payments through third-party networks like Stripe or Lightning. We settle natively on-chain.
+
+## ClawPay: HTTP 402 Meets Native Settlement
+
+ClawPay is a TypeScript SDK that turns any HTTP API into a paid API with automatic on-chain settlement on ClawNetwork. The protocol works in six steps:
+
+```
+1. Agent requests service     → POST /api/translate
+2. Server returns 402         ← 402 + X-Claw-Pay: { recipient, amount, token }
+3. Agent pays on-chain        → TokenTransfer transaction
+4. Agent retries with proof   → POST /api/translate + X-Claw-Credential: { tx_hash }
+5. Server verifies on-chain   → clw_getTransactionReceipt(tx_hash)
+6. Server returns result      ← 200 OK + X-Claw-Receipt: { block_height, settled }
+```
+
+The entire flow completes in under 5 seconds, including 3-second on-chain finality.
+
+### Server: 3 Lines of Code
+
+For an Express server, payment gating is a single middleware call:
+
+```typescript
+import { ClawPay } from '@clawlabz/clawpay'
+
+const pay = await ClawPay.createServer({
+  privateKey: process.env.AGENT_KEY,
+  rpc: 'https://rpc.clawlabz.xyz',
+})
+
+app.post('/api/translate', pay.charge({ amount: '10' }), (req, res) => {
+  // Execution reaches here only after payment is verified on-chain
+  res.json({ result: translate(req.body.text) })
+})
+```
+
+Next.js and Hono are equally supported:
+
+```typescript
+// Next.js Route Handler
+export const POST = pay.protect({ amount: '10' }, async (req) => {
+  return Response.json({ result: '...' })
+})
+```
+
+### Client: 2 Lines of Code
+
+On the consumer side, ClawPay intercepts `globalThis.fetch` to handle 402 responses automatically:
+
+```typescript
+import { ClawPay } from '@clawlabz/clawpay'
+
+await ClawPay.attachClient({ privateKey: process.env.AGENT_KEY })
+
+// Every fetch call now auto-handles 402 payment challenges
+const res = await fetch('https://translate-agent.com/api/translate', {
+  method: 'POST',
+  body: JSON.stringify({ text: 'hello', target: 'zh' }),
+})
+// Behind the scenes: discover price → pay on-chain → retry with credential → get result
+```
+
+No payment SDK initialization per request. No token management. No callback URLs. The agent's existing `fetch` calls just work — if a service requires payment, it happens transparently.
+
+## ClawPay vs. MPP vs. Stripe
+
+| | ClawPay | MPP | Stripe |
+|---|---|---|---|
+| Agent Identity | On-chain native | None | None |
+| Settlement | On-chain, 3s finality | Third-party networks | Centralized, days |
+| Registration | Zero — first request discovers price | Zero | Merchant application required |
+| Reputation | Score affects payment terms | None | None |
+| Fees | On-chain gas (fractions of a cent) | Varies by network | 2.9% + $0.30 |
+| Cross-border | Borderless by default | Depends on payment method | Complex compliance |
+
+The key differentiator is the integration with ClawNetwork's identity and reputation systems. High-reputation agents can negotiate deferred payment — service first, pay later. Low-reputation agents must prepay. Completed payments automatically contribute to the agent's on-chain Activity Score, creating a virtuous cycle where economic participation builds trust.
+
+## Use Cases
+
+**Translation Agent**: Charges 10 CLW per request. Any agent can discover the endpoint through ClawNetwork's service registry, call it, and pay — all in one `fetch` call.
+
+**LLM Proxy**: Wraps an OpenAI-compatible API with per-token billing. Uses ClawPay's session mode — the caller deposits CLW into a payment channel, signs off-chain vouchers per request, and the provider settles the channel periodically. One on-chain transaction covers thousands of API calls.
+
+**Data Query Service**: A blockchain analytics agent charges 5 CLW per query. Registers its endpoint and pricing on-chain via `ServiceRegister`. Other agents discover it through `client.service.discover({ type: 'analytics' })`, sorted by provider reputation.
+
+## Get Started
+
+Install the SDK:
+
+```bash
+npm install @clawlabz/clawpay
+```
+
+The package ships with TypeScript types, supports ESM and CJS, and works in Node.js 18+. Server middleware is framework-agnostic — Express, Next.js, Hono, or any framework that speaks HTTP.
+
+Three lines to accept payments. Two lines to make them. On-chain settlement in 3 seconds. No registration, no KYC, no intermediaries.
+
+That is what agent-native payments should look like.

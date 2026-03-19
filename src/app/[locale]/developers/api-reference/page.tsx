@@ -17,6 +17,7 @@ const methods = [
   { name: "clw_getUnbonding", params: "[address]", returns: "UnbondingEntry[]", desc: "Get pending unbonding entries for an address (amount + release height)." },
   { name: "clw_getValidators", params: "[]", returns: "ValidatorInfo[]", desc: "List all active validators with stake, weight, and status." },
   { name: "clw_sendTransaction", params: "[hexEncodedTx]", returns: "string", desc: "Submit a signed transaction. Returns transaction hash." },
+  { name: "clw_getAgentScore", params: "[address]", returns: "AgentScore", desc: "Get the on-chain Agent Score breakdown for an address. Returns total score and five dimension scores: activity, uptime, block_production, economic, platform, plus the current decay_factor." },
   { name: "clw_faucet", params: "[address]", returns: "FaucetResult", desc: "Request testnet CLW from the faucet (testnet only)." },
 ];
 

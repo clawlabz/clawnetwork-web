@@ -1,16 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/lib/i18n/navigation";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X, Globe, Github, ChevronDown } from "lucide-react";
 import { GITHUB_URL } from "@/lib/constants";
+
+const LOCALES = [
+  { code: "en", label: "English" },
+  { code: "zh", label: "中文" },
+] as const;
 
 export function Header() {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  function switchLocale(code: string) {
+    if (code !== locale) {
+      router.replace(pathname, { locale: code });
+    }
+    setLangOpen(false);
+  }
 
   const navItems = [
     { href: "/#ecosystem", label: t("ecosystem") },
@@ -22,24 +55,19 @@ export function Header() {
     { href: "/about", label: t("about") },
   ];
 
-  const locale = useLocale();
-
-  function switchLocale() {
-    const nextLocale = locale === "zh" ? "en" : "zh";
-    router.replace(pathname, { locale: nextLocale });
-  }
+  const currentLocale = LOCALES.find((l) => l.code === locale) ?? LOCALES[0];
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-border-dark bg-bg-dark/80 backdrop-blur-md">
+    <header
+      className={`fixed top-0 z-50 w-full border-0 transition-all duration-500 ${
+        scrolled
+          ? "bg-bg-dark/20 backdrop-blur-sm shadow-[0_1px_0_rgba(255,255,255,0.05)]"
+          : "bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2" aria-label="ClawNetwork Home">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary" aria-hidden="true">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
-          </div>
+          <img src="/logo.svg" alt="ClawNetwork" width={32} height={32} className="rounded-md" />
           <span className="text-lg font-bold tracking-tight">ClawNetwork</span>
         </Link>
 
@@ -55,33 +83,54 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={switchLocale}
-            aria-label="Switch language between English and Chinese"
-            className="flex items-center gap-1 rounded-lg border border-border-dark px-2 py-1.5 text-xs text-text-secondary transition-colors hover:border-primary hover:text-primary"
-          >
-            <Globe className="h-3.5 w-3.5" />
-            EN/ZH
-          </button>
-
+        <div className="flex items-center gap-2">
+          {/* GitHub icon */}
           <a
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="View ClawNetwork on GitHub"
-            className="hidden rounded-lg border border-border-dark px-4 py-2 text-sm font-semibold transition-colors hover:border-primary hover:text-primary sm:block"
+            aria-label="GitHub"
+            className="hidden sm:flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:text-primary"
           >
-            GitHub
+            <Github className="h-[18px] w-[18px]" />
           </a>
 
-          <Link
-            href="/docs/quickstart"
-            className="hidden rounded-lg bg-primary px-4 py-2 text-sm font-bold text-bg-dark transition-all hover:brightness-110 sm:block"
-          >
-            {t("getStarted")}
-          </Link>
+          {/* Language dropdown */}
+          <div ref={langRef} className="relative">
+            <button
+              onClick={() => setLangOpen(!langOpen)}
+              aria-label="Switch language"
+              className="flex h-9 items-center gap-1 rounded-lg px-2 text-text-secondary transition-colors hover:text-primary"
+            >
+              <Globe className="h-[18px] w-[18px]" />
+              <ChevronDown
+                className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`}
+              />
+            </button>
 
+            {langOpen && (
+              <div className="absolute right-0 top-full mt-2 w-32 overflow-hidden rounded-lg border border-border-dark bg-surface-dark shadow-xl shadow-black/30">
+                {LOCALES.map((l) => (
+                  <button
+                    key={l.code}
+                    onClick={() => switchLocale(l.code)}
+                    className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-primary/5 ${
+                      l.code === locale
+                        ? "text-primary bg-primary/10"
+                        : "text-text-secondary"
+                    }`}
+                  >
+                    {l.label}
+                    {l.code === locale && (
+                      <span className="ml-auto text-[10px] text-primary/60">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile menu toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -92,6 +141,7 @@ export function Header() {
         </div>
       </div>
 
+      {/* Mobile menu */}
       {mobileOpen && (
         <nav className="border-t border-border-dark bg-bg-dark px-6 py-4 md:hidden">
           {navItems.map((item) => (
@@ -104,13 +154,16 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/docs/quickstart"
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setMobileOpen(false)}
-            className="mt-2 block rounded-lg bg-primary px-4 py-3 text-center text-sm font-bold text-bg-dark"
+            className="flex items-center gap-2 py-3 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
           >
-            {t("getStarted")}
-          </Link>
+            <Github className="h-4 w-4" />
+            GitHub
+          </a>
         </nav>
       )}
     </header>

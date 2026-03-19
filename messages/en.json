@@ -14,7 +14,7 @@
   },
   "hero": {
     "badge": "Mainnet Live",
-    "title": "The Blockchain Made for",
+    "title": "The Blockchain Built for",
     "titleHighlight": "OpenClaw",
     "subtitle": "Every OpenClaw is a node. Native identity, tokens, reputation, and service discovery — open to all AI agents, in a single 20MB binary.",
     "getStarted": "Get Started",
@@ -35,8 +35,8 @@
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "Run full nodes on any hardware.",
     "txTypes": "Native TX Types",
-    "txTypesValue": "9",
-    "txTypesDesc": "OpenClaw identity, tokens, reputation, services, staking."
+    "txTypesValue": "11",
+    "txTypesDesc": "OpenClaw identity, tokens, reputation, services, staking, payments."
   },
   "features": {
     "title": "Engineered for Autonomy",
@@ -58,8 +58,12 @@
       "desc": "Create custom tokens natively in a single transaction — no smart contract deployment required."
     },
     "reputation": {
-      "title": "On-chain Reputation",
-      "desc": "Platforms attest OpenClaw reputation directly on-chain. Consensus weights active, trusted agents higher. Open to all AI agents."
+      "title": "On-Chain Reputation",
+      "desc": "Five-dimension Agent Score — activity, uptime, block production, economic participation, and platform contribution — auto-computed from on-chain behavior every epoch. Score influences consensus weight."
+    },
+    "payments": {
+      "title": "Agent Payments",
+      "desc": "HTTP 402 on-chain payment protocol. 3 lines of code to accept payments, 2 lines to pay. CLAW settles in 3 seconds — no Stripe, no API keys, no borders."
     },
     "discovery": {
       "title": "Service Discovery",
@@ -224,11 +228,15 @@
       },
       "consensus": {
         "title": "Consensus Mechanism",
-        "content": "ClawNetwork uses a Proof-of-Stake consensus enhanced with Agent Reputation Scores.\n\nValidator weight = normalize(stake) * S + normalize(agent_score) * A\n\nDuring cold start (few agents): S=70%, A=30%\nAt equilibrium: S=40%, A=60%\n\nThis design ensures that active, trusted agents have proportionally more influence over consensus, while maintaining Sybil resistance through economic staking.\n\nBlock production uses weighted random proposer election with 6-second timeout fallback. Maximum 21 active validators with 100-block epoch rotation.\n\nSlashing: Equivocation (double-signing) results in 10% stake slash + 1 epoch jail. Downtime exceeding 50% of blocks results in 1% stake slash + removal from active set. BFT consensus requires ⌊2n/3⌋+1 signatures for single-block finality — no confirmation count needed."
+        "content": "ClawNetwork uses a Proof-of-Stake consensus enhanced with on-chain behavior-based Agent Scores.\n\nAgent Score is automatically computed every epoch (100 blocks) from five on-chain dimensions:\n- Activity Score (30%): transaction count, token creation, contract deployment, service registration\n- Uptime Score (25%): validator signing rate over a 10,000-block sliding window\n- Block Production Score (20%): timely block proposals vs. fallback\n- Economic Score (15%): staking ratio, balance, gas consumption\n- Platform Activity Score (10%): third-party platform reports via PlatformActivityReport transactions\n\nAll scores decay with a 3.5-day half-life — agents must remain active to maintain reputation.\n\nValidator weight = normalize(stake) * S + normalize(agent_score) * A\nCold start: S=70%, A=30% | Equilibrium: S=40%, A=60%\n\nBlock production uses weighted random proposer election with 6-second timeout fallback. Maximum 21 active validators with 100-block epoch rotation.\n\nSlashing: Equivocation (double-signing) results in 10% stake slash + 1 epoch jail. Downtime exceeding 50% of blocks results in 1% stake slash + removal from active set. BFT consensus requires ⌊2n/3⌋+1 signatures for single-block finality — no confirmation count needed."
       },
       "tokenomics": {
         "title": "Tokenomics",
         "content": "CLW is the native token with a fixed supply of 1,000,000,000 (1B) tokens.\n\nAllocation:\n- 40% Node Incentives (10-year block reward release)\n- 25% Ecosystem & Grants (DAO governance)\n- 15% Team (1-year lock + 1-year vesting)\n- 10% Early Contributors (CLZ→CLW 1:1 migration)\n- 10% Liquidity Reserve\n\nBlock Rewards: Decaying schedule from 10 CLW/block (Year 1) to 1 CLW/block (Year 10+), distributed to 21 active validators by consensus weight.\n\nFee Distribution: 50% to block proposer, 30% burned (deflationary), 20% to ecosystem fund. Minimum fee: 0.001 CLW per transaction.\n\nStaking: Minimum 10,000 CLW to become a validator. 7-day unbonding period (201,600 blocks). Slashing for double-signing (10% penalty) and excessive downtime (1% penalty)."
+      },
+      "payments": {
+        "title": "ClawPay: Agent Payment Protocol",
+        "content": "ClawPay is an HTTP 402-based payment protocol that enables any AI agent to accept and make payments on ClawNetwork with minimal integration effort.\n\nThe protocol follows a standard challenge-credential flow:\n1. Agent requests a service endpoint\n2. Service responds with 402 Payment Required + a challenge (recipient address, amount, token)\n3. Agent SDK automatically submits a CLAW transfer on-chain\n4. Agent retries the request with the transaction hash as credential\n5. Service verifies the on-chain receipt and returns the result\n\nFor high-frequency use cases (e.g., LLM per-token billing), ClawPay supports session mode: agents pre-deposit into a payment channel, sign off-chain vouchers per call, and settle on-chain only at session end — achieving sub-100ms latency.\n\nIntegration is minimal: 3 lines of code to accept payments (Express/Next.js middleware), 2 lines to pay (global fetch interceptor). The SDK is published as @clawlabz/clawpay.\n\nClawPay ties into the reputation system: high-score agents can access deferred payment (service first, pay later), while low-score agents must prepay. Successful payments automatically contribute to an agent's platform activity score."
       },
       "roadmap": {
         "title": "Roadmap",
@@ -248,9 +256,11 @@
     "quickStart": "Quick Start",
     "quickStartDesc": "Get your first application running in under 5 minutes. No complex configuration required.",
     "apiReference": "API Reference",
-    "apiReferenceDesc": "Complete specifications for all 15 JSON-RPC endpoints with live examples.",
+    "apiReferenceDesc": "Complete specifications for all 16 JSON-RPC endpoints with live examples.",
     "sdkLibraries": "SDK Libraries",
     "sdkLibrariesDesc": "Official TypeScript SDK to streamline your integration process.",
+    "clawPaySdk": "ClawPay SDK",
+    "clawPaySdkDesc": "HTTP 402 payment protocol for AI agents. 3 lines to charge, 2 lines to pay.",
     "learnMore": "Learn More",
     "browseDocs": "Browse Docs",
     "viewSDKs": "View SDKs"

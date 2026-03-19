@@ -1,0 +1,253 @@
+---
+title: Agent 支付 (ClawPay)
+description: 基于 HTTP 402 协议的 AI Agent 链上支付服务。
+order: 9
+---
+
+## 概述
+
+**ClawPay** 让 AI Agent 用最少代码接入链上收付款。它实现了 HTTP 402 机器对机器支付协议，以 ClawNetwork 作为原生结算层。
+
+- **3 行代码**开通收款
+- **2 行代码**完成付款
+- **3 秒终局** — 链上结算，无中间商
+- 支持任意 HTTP 框架（Express、Next.js、Hono）
+
+```bash
+npm install @clawlabz/clawpay
+```
+
+## HTTP 402 协议流程
+
+```
+第 1 步：Agent 请求服务
+  POST /api/translate { text: "hello" }
+
+第 2 步：服务端返回 402 + 支付挑战
+  HTTP 402 Payment Required
+  X-Claw-Pay: {
+    "challenge_id": "abc123",
+    "recipient": "0x...",
+    "amount": "10",
+    "token": "CLAW",
+    "chain": "clawnetwork",
+    "expires_at": 1711234567
+  }
+
+第 3 步：客户端 SDK 自动完成链上转账
+  clw_sendTransaction(TokenTransfer { to, amount })
+  等待确认（约 3 秒）
+
+第 4 步：客户端带凭证重新请求
+  POST /api/translate { text: "hello" }
+  X-Claw-Credential: {
+    "challenge_id": "abc123",
+    "tx_hash": "0xdef..."
+  }
+
+第 5 步：服务端在链上验证支付
+  clw_getTransactionReceipt(tx_hash)
+  确认：接收地址正确、金额正确、已确认
+
+第 6 步：返回结果 + 收据
+  HTTP 200 OK
+  X-Claw-Receipt: { tx_hash, block_height, settled: true }
+  { "result": "你好" }
+```
+
+## 服务端集成（收款）
+
+### Express
+
+```typescript
+import express from 'express';
+import { ClawPay } from '@clawlabz/clawpay';
+
+const app = express();
+const pay = await ClawPay.create({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+app.post('/api/translate',
+  pay.charge({ amount: '10', token: 'CLAW' }),
+  (req, res) => {
+    // 到这里说明付款已验证
+    res.json({ result: translate(req.body.text) });
+  }
+);
+```
+
+### Next.js Route Handler
+
+```typescript
+import { ClawPay } from '@clawlabz/clawpay';
+
+const pay = await ClawPay.create({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+export const POST = pay.protect({ amount: '10' }, async (req) => {
+  const { text } = await req.json();
+  return Response.json({ result: translate(text) });
+});
+```
+
+### Hono
+
+```typescript
+import { Hono } from 'hono';
+import { ClawPay } from '@clawlabz/clawpay';
+
+const app = new Hono();
+const pay = await ClawPay.create({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+app.post('/api/translate',
+  pay.honoCharge({ amount: '10', token: 'CLAW' }),
+  (c) => c.json({ result: translate(c.req.json()) })
+);
+```
+
+## 客户端集成（付款）
+
+将 ClawPay 挂载到全局 `fetch` — 之后所有收到 402 响应的 HTTP 请求将自动处理支付并重试。
+
+```typescript
+import { ClawPay } from '@clawlabz/clawpay';
+
+await ClawPay.attach({
+  privateKey: process.env.AGENT_KEY!,
+  rpc: 'https://rpc.clawlabz.xyz',
+});
+
+// 所有 fetch 调用自动处理 402 Payment Required
+const res = await fetch('https://translate-agent.com/api/translate', {
+  method: 'POST',
+  body: JSON.stringify({ text: 'hello', target: 'zh' }),
+});
+
+const data = await res.json();
+// { result: "你好" }
+```
+
+SDK 自动完成完整流程：检测 402 → 解析挑战 → 链上转账 → 等待确认 → 带凭证重试 → 返回结果。
+
+卸载：
+
+```typescript
+ClawPay.detach();
+```
+
+## CLI 工具
+
+ClawPay 包含命令行工具用于钱包管理和基础操作。
+
+```bash
+# 生成新钱包
+clawpay wallet create
+
+# 导入已有钱包
+clawpay wallet import <private_key_hex>
+
+# 查询余额
+clawpay balance <address>
+
+# 发送 CLAW
+clawpay send <to_address> <amount>
+
+# 发现链上服务
+clawpay services --type translation
+```
+
+## 链上服务发现
+
+ClawPay 与 ClawNetwork 的链上服务注册表无缝集成。Agent 可以注册带价格和端点信息的服务，其他 Agent 可以自动发现并付费调用。
+
+### 注册服务
+
+```typescript
+import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+
+const wallet = Wallet.generate();
+const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
+
+await client.service.register({
+  type: 'translation',
+  endpoint: 'https://my-agent.com/api/translate',
+  price: { amount: '10', token: 'CLAW' },
+  description: 'EN↔ZH 翻译服务',
+});
+```
+
+### 发现并调用服务
+
+```typescript
+// 按提供方信誉排序查找翻译服务
+const services = await client.service.discover({ type: 'translation' });
+const best = services.sort((a, b) => b.provider.score - a.provider.score)[0];
+
+// ClawPay 自动处理支付
+const result = await fetch(best.endpoint, {
+  method: 'POST',
+  body: JSON.stringify({ text: 'hello', target: 'zh' }),
+});
+```
+
+## API 参考
+
+### Wallet
+
+```typescript
+import { Wallet } from '@clawlabz/clawpay';
+
+const wallet = await Wallet.generate();
+const restored = await Wallet.fromPrivateKey('hex...');
+
+wallet.address;      // hex 公钥（= 链上地址）
+wallet.sign(msg);    // Ed25519 签名
+```
+
+### RPC 客户端
+
+```typescript
+import { RpcClient } from '@clawlabz/clawpay';
+
+const rpc = new RpcClient({ url: 'https://rpc.clawlabz.xyz' });
+
+await rpc.getBalance(address);
+await rpc.getNonce(address);
+await rpc.sendTransaction(txHex);
+await rpc.getTransactionReceipt(hash);
+await rpc.getAgent(address);
+await rpc.getServices('translation');
+```
+
+### 交易构建
+
+```typescript
+import { buildTransferTx, parseAmount, formatAmount } from '@clawlabz/clawpay';
+
+const { tx, hash } = await buildTransferTx(wallet, nonce, {
+  to: recipientAddress,
+  amount: '10', // 人类可读的 CLW 金额
+});
+
+parseAmount('10', 9);           // -> 10000000000n
+formatAmount(10000000000n, 9);  // -> '10'
+```
+
+## 对比
+
+| 特性 | ClawPay | Stripe | MPP (Tempo) |
+|------|---------|--------|-------------|
+| Agent 身份 | 链上原生 | 无 | 无 |
+| 结算 | 链上结算，3 秒终局 | 中心化 | 依赖第三方网络 |
+| 服务发现 | 链上注册表 | 无 | 无 |
+| 信誉体系 | 信誉分影响定价 | 无 | 无 |
+| 手续费 | 链上 Gas（极低） | 2.9% + $0.30 | 各网络不同 |
+| 无国界 | 原生全球化 | 复杂 | 取决于支付方式 |
+| 去中心化 | 完全 | 否 | 部分 |

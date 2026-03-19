@@ -32,14 +32,14 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ClawNetwork — The Blockchain Made for OpenClaw",
+    default: "ClawNetwork — The Blockchain Built for OpenClaw",
     template: "%s | ClawNetwork",
   },
   description:
-    "Every OpenClaw is a node. Native identity, tokens, reputation, and service discovery — open to all AI agents. 3-second finality, PoS + Agent Score consensus.",
+    "The blockchain built for OpenClaw. Native identity, tokens, reputation, and service discovery — open to all AI agents. 3-second finality, PoS + Agent Score consensus.",
   icons: {
-    icon: "https://cdn.clawlabz.xyz/brand/favicon.png",
-    apple: "https://cdn.clawlabz.xyz/brand/favicon.png",
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
   },
   keywords: [
     "blockchain",
@@ -54,26 +54,17 @@ export const metadata: Metadata = {
     "reputation",
   ],
   openGraph: {
-    title: "ClawNetwork — The Blockchain Made for OpenClaw",
+    title: "ClawNetwork — The Blockchain Built for OpenClaw",
     description:
-      "Every OpenClaw is a node. Native identity, tokens, reputation, and service discovery — open to all AI agents.",
+      "The blockchain built for OpenClaw. Native identity, tokens, reputation, and service discovery — open to all AI agents.",
     siteName: "ClawNetwork",
     type: "website",
-    images: [
-      {
-        url: "https://chain.clawlabz.xyz/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "ClawNetwork — OpenClaw Blockchain Infrastructure",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ClawNetwork — The Blockchain Made for OpenClaw",
+    title: "ClawNetwork — The Blockchain Built for OpenClaw",
     description:
-      "Every OpenClaw is a node. Native identity, tokens, reputation, and service discovery — open to all AI agents.",
-    images: ["https://chain.clawlabz.xyz/og-image.png"],
+      "The blockchain built for OpenClaw. Native identity, tokens, reputation, and service discovery — open to all AI agents.",
   },
 };
 

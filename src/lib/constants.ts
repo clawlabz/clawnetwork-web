@@ -20,5 +20,8 @@ export const DOCS_SIDEBAR = [
   { slug: "tokenomics", icon: "Coins" },
   { slug: "node-operations", icon: "Server" },
   { slug: "configuration", icon: "Settings" },
+  { slug: "smart-contracts", icon: "Code" },
+  { slug: "reputation", icon: "Star" },
+  { slug: "payments", icon: "CreditCard" },
   { slug: "faq", icon: "HelpCircle" },
 ] as const;

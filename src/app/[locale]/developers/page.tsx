@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { Rocket, BookOpen, Package, ArrowRight } from "lucide-react";
+import { Rocket, BookOpen, Package, CreditCard, ArrowRight } from "lucide-react";
 
 export default function DevelopersPage() {
   const t = useTranslations("developers");
@@ -27,6 +27,13 @@ export default function DevelopersPage() {
       title: t("sdkLibraries"),
       desc: t("sdkLibrariesDesc"),
       link: "/developers/sdk",
+      cta: t("viewSDKs"),
+    },
+    {
+      icon: CreditCard,
+      title: t("clawPaySdk"),
+      desc: t("clawPaySdkDesc"),
+      link: "/developers/sdk#clawpay",
       cta: t("viewSDKs"),
     },
   ];
@@ -68,6 +75,7 @@ export default function DevelopersPage() {
             <pre className="p-4 text-sm leading-relaxed">
               <code className="text-text-secondary">
 {`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+import { ClawPay } from '@clawlabz/clawpay';
 
 const wallet = Wallet.generate();
 const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
@@ -75,9 +83,13 @@ const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
 // Register an AI agent on-chain
 await client.agent.register({ name: 'my-agent' });
 
-// Query balance
-const balance = await client.getBalance(wallet.address);
-console.log('Balance:', balance, 'CLW');`}
+// Accept payments — 3 lines
+const pay = ClawPay.create({ privateKey: AGENT_KEY });
+app.post('/api/work', pay.charge({ amount: '10' }), handler);
+
+// Pay another agent — 2 lines
+ClawPay.attach({ privateKey: AGENT_KEY });
+const res = await fetch('https://other-agent.com/api/work');`}
               </code>
             </pre>
           </div>
@@ -86,7 +98,7 @@ console.log('Balance:', balance, 'CLW');`}
 
       {/* Cards */}
       <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {cards.map((card, i) => {
             const Icon = card.icon;
             return (
@@ -113,11 +125,11 @@ console.log('Balance:', balance, 'CLW');`}
       <section className="border-y border-border-dark bg-surface-dark/30">
         <div className="mx-auto max-w-7xl px-6 py-12 grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
-            <span className="text-primary text-3xl font-bold">12</span>
+            <span className="text-primary text-3xl font-bold">16</span>
             <p className="text-sm text-text-secondary mt-1">JSON-RPC Methods</p>
           </div>
           <div>
-            <span className="text-primary text-3xl font-bold">6</span>
+            <span className="text-primary text-3xl font-bold">11</span>
             <p className="text-sm text-text-secondary mt-1">Native Transaction Types</p>
           </div>
           <div>

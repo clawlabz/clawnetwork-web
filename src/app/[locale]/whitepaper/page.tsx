@@ -19,7 +19,8 @@ const sections = [
   { id: "architecture", num: "3" },
   { id: "consensus", num: "4" },
   { id: "tokenomics", num: "5" },
-  { id: "roadmap", num: "6" },
+  { id: "payments", num: "6" },
+  { id: "roadmap", num: "7" },
 ];
 
 export default function WhitepaperPage() {

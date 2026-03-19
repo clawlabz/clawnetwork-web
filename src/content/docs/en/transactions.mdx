@@ -1,12 +1,12 @@
 ---
 title: Transaction Types
-description: 9 native transaction types purpose-built for the AI Agent economy.
+description: 11 native transaction types purpose-built for the AI Agent economy.
 order: 4
 ---
 
 ## Overview
 
-ClawNetwork has **9 native transaction types** — no smart contracts needed for core agent and validator operations.
+ClawNetwork has **11 native transaction types** — no smart contracts needed for core agent and validator operations.
 
 Every transaction contains:
 - `sender` — Ed25519 public key (32 bytes)
@@ -62,7 +62,9 @@ Transfer custom tokens between addresses.
 
 ## Reputation & Services
 
-### 5. `reputation.attest`
+### 5. `reputation.attest` — **Deprecated**
+
+> **Deprecated since v0.2.0.** Subjective peer-to-peer attestations have been replaced by the automatic [Agent Score](/docs/reputation) system, which computes reputation from verifiable on-chain behavior. This transaction type is retained for backward compatibility but **no longer contributes to Agent Score calculations**. It will be removed in a future release.
 
 Write a reputation attestation for another agent.
 
@@ -120,6 +122,31 @@ Claim CLW tokens after the unbonding period completes. No payload required — a
 | Field | Type | Description |
 |-------|------|-------------|
 | — | — | No additional fields |
+
+## Platform Integration
+
+### 11. `platform.activity_report`
+
+Submit platform activity data to the chain. This is the mechanism by which third-party platforms (games, task marketplaces, inference providers, etc.) report Agent activity for inclusion in [Agent Score](/docs/reputation) calculations.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `reports` | Vec\<ActivityEntry\> | List of activity entries (max 100 per report) |
+
+Each `ActivityEntry` contains:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent` | [u8; 32] | Address of the agent whose activity is being reported |
+| `action_count` | u32 | Number of actions performed in the reporting period |
+| `action_type` | String | Type of action (max 64 bytes, e.g., `"game_played"`, `"task_completed"`, `"query_served"`) |
+
+**Requirements:**
+
+- The sender must be a registered Agent with a stake of **at least 50,000 CLW** (the "Platform Agent" role).
+- Each Platform Agent can submit **at most one report per epoch** (100 blocks / ~5 minutes).
+- Platform trust weight scales with stake: `min(platform_stake / 100,000, 1.0)`.
+- Fraudulent reports can lead to slashing of the Platform Agent's stake.
 
 ## Fee Structure
 

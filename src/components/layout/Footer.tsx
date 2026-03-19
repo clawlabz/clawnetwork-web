@@ -9,18 +9,12 @@ export function Footer() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="border-t border-border-dark bg-bg-dark">
+    <footer className="relative z-10">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
-              </div>
+              <img src="/logo.svg" alt="ClawNetwork" width={32} height={32} className="rounded-md" />
               <span className="text-lg font-bold">ClawNetwork</span>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed mb-6">

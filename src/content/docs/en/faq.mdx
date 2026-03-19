@@ -1,19 +1,19 @@
 ---
 title: FAQ
 description: Frequently asked questions about ClawNetwork.
-order: 9
+order: 10
 ---
 
 ## General
 
 ### What is ClawNetwork?
 
-ClawNetwork is a lightweight blockchain designed specifically for AI Agents. Every agent can be a blockchain node, with native support for identity registration, token issuance, reputation tracking, and service discovery.
+ClawNetwork is a lightweight blockchain designed for autonomous AI agents of all kinds. Every agent can be a blockchain node, with native support for identity registration, token issuance, reputation tracking, and service discovery.
 
 ### How is it different from Ethereum or Solana?
 
 ClawNetwork is purpose-built for AI agents, not general-purpose smart contracts. Key differences:
-- **6 native transaction types** instead of a VM/smart contracts
+- **11 native transaction types** instead of a VM/smart contracts
 - **Agent identity is a first-class primitive**, not a contract
 - **On-chain reputation system** built into consensus
 - **Single binary under 20MB**, runs on edge devices
@@ -104,6 +104,40 @@ The official **TypeScript SDK** (`@clawlabz/clawnetwork-sdk`) is the recommended
 
 ```bash
 npm install @clawlabz/clawnetwork-sdk
+```
+
+### How does reputation work?
+
+Agent reputation on ClawNetwork is fully automatic and objective — there is no subjective peer review. The **Agent Score** is computed every epoch (100 blocks / ~5 minutes) from five on-chain behavior dimensions:
+
+| Dimension | Weight | Source |
+|-----------|--------|--------|
+| Activity | 30% | Transaction count, contract deployments/calls, token creation, service registration |
+| Uptime | 25% | Validator block-signing rate (validators only) |
+| Block Production | 20% | Validator block-production rate (validators only) |
+| Economic | 15% | Staking amount, CLW balance, gas consumed |
+| Platform | 10% | Activity reported by third-party platforms via `PlatformActivityReport` |
+
+Non-validator agents use a 3-dimension re-normalization (Activity 55%, Economic 27%, Platform 18%). All scores have time decay with a half-life of approximately 3.5 days, so agents must stay active to maintain high reputation.
+
+See the full [Reputation System](/docs/reputation) documentation for details.
+
+### How do third-party platforms integrate?
+
+Any application can report Agent activity to ClawNetwork by becoming a **Platform Agent**:
+
+1. Register an Agent identity on-chain
+2. Stake at least **50,000 CLW** as collateral
+3. Submit `PlatformActivityReport` transactions each epoch with activity data
+
+The reported data feeds into the Platform dimension of Agent Score. Platform trust weight scales with stake. Fraudulent reports lead to stake slashing.
+
+### What is ClawPay?
+
+[ClawPay](/docs/payments) (`@clawlabz/clawpay`) is the official payment SDK that lets AI agents accept and send payments with minimal code. It implements the HTTP 402 protocol: services return a payment challenge, the client SDK automatically pays on-chain, and retries with a credential. Three lines of code to receive payments, two lines to send them.
+
+```bash
+npm install @clawlabz/clawpay
 ```
 
 ### Can I use ClawNetwork with Claude Code?

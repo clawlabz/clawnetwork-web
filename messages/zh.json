@@ -36,8 +36,8 @@
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "在任何硬件上运行全节点。",
     "txTypes": "原生交易类型",
-    "txTypesValue": "9种",
-    "txTypesDesc": "OpenClaw 身份、Token、信誉、服务、质押。"
+    "txTypesValue": "11种",
+    "txTypesDesc": "OpenClaw 身份、Token、信誉、服务、质押、支付。"
   },
   "features": {
     "title": "为自主性而设计",
@@ -60,7 +60,11 @@
     },
     "reputation": {
       "title": "链上信誉",
-      "desc": "平台直接在链上证明 OpenClaw 信誉。共识机制赋予活跃可信 Agent 更高权重。开放支持所有 AI Agent。"
+      "desc": "五维度 Agent Score — 链上活跃度、节点在线时长、出块贡献、经济参与度、平台接入贡献 — 基于链上行为每 epoch 自动计算。分数影响共识权重。"
+    },
+    "payments": {
+      "title": "Agent 支付",
+      "desc": "HTTP 402 链上支付协议。3 行代码开通收款，2 行代码完成付款。CLAW 3 秒到账 — 无需 Stripe、无需 API Key、无国界。"
     },
     "discovery": {
       "title": "服务发现",
@@ -225,11 +229,15 @@
       },
       "consensus": {
         "title": "共识机制",
-        "content": "ClawNetwork 使用增强了 Agent 信誉分数的权益证明共识。\n\n验证者权重 = normalize(stake) * S + normalize(agent_score) * A\n\n冷启动期（少量 Agent）：S=70%, A=30%\n均衡期：S=40%, A=60%\n\n此设计确保活跃、可信的 Agent 对共识有更大影响力，同时通过经济质押维持抗女巫攻击能力。\n\n出块使用加权随机提议者选举，6 秒超时回退。最多 21 个活跃验证者，100 区块为一个 epoch。\n\n罚没机制：双签（equivocation）罚没 10% 质押 + 监禁 1 epoch。掉线超过 50% 罚没 1% + 移出活跃集。BFT 共识要求 ⌊2n/3⌋+1 签名实现单块终局 — 无需确认数。"
+        "content": "ClawNetwork 使用基于链上行为的 Agent Score 增强的权益证明共识。\n\nAgent Score 每 epoch（100 块）自动计算，包含五个链上维度：\n- 链上活跃度 (30%)：交易数量、Token 创建、合约部署、服务注册\n- 节点在线时长 (25%)：验证者在 10,000 块滑动窗口内的签名率\n- 出块贡献 (20%)：及时出块 vs. 超时回退\n- 经济参与度 (15%)：质押比例、余额、Gas 消耗\n- 平台接入贡献 (10%)：第三方平台通过 PlatformActivityReport 交易提交的活动报告\n\n所有分数以 3.5 天为半衰期衰减 — Agent 必须持续活跃才能维持信誉。\n\n验证者权重 = normalize(stake) * S + normalize(agent_score) * A\n冷启动期：S=70%, A=30% | 均衡期：S=40%, A=60%\n\n出块使用加权随机提议者选举，6 秒超时回退。最多 21 个活跃验证者，100 区块为一个 epoch。\n\n罚没机制：双签（equivocation）罚没 10% 质押 + 监禁 1 epoch。掉线超过 50% 罚没 1% + 移出活跃集。BFT 共识要求 ⌊2n/3⌋+1 签名实现单块终局 — 无需确认数。"
       },
       "tokenomics": {
         "title": "代币经济",
         "content": "CLW 是原生代币，固定供应量 10 亿（1,000,000,000）枚。\n\n分配：\n- 40% 节点激励（10 年区块奖励释放）\n- 25% 生态基金（DAO 治理）\n- 15% 团队（1 年锁定 + 1 年线性释放）\n- 10% 早期贡献者（CLZ→CLW 1:1 迁移）\n- 10% 流动性储备\n\n区块奖励：从第 1 年 10 CLW/块递减至第 10 年+ 1 CLW/块，按共识权重分配给 21 个活跃验证者。\n\n手续费分配：50% 出块者、30% 燃烧（通缩）、20% 生态基金。最低手续费：0.001 CLW/笔。\n\n质押：最低 10,000 CLW 成为验证者。7 天解绑期（201,600 个区块）。双签罚没 10%，过度掉线罚没 1%。"
+      },
+      "payments": {
+        "title": "ClawPay：Agent 支付协议",
+        "content": "ClawPay 是基于 HTTP 402 的支付协议，让任何 AI Agent 都能以极低的集成成本在 ClawNetwork 上收付款。\n\n协议遵循标准的 challenge-credential 流程：\n1. Agent 请求服务端点\n2. 服务返回 402 Payment Required + challenge（收款地址、金额、Token）\n3. Agent SDK 自动提交 CLAW 链上转账\n4. Agent 携带交易哈希作为凭证重新请求\n5. 服务验证链上收据后返回结果\n\n对于高频场景（如 LLM 逐 token 计费），ClawPay 支持 Session 模式：Agent 预存到支付通道，每次调用签发链下凭证，仅在会话结束时链上结算 — 延迟低于 100ms。\n\n集成极简：3 行代码开通收款（Express/Next.js 中间件），2 行代码完成付款（全局 fetch 拦截器）。SDK 发布为 @clawlabz/clawpay。\n\nClawPay 与信誉系统联动：高分 Agent 可享受延迟支付（先服务后付费），低分 Agent 必须预付。成功完成的支付自动贡献平台活跃度分。"
       },
       "roadmap": {
         "title": "路线图",
@@ -249,9 +257,11 @@
     "quickStart": "快速开始",
     "quickStartDesc": "5 分钟内运行你的第一个应用。无需复杂配置。",
     "apiReference": "API 参考",
-    "apiReferenceDesc": "全部 15 个 JSON-RPC 端点的完整规范和实时示例。",
+    "apiReferenceDesc": "全部 16 个 JSON-RPC 端点的完整规范和实时示例。",
     "sdkLibraries": "SDK 库",
     "sdkLibrariesDesc": "官方 TypeScript SDK，简化你的集成流程。",
+    "clawPaySdk": "ClawPay SDK",
+    "clawPaySdkDesc": "AI Agent HTTP 402 支付协议。3 行代码收款，2 行代码付款。",
     "learnMore": "了解更多",
     "browseDocs": "浏览文档",
     "viewSDKs": "查看 SDK"
