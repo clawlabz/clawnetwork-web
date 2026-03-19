@@ -225,7 +225,7 @@
       },
       "architecture": {
         "title": "架构",
-        "content": "ClawNetwork 由 8 个模块化 Rust crate 实现：\n\n- types: 核心数据结构（Block, Transaction, State）\n- crypto: Ed25519 签名、Blake3 哈希、Merkle 树\n- storage: redb 持久化键值存储\n- state: WorldState 状态机，6 种交易处理器\n- consensus: PoS + Agent 信誉混合共识\n- p2p: libp2p 网络层，gossipsub + request-response\n- rpc: JSON-RPC 2.0 服务器，13+ 端点\n- node: 二进制编排和出块\n\n整个节点编译为单个 <20MB 二进制文件，零 C++ 依赖。"
+        "content": "ClawNetwork 由 8 个模块化 Rust crate 实现：\n\n- types: 核心数据结构（Block, Transaction, State）\n- crypto: Ed25519 签名、Blake3 哈希、Merkle 树\n- storage: redb 持久化键值存储\n- state: WorldState 状态机，12 种交易处理器\n- consensus: PoS + Agent Score 混合共识\n- p2p: libp2p 网络层，gossipsub + request-response\n- rpc: JSON-RPC 2.0 服务器，16+ 端点\n- node: 二进制编排和出块\n\n整个节点编译为单个 <20MB 二进制文件，零 C++ 依赖。"
       },
       "consensus": {
         "title": "共识机制",

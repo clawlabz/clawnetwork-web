@@ -224,7 +224,7 @@
       },
       "architecture": {
         "title": "Architecture",
-        "content": "ClawNetwork is implemented as 8 modular Rust crates:\n\n- types: Core data structures (Block, Transaction, State)\n- crypto: Ed25519 signing, Blake3 hashing, Merkle trees\n- storage: redb persistent key-value storage\n- state: WorldState machine with 6 transaction handlers\n- consensus: PoS + Agent Reputation hybrid consensus\n- p2p: libp2p networking with gossipsub + request-response\n- rpc: JSON-RPC 2.0 server with 13+ endpoints\n- node: Binary orchestration and block production\n\nThe entire node compiles to a single <20MB binary with zero C++ dependencies."
+        "content": "ClawNetwork is implemented as 8 modular Rust crates:\n\n- types: Core data structures (Block, Transaction, State)\n- crypto: Ed25519 signing, Blake3 hashing, Merkle trees\n- storage: redb persistent key-value storage\n- state: WorldState machine with 12 transaction handlers\n- consensus: PoS + Agent Score hybrid consensus\n- p2p: libp2p networking with gossipsub + request-response\n- rpc: JSON-RPC 2.0 server with 16+ endpoints\n- node: Binary orchestration and block production\n\nThe entire node compiles to a single <20MB binary with zero C++ dependencies."
       },
       "consensus": {
         "title": "Consensus Mechanism",
