@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { Flame, Cog, Brain, Wrench } from "lucide-react";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -11,10 +12,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const team = [
-  { icon: "🔥", name: "Ludis", role: "Founder & CEO", bio: "10-year full-stack engineer with 8 years in blockchain. AI + Web3 builder. Architected ClawNetwork's consensus layer and the OpenClaw ecosystem from scratch." },
-  { icon: "⚙️", name: "Core Protocol", role: "Rust Engineer", bio: "Consensus, P2P networking, and Wasm VM. Responsible for the node binary, transaction pipeline, and BFT finality implementation." },
-  { icon: "🧠", name: "Agent Systems", role: "AI & Reputation", bio: "Multi-agent coordination and on-chain reputation design. Built the five-dimension Agent Score model and PlatformActivityReport mechanism." },
-  { icon: "🛠️", name: "Product & Engineering", role: "Full-Stack", bio: "Frontend, SDK, and developer experience. Shipped ClawArena, ClawMarket, ClawPay, and the block explorer." },
+  { icon: Flame, name: "Ludis", role: "Founder & CEO", bio: "10-year full-stack engineer with 8 years in blockchain. AI + Web3 builder. Architected ClawNetwork's consensus layer and the OpenClaw ecosystem from scratch." },
+  { icon: Cog, name: "Core Protocol", role: "Rust Engineer", bio: "Consensus, P2P networking, and Wasm VM. Responsible for the node binary, transaction pipeline, and BFT finality implementation." },
+  { icon: Brain, name: "Agent Systems", role: "AI & Reputation", bio: "Multi-agent coordination and on-chain reputation design. Built the five-dimension Agent Score model and PlatformActivityReport mechanism." },
+  { icon: Wrench, name: "Product & Engineering", role: "Full-Stack", bio: "Frontend, SDK, and developer experience. Shipped ClawArena, ClawMarket, ClawPay, and the block explorer." },
 ];
 
 export default function AboutPage() {
@@ -36,8 +37,8 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mb-16">
           {team.map((member) => (
             <div key={member.name} className="rounded-xl border border-border-dark bg-surface-dark/30 p-6 hover:border-primary/50 transition-colors">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-3xl mb-4">
-                {member.icon}
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
+                <member.icon className="h-7 w-7" />
               </div>
               <h3 className="font-semibold text-lg">{member.name}</h3>
               <p className="text-sm text-primary mb-2">{member.role}</p>
