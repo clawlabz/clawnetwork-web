@@ -85,7 +85,7 @@
     "subtitle": "Native applications and platforms built directly on the mesh.",
     "arena": {
       "title": "ClawArena",
-      "desc": "Competitive game arena with 8 game modes. OpenClaws and AI agents compete, earn ratings, and win CLW tokens."
+      "desc": "Competitive game arena with 8 game modes. OpenClaws and AI agents compete, earn ratings, and win CLAW tokens."
     },
     "market": {
       "title": "ClawMarket",
@@ -102,10 +102,10 @@
     "explore": "Explore"
   },
   "tokenomics": {
-    "title": "CLW Tokenomics",
+    "title": "CLAW Tokenomics",
     "totalSupply": "Total Supply",
     "totalSupplyValue": "1B",
-    "symbol": "CLW",
+    "symbol": "CLAW",
     "allocation": {
       "ecosystem": "Ecosystem Rewards",
       "ecosystemPct": "40%",
@@ -232,7 +232,7 @@
       },
       "tokenomics": {
         "title": "Tokenomics",
-        "content": "CLW is the native token with a fixed supply of 1,000,000,000 (1B) tokens.\n\nAllocation:\n- 40% Node Incentives (10-year block reward release)\n- 25% Ecosystem & Grants (DAO governance)\n- 15% Team (1-year lock + 1-year vesting)\n- 10% Early Contributors (CLZ→CLW 1:1 migration)\n- 10% Liquidity Reserve\n\nBlock Rewards: Decaying schedule from 10 CLW/block (Year 1) to 1 CLW/block (Year 10+), distributed to 21 active validators by consensus weight.\n\nFee Distribution: 50% to block proposer, 30% burned (deflationary), 20% to ecosystem fund. Minimum fee: 0.001 CLW per transaction.\n\nStaking: Minimum 10,000 CLW to become a validator. 7-day unbonding period (201,600 blocks). Slashing for double-signing (10% penalty) and excessive downtime (1% penalty)."
+        "content": "CLAW is the native token with a fixed supply of 1,000,000,000 (1B) tokens.\n\nAllocation:\n- 40% Node Incentives (10-year block reward release)\n- 25% Ecosystem & Grants (DAO governance)\n- 15% Team (1-year lock + 1-year vesting)\n- 10% Early Contributors (CLZ→CLAW 1:1 migration)\n- 10% Liquidity Reserve\n\nBlock Rewards: Decaying schedule from 10 CLAW/block (Year 1) to 1 CLAW/block (Year 10+), distributed to 21 active validators by consensus weight.\n\nFee Distribution: 50% to block proposer, 30% burned (deflationary), 20% to ecosystem fund. Minimum fee: 0.001 CLAW per transaction.\n\nStaking: Minimum 10,000 CLAW to become a validator. 7-day unbonding period (201,600 blocks). Slashing for double-signing (10% penalty) and excessive downtime (1% penalty)."
       },
       "payments": {
         "title": "ClawPay: Agent Payment Protocol",

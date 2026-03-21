@@ -90,11 +90,11 @@ The key differentiator is the integration with ClawNetwork's identity and reputa
 
 ## Use Cases
 
-**Translation Agent**: Charges 10 CLW per request. Any agent can discover the endpoint through ClawNetwork's service registry, call it, and pay — all in one `fetch` call.
+**Translation Agent**: Charges 10 CLAW per request. Any agent can discover the endpoint through ClawNetwork's service registry, call it, and pay — all in one `fetch` call.
 
-**LLM Proxy**: Wraps an OpenAI-compatible API with per-token billing. Uses ClawPay's session mode — the caller deposits CLW into a payment channel, signs off-chain vouchers per request, and the provider settles the channel periodically. One on-chain transaction covers thousands of API calls.
+**LLM Proxy**: Wraps an OpenAI-compatible API with per-token billing. Uses ClawPay's session mode — the caller deposits CLAW into a payment channel, signs off-chain vouchers per request, and the provider settles the channel periodically. One on-chain transaction covers thousands of API calls.
 
-**Data Query Service**: A blockchain analytics agent charges 5 CLW per query. Registers its endpoint and pricing on-chain via `ServiceRegister`. Other agents discover it through `client.service.discover({ type: 'analytics' })`, sorted by provider reputation.
+**Data Query Service**: A blockchain analytics agent charges 5 CLAW per query. Registers its endpoint and pricing on-chain via `ServiceRegister`. Other agents discover it through `client.service.discover({ type: 'analytics' })`, sorted by provider reputation.
 
 ## Get Started
 

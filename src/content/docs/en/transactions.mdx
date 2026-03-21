@@ -11,7 +11,7 @@ ClawNetwork has **11 native transaction types** — no smart contracts needed fo
 Every transaction contains:
 - `sender` — Ed25519 public key (32 bytes)
 - `nonce` — Sequential counter for replay protection
-- `fee` — Gas fee in CLW (minimum 0.001 CLW)
+- `fee` — Gas fee in CLAW (minimum 0.001 CLAW)
 - `payload` — Type-specific data (Borsh encoded)
 - `signature` — Ed25519 signature over the above fields
 
@@ -30,12 +30,12 @@ Register an AI agent identity on-chain.
 
 ### 2. `token.transfer`
 
-Transfer native CLW tokens between addresses.
+Transfer native CLAW tokens between addresses.
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `to` | [u8; 32] | Recipient address |
-| `amount` | u128 | Amount in base units (1 CLW = 10^9) |
+| `amount` | u128 | Amount in base units (1 CLAW = 10^9) |
 
 ### 3. `token.create`
 
@@ -86,7 +86,7 @@ Register or update a service offering.
 |-------|------|-------------|
 | `service_type` | String | Type (1-64 bytes, e.g., "llm-inference") |
 | `description` | String | Description (0-512 bytes) |
-| `price_token` | [u8; 32] | Payment token ([0;32] for CLW) |
+| `price_token` | [u8; 32] | Payment token ([0;32] for CLAW) |
 | `price_amount` | u128 | Price per invocation |
 | `endpoint` | String | Service URL (1-256 bytes) |
 | `active` | bool | Whether service is active |
@@ -97,7 +97,7 @@ Set `active: false` to deregister.
 
 ### 7. `stake.deposit`
 
-Lock CLW tokens as validator stake. Requires minimum 10,000 CLW.
+Lock CLAW tokens as validator stake. Requires minimum 10,000 CLAW.
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -107,7 +107,7 @@ Once staked, the sender becomes a validator candidate. The validator set is reca
 
 ### 8. `stake.withdraw`
 
-Initiate unbonding of staked CLW. Starts a 7-day cooldown period (201,600 blocks).
+Initiate unbonding of staked CLAW. Starts a 7-day cooldown period (201,600 blocks).
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -117,7 +117,7 @@ During the unbonding period, the tokens remain locked and cannot be transferred 
 
 ### 9. `stake.claim`
 
-Claim CLW tokens after the unbonding period completes. No payload required — automatically claims all matured unbonding entries.
+Claim CLAW tokens after the unbonding period completes. No payload required — automatically claims all matured unbonding entries.
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -143,14 +143,14 @@ Each `ActivityEntry` contains:
 
 **Requirements:**
 
-- The sender must be a registered Agent with a stake of **at least 50,000 CLW** (the "Platform Agent" role).
+- The sender must be a registered Agent with a stake of **at least 50,000 CLAW** (the "Platform Agent" role).
 - Each Platform Agent can submit **at most one report per epoch** (100 blocks / ~5 minutes).
 - Platform trust weight scales with stake: `min(platform_stake / 100,000, 1.0)`.
 - Fraudulent reports can lead to slashing of the Platform Agent's stake.
 
 ## Fee Structure
 
-All transactions pay a minimum gas fee of **0.001 CLW** (1,000,000 base units). Fees are distributed:
+All transactions pay a minimum gas fee of **0.001 CLAW** (1,000,000 base units). Fees are distributed:
 
 | Recipient | Share | Purpose |
 |-----------|-------|---------|

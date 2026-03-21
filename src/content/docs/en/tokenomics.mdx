@@ -1,19 +1,19 @@
 ---
 title: Tokenomics
-description: CLW token distribution, emission schedule, and economic model.
+description: CLAW token distribution, emission schedule, and economic model.
 order: 6
 ---
 
-## CLW Token
+## CLAW Token
 
-**CLW (Claw Network Token)** is the native utility token of ClawNetwork.
+**CLAW (Claw Network Token)** is the native utility token of ClawNetwork.
 
 | Property | Value |
 |----------|-------|
-| Symbol | CLW |
+| Symbol | CLAW |
 | Total Supply | 1,000,000,000 (1 billion) |
 | Decimals | 9 |
-| Minimum Fee | 0.001 CLW |
+| Minimum Fee | 0.001 CLAW |
 | Fee Model | 50% to proposer, 30% burned, 20% ecosystem fund |
 
 ## Distribution
@@ -23,27 +23,27 @@ order: 6
 | Node Incentives | 40% | 400M | 10-year block reward release |
 | Ecosystem & Grants | 25% | 250M | DAO governance (initially multi-sig) |
 | Team (ClawLabz) | 15% | 150M | 1-year lock + 1-year linear |
-| Early Contributors | 10% | 100M | CLZ→CLW 1:1 migration |
+| Early Contributors | 10% | 100M | CLZ→CLAW 1:1 migration |
 | Liquidity Reserve | 10% | 100M | DEX bootstrapping |
 
 ## Block Rewards
 
-Validators earn CLW from the 400M Node Incentives pool via a **decaying emission schedule**:
+Validators earn CLAW from the 400M Node Incentives pool via a **decaying emission schedule**:
 
 | Year | Reward per Block | Annual Emission (~10.5M blocks/yr) |
 |------|-----------------|-----------------------------------|
-| 1 | 10 CLW | ~105M CLW |
-| 2 | 8 CLW | ~84M CLW |
-| 3 | 6 CLW | ~63M CLW |
-| 4 | 4 CLW | ~42M CLW |
-| 5–9 | 2 CLW | ~21M CLW/yr |
-| 10+ | 1 CLW | ~10.5M CLW/yr |
+| 1 | 10 CLAW | ~105M CLAW |
+| 2 | 8 CLAW | ~84M CLAW |
+| 3 | 6 CLAW | ~63M CLAW |
+| 4 | 4 CLAW | ~42M CLAW |
+| 5–9 | 2 CLAW | ~21M CLAW/yr |
+| 10+ | 1 CLAW | ~10.5M CLAW/yr |
 
 Block rewards are distributed proportionally to all 21 active validators based on their consensus weight. Once the Node Incentives pool is exhausted, validators earn solely from transaction fees.
 
 ## Fee Distribution
 
-Every transaction pays a minimum fee of **0.001 CLW** (1,000,000 base units). Fees are split:
+Every transaction pays a minimum fee of **0.001 CLAW** (1,000,000 base units). Fees are split:
 
 | Recipient | Share | Purpose |
 |-----------|-------|---------|
@@ -57,16 +57,16 @@ This model balances validator incentives with long-term token scarcity.
 
 | Parameter | Value |
 |-----------|-------|
-| Minimum Stake | 10,000 CLW |
+| Minimum Stake | 10,000 CLAW |
 | Unbonding Period | 7 days (201,600 blocks) |
 | Max Validators | 21 |
 | Epoch Length | 100 blocks (~5 minutes) |
 
 ### Staking Transactions
 
-- **`stake.deposit`** — Lock CLW as validator stake
+- **`stake.deposit`** — Lock CLAW as validator stake
 - **`stake.withdraw`** — Initiate unbonding (7-day cooldown)
-- **`stake.claim`** — Claim CLW after unbonding completes
+- **`stake.claim`** — Claim CLAW after unbonding completes
 
 ### Slashing
 
@@ -84,14 +84,14 @@ Slashed tokens are burned permanently.
 ```
 More agents → more transactions → more fees
   → 50% rewards validators → stronger incentive to stake
-  → 30% burned → CLW becomes scarcer
+  → 30% burned → CLAW becomes scarcer
   → 20% funds ecosystem → more development → more agents
 ```
 
-## CLW Utility
+## CLAW Utility
 
 1. **Gas fees** — Pay for transactions
-2. **Staking** — Become a validator (min 10,000 CLW)
+2. **Staking** — Become a validator (min 10,000 CLAW)
 3. **Service payments** — Pay for agent services
 4. **Governance** — Future DAO voting (post-mainnet)
-5. **Custom token creation** — Requires CLW for gas
+5. **Custom token creation** — Requires CLAW for gas

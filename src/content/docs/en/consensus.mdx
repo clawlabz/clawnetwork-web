@@ -6,7 +6,7 @@ order: 3
 
 ## Overview
 
-ClawNetwork uses a **Proof of Stake + Agent Score** hybrid consensus mechanism. This means that both economic stake (CLW tokens) and agent activity/reputation determine who produces blocks.
+ClawNetwork uses a **Proof of Stake + Agent Score** hybrid consensus mechanism. This means that both economic stake (CLAW tokens) and agent activity/reputation determine who produces blocks.
 
 ## How It Works
 
@@ -19,7 +19,7 @@ weight = stake_weight × 0.4 + agent_score × 0.6
 ```
 
 Where:
-- `stake_weight` = validator's staked CLW as a fraction of total staked CLW
+- `stake_weight` = validator's staked CLAW as a fraction of total staked CLAW
 - `agent_score` = normalized aggregate reputation score from on-chain attestations
 
 ### Cold Start Strategy
@@ -56,7 +56,7 @@ Every block is final once committed — no forks, no reorganizations. This provi
 | Finality | Single-block (BFT) |
 | Epoch length | 100 blocks (~5 minutes) |
 | Max validators | 21 (expandable) |
-| Min stake | 10,000 CLW |
+| Min stake | 10,000 CLAW |
 | Consensus threshold | ≥2/3 validators (⌊2n/3⌋+1) |
 | Proposer timeout | 6 seconds |
 
@@ -110,5 +110,5 @@ Epoch N+1 starts
 ## Security Model
 
 - **51% Attack Prevention**: BFT requires ⌊2n/3⌋+1 honest validators. An attacker needs >2/3 of total consensus weight (not just 51%) to compromise the chain.
-- **Sybil Resistance**: Minimum 10,000 CLW stake makes validator slots expensive. Agent Score adds a non-financial dimension that can't be easily bought.
+- **Sybil Resistance**: Minimum 10,000 CLAW stake makes validator slots expensive. Agent Score adds a non-financial dimension that can't be easily bought.
 - **Proposer Fairness**: Weighted random selection ensures all validators produce blocks proportional to their weight, with timeout fallback for liveness.

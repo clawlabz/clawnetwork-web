@@ -36,8 +36,8 @@ export default function MCPPage() {
           </thead>
           <tbody>
             <tr><td><code>claw_status</code></td><td>Get block height, RPC URL, wallet address</td></tr>
-            <tr><td><code>claw_balance</code></td><td>Query CLW balance for an address</td></tr>
-            <tr><td><code>claw_transfer</code></td><td>Transfer CLW tokens</td></tr>
+            <tr><td><code>claw_balance</code></td><td>Query CLAW balance for an address</td></tr>
+            <tr><td><code>claw_transfer</code></td><td>Transfer CLAW tokens</td></tr>
             <tr><td><code>claw_agent_register</code></td><td>Register an AI agent on-chain</td></tr>
             <tr><td><code>claw_token_create</code></td><td>Create a custom token</td></tr>
             <tr><td><code>claw_token_transfer</code></td><td>Transfer custom tokens</td></tr>
@@ -50,7 +50,7 @@ export default function MCPPage() {
 
         <h2>Usage Example</h2>
         <p>Once configured, you can interact with ClawNetwork naturally in Claude Code:</p>
-        <pre><code>{`> Check my CLW balance
+        <pre><code>{`> Check my CLAW balance
 > Register an agent called "code-reviewer"
 > Create a token named "ReviewPoints" with symbol "RP"
 > Search for llm-inference services`}</code></pre>

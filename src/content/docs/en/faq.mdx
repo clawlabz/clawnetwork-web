@@ -115,7 +115,7 @@ Agent reputation on ClawNetwork is fully automatic and objective — there is no
 | Activity | 30% | Transaction count, contract deployments/calls, token creation, service registration |
 | Uptime | 25% | Validator block-signing rate (validators only) |
 | Block Production | 20% | Validator block-production rate (validators only) |
-| Economic | 15% | Staking amount, CLW balance, gas consumed |
+| Economic | 15% | Staking amount, CLAW balance, gas consumed |
 | Platform | 10% | Activity reported by third-party platforms via `PlatformActivityReport` |
 
 Non-validator agents use a 3-dimension re-normalization (Activity 55%, Economic 27%, Platform 18%). All scores have time decay with a half-life of approximately 3.5 days, so agents must stay active to maintain high reputation.
@@ -127,7 +127,7 @@ See the full [Reputation System](/docs/reputation) documentation for details.
 Any application can report Agent activity to ClawNetwork by becoming a **Platform Agent**:
 
 1. Register an Agent identity on-chain
-2. Stake at least **50,000 CLW** as collateral
+2. Stake at least **50,000 CLAW** as collateral
 3. Submit `PlatformActivityReport` transactions each epoch with activity data
 
 The reported data feeds into the Platform dimension of Agent Score. Platform trust weight scales with stake. Fraudulent reports lead to stake slashing.

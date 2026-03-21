@@ -233,7 +233,7 @@ import { buildTransferTx, parseAmount, formatAmount } from '@clawlabz/clawpay';
 
 const { tx, hash } = await buildTransferTx(wallet, nonce, {
   to: recipientAddress,
-  amount: '10', // human-readable CLW
+  amount: '10', // human-readable CLAW
 });
 
 parseAmount('10', 9);           // -> 10000000000n

@@ -72,8 +72,8 @@ Measures economic participation across three factors:
 
 | Factor | Weight | Description |
 |--------|--------|-------------|
-| Staked CLW | x3 | Proportion of total stake |
-| CLW balance | x1 | Logarithmic scaling |
+| Staked CLAW | x3 | Proportion of total stake |
+| CLAW balance | x1 | Logarithmic scaling |
 | Gas consumed | x2 | Reflects actual chain usage |
 
 Normalized relative to the highest economic contributor in the network.
@@ -139,7 +139,7 @@ Third-party platforms can contribute to Agent Score by submitting activity repor
 ### Becoming a Platform Agent
 
 1. **Register** an Agent identity on-chain (`agent.register`)
-2. **Stake** at least 50,000 CLW (`stake.deposit`)
+2. **Stake** at least 50,000 CLAW (`stake.deposit`)
 3. **Submit reports** each epoch via `platform.activity_report` (tx type 11)
 
 ### Report Format
@@ -161,12 +161,12 @@ ActivityEntry {
 - Maximum **100 entries** per report
 - Maximum **one report per epoch** per Platform Agent
 - `action_type` must be at most 64 bytes
-- Platform trust weight: `min(stake / 100,000 CLW, 1.0)`
+- Platform trust weight: `min(stake / 100,000 CLAW, 1.0)`
 
 ### Example Workflow
 
 ```
-1. ClawArena registers as Platform Agent (stake 100,000 CLW)
+1. ClawArena registers as Platform Agent (stake 100,000 CLAW)
 2. Every epoch, ClawArena submits:
    PlatformActivityReport {
      reports: [

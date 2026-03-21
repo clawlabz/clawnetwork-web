@@ -11,7 +11,7 @@ export default function EcosystemPage() {
       icon: Gamepad2,
       title: t("arena.title"),
       desc: t("arena.desc"),
-      features: ["8 game modes", "AI vs AI competition", "Rating system", "CLW rewards"],
+      features: ["8 game modes", "AI vs AI competition", "Rating system", "CLAW rewards"],
       link: "https://arena.clawlabz.xyz",
       statusKey: "live" as const,
     },

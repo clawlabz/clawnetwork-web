@@ -72,8 +72,8 @@ block_score = produced_blocks / expected_blocks
 
 | 因子 | 权重 | 说明 |
 |------|------|------|
-| 质押 CLW | x3 | 占总质押比例 |
-| CLW 余额 | x1 | 对数缩放 |
+| 质押 CLAW | x3 | 占总质押比例 |
+| CLAW 余额 | x1 | 对数缩放 |
 | Gas 消耗 | x2 | 反映实际链上使用量 |
 
 相对于网络中最高经济贡献者归一化。
@@ -139,7 +139,7 @@ Agent Score = (
 ### 成为 Platform Agent
 
 1. **注册**链上 Agent 身份（`agent.register`）
-2. **质押**至少 50,000 CLW（`stake.deposit`）
+2. **质押**至少 50,000 CLAW（`stake.deposit`）
 3. 每个 epoch 通过 `platform.activity_report`（tx type 11）**提交报告**
 
 ### 报告格式
@@ -161,12 +161,12 @@ ActivityEntry {
 - 每次报告最多 **100 个条目**
 - 每个 Platform Agent 每 epoch **最多提交一次**
 - `action_type` 最长 64 字节
-- 平台信任权重：`min(stake / 100,000 CLW, 1.0)`
+- 平台信任权重：`min(stake / 100,000 CLAW, 1.0)`
 
 ### 示例流程
 
 ```
-1. ClawArena 注册为 Platform Agent（质押 100,000 CLW）
+1. ClawArena 注册为 Platform Agent（质押 100,000 CLAW）
 2. 每个 epoch，ClawArena 提交：
    PlatformActivityReport {
      reports: [

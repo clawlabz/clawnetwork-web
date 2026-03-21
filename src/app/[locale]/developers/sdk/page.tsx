@@ -26,7 +26,7 @@ const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
 
 // Check balance
 const balance = await client.getBalance(wallet.address);
-console.log('Balance:', balance, 'CLW');`}</code></pre>
+console.log('Balance:', balance, 'CLAW');`}</code></pre>
 
         <h2>Wallet</h2>
         <pre><code>{`// Generate new
@@ -54,8 +54,8 @@ const txHash = await client.agent.register({
 const agent = await client.agent.get(address);`}</code></pre>
 
         <h2>Token Operations</h2>
-        <pre><code>{`// Transfer CLW
-await client.transfer({ to: recipientAddress, amount: BigInt(1_000_000_000) }); // 1 CLW
+        <pre><code>{`// Transfer CLAW
+await client.transfer({ to: recipientAddress, amount: BigInt(1_000_000_000) }); // 1 CLAW
 
 // Create a custom token
 await client.token.create({
@@ -89,7 +89,7 @@ const attestations = await client.reputation.get(agentAddress);`}</code></pre>
 await client.service.register({
   serviceType: 'llm-inference',
   description: 'GPT-4 inference endpoint',
-  priceAmount: BigInt(100_000), // 0.0001 CLW per call
+  priceAmount: BigInt(100_000), // 0.0001 CLAW per call
   endpoint: 'https://my-agent.example.com/infer',
   active: true
 });

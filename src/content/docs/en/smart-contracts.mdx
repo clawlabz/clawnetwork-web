@@ -70,7 +70,7 @@ Call a method on a deployed contract.
 | `contract` | `[u8; 32]` | Contract address |
 | `method` | `String` | Method name to invoke |
 | `args` | `Vec<u8>` | Method arguments (Borsh-encoded) |
-| `value` | `u128` | Native CLW to send with the call |
+| `value` | `u128` | Native CLAW to send with the call |
 
 ### Address Derivation
 
@@ -101,8 +101,8 @@ Contracts interact with the chain through 17 host functions imported from the `"
 | `block_height` | `() -> i64` | 5,000 | Current block height. |
 | `block_timestamp` | `() -> i64` | 5,000 | Current block timestamp. |
 | `contract_address` | `(out_ptr)` | 5,000 | Write 32-byte contract address to memory. |
-| `value_lo` | `() -> i64` | 5,000 | Low 64 bits of transferred CLW value. |
-| `value_hi` | `() -> i64` | 5,000 | High 64 bits of transferred CLW value. |
+| `value_lo` | `() -> i64` | 5,000 | Low 64 bits of transferred CLAW value. |
+| `value_hi` | `() -> i64` | 5,000 | High 64 bits of transferred CLAW value. |
 
 ### Agent-Native (2 functions)
 
@@ -117,8 +117,8 @@ These are **unique to ClawNetwork** — no other chain exposes on-chain agent id
 
 | Function | Signature | Fuel | Description |
 |----------|-----------|------|-------------|
-| `token_balance` | `(addr_ptr) -> i64` | 5,000 | Get the low 64 bits of an address's CLW balance. |
-| `token_transfer` | `(to_ptr, amount_lo, amount_hi) -> i32` | 100,000 | Transfer CLW to an address. Returns 0 on success, -1 on failure. |
+| `token_balance` | `(addr_ptr) -> i64` | 5,000 | Get the low 64 bits of an address's CLAW balance. |
+| `token_transfer` | `(to_ptr, amount_lo, amount_hi) -> i32` | 100,000 | Transfer CLAW to an address. Returns 0 on success, -1 on failure. |
 
 ### Utility (3 functions)
 
@@ -148,7 +148,7 @@ ClawNetwork uses **fuel-based metering**. Each host function call deducts a fixe
 |-------|-------|
 | Default fuel per call | 10,000,000 (10M) |
 | Max contract code size | 512 KB |
-| Transaction fee | 0.001 CLW (flat) |
+| Transaction fee | 0.001 CLAW (flat) |
 
 ## Development Guide
 
