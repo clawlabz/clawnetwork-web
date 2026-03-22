@@ -19,7 +19,7 @@ export async function getNetworkStats(): Promise<NetworkStats> {
       fetch(RPC_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "clw_blockNumber", params: [] }),
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "claw_blockNumber", params: [] }),
         signal: controller.signal,
         cache: "no-store",
       }),
