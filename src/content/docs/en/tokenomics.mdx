@@ -68,16 +68,16 @@ This model balances validator incentives with long-term token scarcity.
 - **`stake.withdraw`** — Initiate unbonding (7-day cooldown)
 - **`stake.claim`** — Claim CLAW after unbonding completes
 
-### Slashing
+### Slashing & Penalties
 
-Validators face penalties for misbehavior:
+Slashing is reserved for equivocation (double-signing) only. Downtime is not considered malicious and does not result in stake slashing.
 
 | Offense | Penalty | Additional |
 |---------|---------|------------|
 | Double signing (equivocation) | 10% of stake slashed | Jailed for 1 epoch |
-| Downtime (>50% missed blocks) | 1% of stake slashed | Removed from active set |
+| Downtime (>50% missed blocks) | Block rewards withheld | No slash, no jail — rewards resume when uptime recovers |
 
-Slashed tokens are burned permanently.
+Slashed tokens (from equivocation) are burned permanently.
 
 ## Economic Flywheel
 

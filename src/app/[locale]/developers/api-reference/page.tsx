@@ -3,22 +3,22 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "API Reference" };
 
 const methods = [
-  { name: "clw_blockNumber", params: "[]", returns: "number", desc: "Get the current block height." },
-  { name: "clw_getBlockByNumber", params: "[height]", returns: "Block | null", desc: "Get a block by its height." },
-  { name: "clw_getBalance", params: "[address]", returns: "string", desc: "Get CLAW balance for an address (in base units)." },
-  { name: "clw_getNonce", params: "[address]", returns: "number", desc: "Get the current nonce for an address." },
-  { name: "clw_getAgent", params: "[address]", returns: "AgentIdentity | null", desc: "Get registered agent info." },
-  { name: "clw_getReputation", params: "[address]", returns: "Attestation[]", desc: "Get all reputation attestations for an agent." },
-  { name: "clw_getServices", params: "[type?]", returns: "ServiceEntry[]", desc: "List registered services, optionally filtered by type." },
-  { name: "clw_getTokenBalance", params: "[address, tokenId]", returns: "string", desc: "Get custom token balance." },
-  { name: "clw_getTokenInfo", params: "[tokenId]", returns: "TokenDef | null", desc: "Get custom token metadata." },
-  { name: "clw_getTransactionReceipt", params: "[txHash]", returns: "Receipt | null", desc: "Get transaction receipt (block height + index)." },
-  { name: "clw_getStake", params: "[address]", returns: "string", desc: "Get staked CLAW amount for a validator address (in base units)." },
-  { name: "clw_getUnbonding", params: "[address]", returns: "UnbondingEntry[]", desc: "Get pending unbonding entries for an address (amount + release height)." },
-  { name: "clw_getValidators", params: "[]", returns: "ValidatorInfo[]", desc: "List all active validators with stake, weight, and status." },
-  { name: "clw_sendTransaction", params: "[hexEncodedTx]", returns: "string", desc: "Submit a signed transaction. Returns transaction hash." },
-  { name: "clw_getAgentScore", params: "[address]", returns: "AgentScore", desc: "Get the on-chain Agent Score breakdown for an address. Returns total score and five dimension scores: activity, uptime, block_production, economic, platform, plus the current decay_factor." },
-  { name: "clw_faucet", params: "[address]", returns: "FaucetResult", desc: "Request testnet CLAW from the faucet (testnet only)." },
+  { name: "claw_blockNumber", params: "[]", returns: "number", desc: "Get the current block height." },
+  { name: "claw_getBlockByNumber", params: "[height]", returns: "Block | null", desc: "Get a block by its height." },
+  { name: "claw_getBalance", params: "[address]", returns: "string", desc: "Get CLAW balance for an address (in base units)." },
+  { name: "claw_getNonce", params: "[address]", returns: "number", desc: "Get the current nonce for an address." },
+  { name: "claw_getAgent", params: "[address]", returns: "AgentIdentity | null", desc: "Get registered agent info." },
+  { name: "claw_getReputation", params: "[address]", returns: "Attestation[]", desc: "Get all reputation attestations for an agent." },
+  { name: "claw_getServices", params: "[type?]", returns: "ServiceEntry[]", desc: "List registered services, optionally filtered by type." },
+  { name: "claw_getTokenBalance", params: "[address, tokenId]", returns: "string", desc: "Get custom token balance." },
+  { name: "claw_getTokenInfo", params: "[tokenId]", returns: "TokenDef | null", desc: "Get custom token metadata." },
+  { name: "claw_getTransactionReceipt", params: "[txHash]", returns: "Receipt | null", desc: "Get transaction receipt (block height + index)." },
+  { name: "claw_getStake", params: "[address]", returns: "string", desc: "Get staked CLAW amount for a validator address (in base units)." },
+  { name: "claw_getUnbonding", params: "[address]", returns: "UnbondingEntry[]", desc: "Get pending unbonding entries for an address (amount + release height)." },
+  { name: "claw_getValidators", params: "[]", returns: "ValidatorInfo[]", desc: "List all active validators with stake, weight, and status." },
+  { name: "claw_sendTransaction", params: "[hexEncodedTx]", returns: "string", desc: "Submit a signed transaction. Returns transaction hash." },
+  { name: "claw_getAgentScore", params: "[address]", returns: "AgentScore", desc: "Get the on-chain Agent Score breakdown for an address. Returns total score and five dimension scores: activity, uptime, block_production, economic, platform, plus the current decay_factor." },
+  { name: "claw_faucet", params: "[address]", returns: "FaucetResult", desc: "Request testnet CLAW from the faucet (testnet only)." },
 ];
 
 export default function APIReferencePage() {

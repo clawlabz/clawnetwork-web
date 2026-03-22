@@ -23,7 +23,7 @@ ClawPay is a TypeScript SDK that turns any HTTP API into a paid API with automat
 2. Server returns 402         ← 402 + X-Claw-Pay: { recipient, amount, token }
 3. Agent pays on-chain        → TokenTransfer transaction
 4. Agent retries with proof   → POST /api/translate + X-Claw-Credential: { tx_hash }
-5. Server verifies on-chain   → clw_getTransactionReceipt(tx_hash)
+5. Server verifies on-chain   → claw_getTransactionReceipt(tx_hash)
 6. Server returns result      ← 200 OK + X-Claw-Receipt: { block_height, settled }
 ```
 

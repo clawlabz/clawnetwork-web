@@ -73,19 +73,22 @@ If a validator signs two different blocks at the same height:
 
 ### Downtime
 
-If a validator misses more than 50% of blocks in an epoch:
-- **1% of stake** is slashed and burned
-- Validator is **removed from the active set**
-- Can rejoin by maintaining uptime in subsequent epochs
+Downtime is not malicious behavior. Validators who miss blocks are not slashed — slashing is reserved for equivocation (double-signing) only.
 
-### Slashing Rationale
+If a validator misses more than 50% of blocks in an epoch:
+- **Excluded from block rewards** for that epoch (no CLAW earned)
+- **No stake is slashed**
+- **No jailing** — the validator remains in the active set
+- Rewards resume automatically once uptime recovers
+
+### Penalty Summary
 
 | Offense | Severity | Penalty | Rationale |
 |---------|----------|---------|-----------|
-| Double signing | Critical | 10% slash + jail | Threatens consensus safety |
-| Downtime >50% | Moderate | 1% slash + removal | Threatens liveness |
+| Double signing | Critical | 10% slash + jail | Threatens consensus safety — intentional malice |
+| Downtime >50% | Low | Block rewards withheld | Not malicious — only economic incentive reduced |
 
-Slashed tokens are permanently burned, reducing total supply.
+Slashed tokens (from equivocation only) are permanently burned, reducing total supply.
 
 ## Why Agent Score?
 
@@ -101,7 +104,7 @@ Traditional PoS rewards capital. ClawNetwork also rewards **activity and trustwo
 ```
 Epoch N starts
   → 100 blocks produced (3s each ≈ 5 min)
-  → Slashing checks: downtime & equivocation evidence processed
+  → Penalty checks: equivocation evidence processed, downtime reward exclusion applied
   → Validator set recalculated
   → Weights updated with latest stakes and scores
 Epoch N+1 starts

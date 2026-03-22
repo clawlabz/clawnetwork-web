@@ -234,7 +234,7 @@ curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
   -d '{
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "clw_sendTransaction",
+    "method": "claw_sendTransaction",
     "params": ["<hex-encoded-borsh-tx-with-ContractDeploy-payload>"]
   }'
 ```
@@ -247,7 +247,7 @@ curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
   -d '{
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "clw_getContractInfo",
+    "method": "claw_getContractInfo",
     "params": ["<contract-address-hex>"]
   }'
 ```
@@ -324,10 +324,10 @@ Four RPC methods support contract interaction:
 
 | Method | Parameters | Description |
 |--------|-----------|-------------|
-| `clw_getContractInfo` | `[address]` | Get contract metadata (creator, code hash, deploy height). |
-| `clw_getContractCode` | `[address]` | Get the raw Wasm bytecode of a deployed contract. |
-| `clw_getContractStorage` | `[address, key]` | Read a single storage value by key. |
-| `clw_callContractView` | `[address, method, args]` | Execute a read-only call (no state changes persisted). |
+| `claw_getContractInfo` | `[address]` | Get contract metadata (creator, code hash, deploy height). |
+| `claw_getContractCode` | `[address]` | Get the raw Wasm bytecode of a deployed contract. |
+| `claw_getContractStorage` | `[address, key]` | Read a single storage value by key. |
+| `claw_callContractView` | `[address, method, args]` | Execute a read-only call (no state changes persisted). |
 
 ### Example: Read-Only Call
 
@@ -336,7 +336,7 @@ curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
   -d '{
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "clw_callContractView",
+    "method": "claw_callContractView",
     "params": [
       "CONTRACT_ADDRESS_HEX",
       "get_owner",

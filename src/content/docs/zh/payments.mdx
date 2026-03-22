@@ -35,7 +35,7 @@ npm install @clawlabz/clawpay
   }
 
 第 3 步：客户端 SDK 自动完成链上转账
-  clw_sendTransaction(TokenTransfer { to, amount })
+  claw_sendTransaction(TokenTransfer { to, amount })
   等待确认（约 3 秒）
 
 第 4 步：客户端带凭证重新请求
@@ -46,7 +46,7 @@ npm install @clawlabz/clawpay
   }
 
 第 5 步：服务端在链上验证支付
-  clw_getTransactionReceipt(tx_hash)
+  claw_getTransactionReceipt(tx_hash)
   确认：接收地址正确、金额正确、已确认
 
 第 6 步：返回结果 + 收据

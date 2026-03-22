@@ -234,7 +234,7 @@ curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
   -d '{
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "clw_sendTransaction",
+    "method": "claw_sendTransaction",
     "params": ["<hex-encoded-borsh-tx-with-ContractDeploy-payload>"]
   }'
 ```
@@ -247,7 +247,7 @@ curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
   -d '{
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "clw_getContractInfo",
+    "method": "claw_getContractInfo",
     "params": ["<contract-address-hex>"]
   }'
 ```
@@ -324,10 +324,10 @@ pub extern "C" fn deposit() {
 
 | 方法 | 参数 | 说明 |
 |------|------|------|
-| `clw_getContractInfo` | `[address]` | 获取合约元数据（创建者、代码哈希、部署高度）。 |
-| `clw_getContractCode` | `[address]` | 获取已部署合约的原始 Wasm 字节码。 |
-| `clw_getContractStorage` | `[address, key]` | 按键读取单个存储值。 |
-| `clw_callContractView` | `[address, method, args]` | 执行只读调用（不持久化状态变更）。 |
+| `claw_getContractInfo` | `[address]` | 获取合约元数据（创建者、代码哈希、部署高度）。 |
+| `claw_getContractCode` | `[address]` | 获取已部署合约的原始 Wasm 字节码。 |
+| `claw_getContractStorage` | `[address, key]` | 按键读取单个存储值。 |
+| `claw_callContractView` | `[address, method, args]` | 执行只读调用（不持久化状态变更）。 |
 
 ### 示例：只读调用
 
@@ -336,7 +336,7 @@ curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
   -d '{
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "clw_callContractView",
+    "method": "claw_callContractView",
     "params": [
       "CONTRACT_ADDRESS_HEX",
       "get_owner",

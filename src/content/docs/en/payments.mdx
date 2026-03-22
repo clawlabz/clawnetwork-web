@@ -35,7 +35,7 @@ Step 2: Service returns 402 + payment challenge
   }
 
 Step 3: Client SDK automatically sends on-chain transfer
-  clw_sendTransaction(TokenTransfer { to, amount })
+  claw_sendTransaction(TokenTransfer { to, amount })
   Wait for confirmation (~3 seconds)
 
 Step 4: Client retries with payment credential
@@ -46,7 +46,7 @@ Step 4: Client retries with payment credential
   }
 
 Step 5: Service verifies payment on-chain
-  clw_getTransactionReceipt(tx_hash)
+  claw_getTransactionReceipt(tx_hash)
   Confirm: correct recipient, correct amount, confirmed
 
 Step 6: Service returns result + receipt
