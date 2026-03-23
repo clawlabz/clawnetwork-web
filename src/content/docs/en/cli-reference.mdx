@@ -1,0 +1,618 @@
+---
+title: CLI Reference
+description: Complete command reference for claw-node and claw-miner CLI tools.
+order: 9
+---
+
+## Overview
+
+ClawNetwork provides two CLI tools:
+
+- **`claw-node`** — Full node for syncing, validating, and staking on the network
+- **`claw-miner`** — Mining client for earning CLAW by contributing resources
+
+Both are available as pre-built binaries from the [GitHub Releases](https://github.com/clawlabz/claw-network/releases) page, or via the one-line installer described in the [Quick Start](/docs/quickstart) guide.
+
+---
+
+## claw-node
+
+### `claw-node init`
+
+Initialize a new node data directory with keypair and configuration.
+
+```bash
+claw-node init [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--network` | `devnet` | Network to join: `devnet`, `testnet`, `mainnet` |
+| `--data-dir` | `~/.clawnetwork` | Data directory path |
+
+**Example:**
+
+```bash
+# Initialize for mainnet
+claw-node init --network mainnet
+
+# Initialize for testnet with custom data directory
+claw-node init --network testnet --data-dir /opt/claw-data
+```
+
+Creates the following structure:
+
+```
+~/.clawnetwork/
+├── config.toml          # Node configuration
+├── keypair.json         # Ed25519 keypair (keep this safe!)
+└── data/                # Chain data (blocks, state)
+```
+
+---
+
+### `claw-node start`
+
+Start the node and begin syncing with the network.
+
+```bash
+claw-node start [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--network` | `devnet` | Network to connect to |
+| `--data-dir` | `~/.clawnetwork` | Data directory path |
+| `--rpc-port` | `9710` | JSON-RPC server port |
+| `--p2p-port` | `9711` | P2P networking port |
+| `--rpc-bind` | `127.0.0.1` | RPC bind address |
+| `--p2p-bind` | `0.0.0.0` | P2P bind address |
+| `--bootstrap` | (built-in) | Comma-separated bootstrap peer addresses |
+| `--log-level` | `info` | Log verbosity: `error`, `warn`, `info`, `debug`, `trace` |
+
+**Examples:**
+
+```bash
+# Start with defaults (mainnet, port 9710)
+claw-node start --network mainnet
+
+# Start with custom RPC port and expose to network
+claw-node start --network mainnet --rpc-port 8545 --rpc-bind 0.0.0.0
+
+# Start with debug logging
+claw-node start --network testnet --log-level debug
+
+# Start with a custom bootstrap peer
+claw-node start --network mainnet --bootstrap 178.156.162.162:9711
+```
+
+The node will:
+1. Load configuration and keypair from the data directory
+2. Connect to bootstrap peers via P2P
+3. Sync blocks from the network
+4. Start the JSON-RPC server
+
+---
+
+### `claw-node stake`
+
+Stake CLAW tokens to become a validator and earn block rewards.
+
+```bash
+claw-node stake <AMOUNT> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<AMOUNT>` | Amount of CLAW to stake (in whole units) |
+| `--rpc` | RPC endpoint to submit the staking transaction |
+| `--data-dir` | Data directory containing the keypair |
+
+**Examples:**
+
+```bash
+# Stake 100,000 CLAW via the public RPC
+claw-node stake 100000 --rpc https://rpc.clawlabz.xyz
+
+# Stake via local node
+claw-node stake 50000 --rpc http://localhost:9710
+```
+
+Minimum staking amounts:
+
+| Network | Minimum Stake |
+|---------|--------------|
+| Mainnet | 100,000 CLAW |
+| Testnet | 100 CLAW |
+
+---
+
+### `claw-node unstake`
+
+Unstake CLAW tokens. Subject to the unbonding period.
+
+```bash
+claw-node unstake <AMOUNT> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<AMOUNT>` | Amount of CLAW to unstake |
+| `--rpc` | RPC endpoint |
+| `--data-dir` | Data directory containing the keypair |
+
+**Example:**
+
+```bash
+claw-node unstake 50000 --rpc https://rpc.clawlabz.xyz
+```
+
+The unbonding period is **7 days** on mainnet. During this period, tokens remain locked and do not earn rewards.
+
+---
+
+### `claw-node key info`
+
+Display the node's wallet address and public key.
+
+```bash
+claw-node key info [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--data-dir` | `~/.clawnetwork` | Data directory containing the keypair |
+
+**Example:**
+
+```bash
+claw-node key info
+
+# Output:
+# Address:    0x7a3b...f291
+# Public Key: ed25519:HxK9...mZ3p
+# Network:    mainnet
+```
+
+---
+
+### `claw-node key export`
+
+Export the private key (use with extreme caution).
+
+```bash
+claw-node key export [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--data-dir` | `~/.clawnetwork` | Data directory containing the keypair |
+
+**Example:**
+
+```bash
+claw-node key export --data-dir ~/.clawnetwork
+```
+
+> **Warning:** Never share your private key. Store it in a secure location. Anyone with your private key can transfer your funds.
+
+---
+
+### `claw-node status`
+
+Query the status of a running node.
+
+```bash
+claw-node status [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--rpc` | `http://localhost:9710` | RPC endpoint to query |
+
+**Example:**
+
+```bash
+claw-node status
+
+# Output:
+# Node Version:  0.2.4
+# Block Height:  123456
+# Peers:         4
+# Synced:        true
+# Mempool:       2 txns
+# Uptime:        3d 12h 45m
+```
+
+---
+
+## claw-miner
+
+### `claw-miner init`
+
+Initialize the miner wallet and configuration.
+
+```bash
+claw-miner init [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--rpc` | `https://rpc.clawlabz.xyz` | Node RPC endpoint to connect to |
+
+**Example:**
+
+```bash
+# Initialize with defaults
+claw-miner init
+
+# Initialize with custom RPC
+claw-miner init --rpc http://localhost:9710
+```
+
+Creates:
+
+```
+~/.clawminer/
+├── config.toml     # Miner configuration
+├── keypair.json    # Miner wallet keypair
+└── models/         # Local model storage
+```
+
+---
+
+### `claw-miner start`
+
+Start the mining process. The miner will register with the network and begin earning rewards.
+
+```bash
+claw-miner start [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--tier` | `1` | Mining tier: `1` (online), `2` (LLM sharing), `3` (GPU compute) |
+| `--rpc` | (from config) | Node RPC endpoint |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--log-level` | `info` | Log verbosity |
+
+**Examples:**
+
+```bash
+# Start Tier 1 mining (just stay online)
+claw-miner start
+
+# Start Tier 2 mining (LLM sharing)
+claw-miner start --tier 2
+
+# Start Tier 3 mining (GPU compute)
+claw-miner start --tier 3
+```
+
+See [Agent Mining](/docs/mining) for details on each tier's requirements and rewards.
+
+---
+
+### `claw-miner stop`
+
+Gracefully stop the mining process.
+
+```bash
+claw-miner stop [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--data-dir` | `~/.clawminer` | Miner data directory |
+
+**Example:**
+
+```bash
+claw-miner stop
+```
+
+The miner deregisters from the network before shutting down. Abruptly killing the process may temporarily reduce your reputation score.
+
+---
+
+### `claw-miner status`
+
+Show the current mining status, including tier, uptime, and accumulated rewards.
+
+```bash
+claw-miner status [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--rpc` | (from config) | Node RPC endpoint |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
+
+**Example:**
+
+```bash
+claw-miner status
+
+# Output:
+# Miner Status:     active
+# Tier:             2 (LLM Sharing)
+# Uptime:           5d 8h 12m
+# Reputation:       1.0x (full rewards)
+# Pending Rewards:  42.5 CLAW
+# LLM Models:       deepseek-v3 (shared)
+# Tasks Completed:  128
+```
+
+---
+
+### `claw-miner balance`
+
+Show the miner wallet's CLAW balance.
+
+```bash
+claw-miner balance [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--rpc` | (from config) | Node RPC endpoint |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
+
+**Example:**
+
+```bash
+claw-miner balance
+
+# Output:
+# Address:   0x3f2a...b817
+# Balance:   1,250.75 CLAW
+# Staked:    100.00 CLAW
+# Available: 1,150.75 CLAW
+```
+
+---
+
+### `claw-miner model list`
+
+List all available AI models that can be deployed locally for Tier 3 mining.
+
+```bash
+claw-miner model list [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--rpc` | (from config) | Node RPC endpoint |
+
+**Example:**
+
+```bash
+claw-miner model list
+
+# Output:
+# Available Models:
+#   llama-3.1-8b       8B params    ~6GB VRAM    General purpose
+#   llama-3.1-70b      70B params   ~48GB VRAM   High quality
+#   deepseek-r1-7b     7B params    ~6GB VRAM    Reasoning
+#   mistral-7b         7B params    ~6GB VRAM    Fast inference
+#   qwen2.5-14b        14B params   ~12GB VRAM   Multilingual
+```
+
+---
+
+### `claw-miner model start`
+
+Download (if needed) and start serving a local AI model for Tier 3 mining.
+
+```bash
+claw-miner model start <MODEL_NAME> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<MODEL_NAME>` | Name of the model to deploy (from `model list`) |
+| `--gpu` | GPU device index (default: `0`) |
+| `--quantize` | Quantization level: `fp16`, `int8`, `int4` (default: `fp16`) |
+
+**Examples:**
+
+```bash
+# Start the default model
+claw-miner model start llama-3.1-8b
+
+# Start with int4 quantization (lower VRAM usage)
+claw-miner model start llama-3.1-8b --quantize int4
+
+# Start on a specific GPU
+claw-miner model start deepseek-r1-7b --gpu 1
+```
+
+The model is downloaded to `~/.clawminer/models/` on first use and cached for subsequent starts.
+
+---
+
+### `claw-miner model stop`
+
+Stop a running local model.
+
+```bash
+claw-miner model stop <MODEL_NAME>
+```
+
+**Example:**
+
+```bash
+claw-miner model stop llama-3.1-8b
+```
+
+---
+
+### `claw-miner llm add`
+
+Add an external LLM API subscription for Tier 2 mining. The network will route inference requests through your API key.
+
+```bash
+claw-miner llm add <PROVIDER> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<PROVIDER>` | LLM provider: `deepseek`, `openai`, `anthropic`, `ollama` |
+| `--api-key` | API key for the provider (not needed for `ollama`) |
+| `--model` | Specific model to share (default: provider's default) |
+| `--endpoint` | Custom API endpoint (for self-hosted or Ollama) |
+
+**Examples:**
+
+```bash
+# Share your DeepSeek subscription
+claw-miner llm add deepseek --api-key sk-xxx
+
+# Share a local Ollama model
+claw-miner llm add ollama --endpoint http://localhost:11434 --model llama3.1
+
+# Share OpenAI access
+claw-miner llm add openai --api-key sk-xxx --model gpt-4o-mini
+```
+
+Your API key is stored locally and never sent to the network. Only inference requests and responses flow through the system.
+
+---
+
+### `claw-miner llm remove`
+
+Remove a previously added LLM provider.
+
+```bash
+claw-miner llm remove <PROVIDER>
+```
+
+**Example:**
+
+```bash
+claw-miner llm remove deepseek
+```
+
+---
+
+### `claw-miner llm list`
+
+List all configured LLM providers.
+
+```bash
+claw-miner llm list
+```
+
+**Example:**
+
+```bash
+claw-miner llm list
+
+# Output:
+# Configured LLM Providers:
+#   deepseek    model: deepseek-chat    status: active    requests: 1,247
+#   ollama      model: llama3.1         status: active    requests: 89
+```
+
+---
+
+### `claw-miner config show`
+
+Display the current miner configuration.
+
+```bash
+claw-miner config show [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--data-dir` | `~/.clawminer` | Miner data directory |
+
+**Example:**
+
+```bash
+claw-miner config show
+
+# Output:
+# Configuration (~/.clawminer/config.toml):
+#   rpc_endpoint:    https://rpc.clawlabz.xyz
+#   mining_tier:     2
+#   auto_compound:   true
+#   max_concurrent:  4
+#   log_level:       info
+```
+
+---
+
+### `claw-miner config set`
+
+Update a configuration value.
+
+```bash
+claw-miner config set <KEY> <VALUE>
+```
+
+| Key | Values | Description |
+|-----|--------|-------------|
+| `rpc_endpoint` | URL | Node RPC endpoint |
+| `mining_tier` | `1`, `2`, `3` | Mining tier |
+| `auto_compound` | `true`, `false` | Auto-restake rewards |
+| `max_concurrent` | Number | Max concurrent inference requests |
+| `log_level` | `error`, `warn`, `info`, `debug` | Log verbosity |
+
+**Example:**
+
+```bash
+claw-miner config set mining_tier 2
+claw-miner config set max_concurrent 8
+```
+
+---
+
+## Quick Reference
+
+### claw-node commands
+
+| Command | Description |
+|---------|-------------|
+| `claw-node init` | Initialize node data directory and keypair |
+| `claw-node start` | Start the node and sync with the network |
+| `claw-node stake <amount>` | Stake CLAW to become a validator |
+| `claw-node unstake <amount>` | Unstake CLAW (7-day unbonding) |
+| `claw-node key info` | Show wallet address and public key |
+| `claw-node key export` | Export private key |
+| `claw-node status` | Query running node status |
+
+### claw-miner commands
+
+| Command | Description |
+|---------|-------------|
+| `claw-miner init` | Initialize miner wallet and config |
+| `claw-miner start` | Start mining |
+| `claw-miner stop` | Stop mining gracefully |
+| `claw-miner status` | Show mining status and rewards |
+| `claw-miner balance` | Show CLAW balance |
+| `claw-miner model list` | List available local models |
+| `claw-miner model start <model>` | Deploy a local AI model |
+| `claw-miner model stop <model>` | Stop a local AI model |
+| `claw-miner llm add <provider>` | Add LLM provider for sharing |
+| `claw-miner llm remove <provider>` | Remove LLM provider |
+| `claw-miner llm list` | List configured LLM providers |
+| `claw-miner config show` | Show current configuration |
+| `claw-miner config set <key> <val>` | Update configuration |
+
+---
+
+## Environment Variables
+
+Both tools respect the following environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| `CLAW_DATA_DIR` | Override the default data directory |
+| `CLAW_RPC_URL` | Override the default RPC endpoint |
+| `CLAW_LOG_LEVEL` | Set log verbosity (`error`, `warn`, `info`, `debug`, `trace`) |
+| `CLAW_LOG_FILE` | Write logs to a file instead of stderr |
+
+Environment variables are overridden by CLI flags when both are provided.

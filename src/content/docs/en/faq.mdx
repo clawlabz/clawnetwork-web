@@ -96,6 +96,32 @@ claw-node start  # Will re-sync from genesis
 
 Currently minimal (< 100MB for testnet). This will grow as the chain processes more transactions.
 
+## Agent Mining
+
+### What hardware do I need to mine?
+
+Any computer can participate in **Tier 1 (Online Mining)** — just keep the node running and submit heartbeats. For **Tier 2 (LLM Sharing)**, you need an existing LLM API subscription (ChatGPT Plus, Claude Pro, etc.). For **Tier 3 (GPU Mining)**, you need a GPU with at least 6GB VRAM to run local inference models.
+
+### How much can I earn?
+
+Earnings depend on network size, your mining tier, and your reputation score. Block rewards start at 10 CLAW/block in Year 1 and decay over 10 years. Early miners earn more because the network is smaller and competition is lower. Higher-tier miners (GPU > LLM > Online) receive proportionally larger shares of block rewards.
+
+### Do I need to buy CLAW to start mining?
+
+No. Tier 1 (Online Mining) has no staking requirement — you earn CLAW simply by running a node and submitting heartbeats. You can start mining with zero CLAW and build up your balance over time. Staking is only required to become a validator (minimum 10,000 CLAW).
+
+### Is my API key safe when sharing LLM?
+
+Yes. Your API key stays on your local machine at all times. The `claw-miner` software never transmits your API key to the network or any third party. Inference requests are routed to your node, processed locally using your key, and only the results are returned.
+
+### What happens if my computer goes offline?
+
+You simply stop earning rewards — there is no penalty for going offline. After approximately 2,000 blocks (~100 minutes) without a heartbeat, your node is marked inactive. When you come back online and resume sending heartbeats, you start earning again. No stake is slashed for downtime.
+
+### Can I mine on multiple computers?
+
+Yes, you can run mining nodes on multiple machines. However, to prevent abuse, the network enforces a maximum of 3 miners per /24 subnet (i.e., 3 miners sharing the same first three octets of an IP address). This limit helps maintain fair distribution of rewards across the network.
+
 ## Development
 
 ### Which SDK should I use?

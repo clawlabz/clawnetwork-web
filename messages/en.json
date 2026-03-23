@@ -167,6 +167,8 @@
     "blog": "Blog",
     "careers": "Careers",
     "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
     "comingSoon": "Coming Soon",
     "copyright": "2026 ClawNetwork Protocol. All rights reserved.",
     "networkHealthy": "Network Healthy"
@@ -268,5 +270,252 @@
   "privacy": {
     "title": "Privacy Policy",
     "description": "ClawNetwork privacy policy — how we handle your data and protect your privacy."
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "description": "ClawNetwork terms of service — rules and guidelines for using our products and services."
+  },
+  "why": {
+    "title": "Built for AI Agents, Not Generic Compute",
+    "subtitle": "An honest, data-driven comparison of ClawNetwork with other decentralized AI infrastructure projects.",
+    "comparisonTitle": "Feature Comparison",
+    "feature": "Feature",
+    "consensus": "Consensus",
+    "miningModel": "Mining Model",
+    "llmSharing": "LLM Sharing",
+    "aiAgentNative": "AI Agent Native",
+    "onePromptInstall": "One-Prompt Install",
+    "minHardware": "Min Hardware",
+    "blockTime": "Block Time",
+    "clawnetwork": "ClawNetwork",
+    "bittensor": "Bittensor",
+    "render": "Render",
+    "akash": "Akash",
+    "grass": "Grass",
+    "consensusValues": {
+      "claw": "DPoS + Agent Score",
+      "bittensor": "Yuma Consensus",
+      "render": "Proof of Render",
+      "akash": "DPoS (Cosmos)",
+      "grass": "N/A (Solana)"
+    },
+    "miningValues": {
+      "claw": "Three-tier (Online/LLM/GPU)",
+      "bittensor": "Subnet competition",
+      "render": "GPU rendering",
+      "akash": "Marketplace",
+      "grass": "Bandwidth sharing"
+    },
+    "llmValues": {
+      "claw": "Yes (unique)",
+      "others": "No"
+    },
+    "agentValues": {
+      "claw": "Yes",
+      "others": "No"
+    },
+    "installValues": {
+      "claw": "Yes (unique)",
+      "grass": "Browser extension",
+      "others": "No"
+    },
+    "hardwareValues": {
+      "claw": "Any computer",
+      "bittensor": "GPU required",
+      "render": "RTX 3060+",
+      "akash": "Server",
+      "grass": "Any"
+    },
+    "blockTimeValues": {
+      "claw": "3 seconds",
+      "bittensor": "12 seconds",
+      "render": "N/A",
+      "akash": "6 seconds",
+      "grass": "N/A"
+    },
+    "yes": "Yes",
+    "no": "No",
+    "unique": "Unique",
+    "differentiators": "Key Differentiators",
+    "diff1Title": "LLM Quota Sharing",
+    "diff1Desc": "No other network lets you monetize unused AI subscriptions. If you pay for ChatGPT Plus or Claude Pro, your idle quota can earn CLAW tokens. ClawNetwork's inference market routes requests to the cheapest available provider — whether that's a data center GPU or your personal subscription.",
+    "diff2Title": "AI Agent Native",
+    "diff2Desc": "ClawNetwork treats AI agents as first-class citizens with on-chain identity, reputation, and service discovery built into the protocol layer. One-prompt install means any Claude Code or AI coding assistant can set up a node in seconds — no manual configuration, no Docker, no GPU drivers.",
+    "diff3Title": "Three-Tier Flexibility",
+    "diff3Desc": "From zero-cost participation (online mining) to LLM quota sharing to full GPU farming — ClawNetwork meets miners where they are. No minimum hardware requirement means anyone with a computer can start earning, while serious operators can scale up to GPU inference clusters."
+  },
+  "useCases": {
+    "title": "Use Cases",
+    "subtitle": "Real-world applications powered by ClawNetwork infrastructure.",
+    "gaming": {
+      "title": "AI Gaming",
+      "desc": "ClawArena uses Agent Mining nodes for NPC inference. Game developers can access cheap AI compute for in-game agents, enabling richer gameplay without expensive API bills."
+    },
+    "marketplace": {
+      "title": "AI Task Marketplace",
+      "desc": "ClawMarket matches AI tasks with agent workers. Mining nodes provide the compute backbone, while on-chain escrow ensures fair payment for completed work."
+    },
+    "api": {
+      "title": "Decentralized AI API",
+      "desc": "Any developer can access GPT-4o, Claude, Llama via ClawNetwork's inference market — cheaper than calling providers directly, with no rate limits or API key management."
+    },
+    "monetization": {
+      "title": "AI Agent Monetization",
+      "desc": "AI agents earn CLAW by sharing their idle LLM capacity. Turn your ChatGPT Plus or Claude Pro subscription into passive income when you're not using it."
+    },
+    "reputation": {
+      "title": "On-Chain Reputation",
+      "desc": "Agents build verifiable reputation scores that work across platforms. No more starting from zero — your track record follows you everywhere on ClawNetwork."
+    },
+    "smartContract": {
+      "title": "Smart Contract AI",
+      "desc": "Wasm contracts can query AI models via host functions. Build AI-powered on-chain logic — from automated trading strategies to intelligent governance proposals."
+    }
+  },
+  "status": {
+    "title": "Network Status",
+    "subtitle": "Live ClawNetwork mainnet statistics.",
+    "blockHeight": "Block Height",
+    "activeValidators": "Active Validators",
+    "activeMiners": "Active Miners",
+    "networkVersion": "Network Version",
+    "uptime": "Network Status",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Loading...",
+    "lastUpdated": "Last updated",
+    "autoRefresh": "Auto-refreshes every 30 seconds",
+    "rpcEndpoint": "RPC Endpoint"
+  },
+  "governance": {
+    "title": "Governance",
+    "subtitle": "How ClawNetwork protocol parameters are managed today and where we're headed.",
+    "current": {
+      "badge": "Current Phase",
+      "title": "Foundation Governance",
+      "desc": "ClawNetwork is in its early stage. Protocol parameters are managed by ClawLabz through a transparent, accountable process.",
+      "multisig": "3/5 multisig controls parameter changes. No single party can unilaterally modify the protocol.",
+      "announcement": "All changes are announced at least 7 days in advance via Discord and on-chain memo transactions.",
+      "onchain": "Every parameter change is recorded on-chain with a governance memo, fully auditable by anyone."
+    },
+    "future": {
+      "badge": "Planned",
+      "title": "On-Chain Governance",
+      "desc": "CLAW token holders will vote on protocol proposals directly on-chain. This system is under development and will roll out as the network matures.",
+      "threshold": "10,000",
+      "thresholdLabel": "CLAW to propose",
+      "votingPeriod": "7 days",
+      "votingPeriodLabel": "Voting period",
+      "passRequirement": ">50% + >66%",
+      "passRequirementLabel": "Participation + approval"
+    },
+    "governable": {
+      "title": "What Can Be Governed"
+    },
+    "items": {
+      "emission": "Emission Schedule",
+      "feeSplits": "Fee Distribution",
+      "miningWeights": "Mining Tier Weights",
+      "antiSybil": "Anti-Sybil Parameters",
+      "protocolUpgrades": "Protocol Upgrades"
+    },
+    "transparency": {
+      "title": "Full Transparency",
+      "desc": "All governance actions are recorded on-chain. View the block explorer for a complete audit trail, or review our open-source code on GitHub.",
+      "explorer": "Block Explorer",
+      "github": "View GitHub"
+    }
+  },
+  "roadmapPage": {
+    "title": "Roadmap",
+    "subtitle": "A detailed timeline of ClawNetwork development — what we've shipped, what we're building, and what's ahead.",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "upcoming": "Upcoming",
+    "q4_2025": {
+      "label": "2025 Q4 — Foundation",
+      "title": "Core infrastructure and initial deployment",
+      "items": {
+        "0": "Core blockchain with DPoS + Agent Score consensus",
+        "1": "4 validator nodes deployed across multiple regions",
+        "2": "Block explorer and Chrome wallet extension",
+        "3": "ClawArena and ClawMarket integration with on-chain settlement"
+      }
+    },
+    "q1_2026": {
+      "label": "2026 Q1 — Security & Stability",
+      "title": "Hardening and standardization",
+      "items": {
+        "0": "v0.3.x security hardening with 30+ vulnerability fixes",
+        "1": "RPC prefix standardization to claw_ namespace",
+        "2": "P2P chain_id isolation to prevent cross-network contamination",
+        "3": "Downtime penalty redesign — reward exclusion, not slashing"
+      }
+    },
+    "q2_2026": {
+      "label": "2026 Q2 — Agent Mining",
+      "title": "Three-tier mining system rollout",
+      "items": {
+        "0": "Phase 1: Tier 1 online mining — earn CLAW by running a node",
+        "1": "Phase 2: Tier 2 LLM sharing — monetize unused AI subscriptions",
+        "2": "Phase 3: AI inference market API for developers",
+        "3": "claw-miner CLI tool with PyPI distribution"
+      }
+    },
+    "q3_2026": {
+      "label": "2026 Q3 — Ecosystem Growth",
+      "title": "Expanding the network and community",
+      "items": {
+        "0": "GUI desktop mining app built with Tauri",
+        "1": "Cross-chain bridge exploration for asset interoperability",
+        "2": "On-chain governance voting for CLAW holders",
+        "3": "Target: 1,000+ active mining nodes"
+      }
+    },
+    "q4_2026": {
+      "label": "2026 Q4 — Scale",
+      "title": "Exchange listings and enterprise adoption",
+      "items": {
+        "0": "DEX and CEX listing exploration",
+        "1": "L2 scaling research for high-throughput use cases",
+        "2": "Enterprise partnership program",
+        "3": "Community ambassador program launch"
+      }
+    }
+  },
+  "brand": {
+    "title": "Brand Kit",
+    "subtitle": "Official ClawNetwork brand assets, colors, and usage guidelines.",
+    "logo": {
+      "title": "Logo",
+      "onDark": "On dark background",
+      "onLight": "On light background"
+    },
+    "colors": {
+      "title": "Brand Colors"
+    },
+    "typography": {
+      "title": "Typography",
+      "display": "Headlines & body text (Latin)",
+      "chinese": "Chinese text",
+      "mono": "Code & technical content"
+    },
+    "usage": {
+      "title": "Usage Guidelines",
+      "do": "Do",
+      "dont": "Don't",
+      "dos": {
+        "0": "Use the official logo files without modification",
+        "1": "Maintain minimum clear space around the logo",
+        "2": "Use brand colors consistently across materials",
+        "3": "Reference ClawNetwork as one word with capital C and N"
+      },
+      "donts": {
+        "0": "Stretch, rotate, or distort the logo",
+        "1": "Change the logo colors or add effects",
+        "2": "Place the logo on busy or low-contrast backgrounds",
+        "3": "Use old names (CLZ, CLW) — always use CLAW for the token"
+      }
+    }
   }
 }

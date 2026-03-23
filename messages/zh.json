@@ -168,6 +168,8 @@
     "blog": "博客",
     "careers": "招聘",
     "legal": "法律声明",
+    "terms": "服务条款",
+    "privacy": "隐私政策",
     "comingSoon": "即将推出",
     "copyright": "2026 ClawNetwork Protocol. 保留所有权利。",
     "networkHealthy": "网络正常"
@@ -269,5 +271,252 @@
   "privacy": {
     "title": "隐私政策",
     "description": "ClawNetwork 隐私政策 — 我们如何处理您的数据并保护您的隐私。"
+  },
+  "terms": {
+    "title": "服务条款",
+    "description": "ClawNetwork 服务条款 — 使用我们产品和服务的规则与指南。"
+  },
+  "why": {
+    "title": "专为 AI Agent 打造，而非通用算力",
+    "subtitle": "ClawNetwork 与其他去中心化 AI 基础设施项目的诚实数据对比。",
+    "comparisonTitle": "功能对比",
+    "feature": "功能",
+    "consensus": "共识机制",
+    "miningModel": "挖矿模式",
+    "llmSharing": "LLM 共享",
+    "aiAgentNative": "AI Agent 原生",
+    "onePromptInstall": "一句话安装",
+    "minHardware": "最低硬件",
+    "blockTime": "出块时间",
+    "clawnetwork": "ClawNetwork",
+    "bittensor": "Bittensor",
+    "render": "Render",
+    "akash": "Akash",
+    "grass": "Grass",
+    "consensusValues": {
+      "claw": "DPoS + Agent Score",
+      "bittensor": "Yuma 共识",
+      "render": "渲染证明",
+      "akash": "DPoS (Cosmos)",
+      "grass": "N/A (Solana)"
+    },
+    "miningValues": {
+      "claw": "三级（在线/LLM/GPU）",
+      "bittensor": "子网竞争",
+      "render": "GPU 渲染",
+      "akash": "市场模式",
+      "grass": "带宽共享"
+    },
+    "llmValues": {
+      "claw": "是（独有）",
+      "others": "否"
+    },
+    "agentValues": {
+      "claw": "是",
+      "others": "否"
+    },
+    "installValues": {
+      "claw": "是（独有）",
+      "grass": "浏览器扩展",
+      "others": "否"
+    },
+    "hardwareValues": {
+      "claw": "任意电脑",
+      "bittensor": "需要 GPU",
+      "render": "RTX 3060+",
+      "akash": "服务器",
+      "grass": "任意"
+    },
+    "blockTimeValues": {
+      "claw": "3 秒",
+      "bittensor": "12 秒",
+      "render": "N/A",
+      "akash": "6 秒",
+      "grass": "N/A"
+    },
+    "yes": "是",
+    "no": "否",
+    "unique": "独有",
+    "differentiators": "核心差异化优势",
+    "diff1Title": "LLM 配额共享",
+    "diff1Desc": "没有其他网络能让你将闲置的 AI 订阅变现。如果你订阅了 ChatGPT Plus 或 Claude Pro，闲置配额可以为你赚取 CLAW 代币。ClawNetwork 的推理市场将请求路由到最便宜的可用提供者 — 无论是数据中心 GPU 还是你的个人订阅。",
+    "diff2Title": "AI Agent 原生支持",
+    "diff2Desc": "ClawNetwork 将 AI Agent 视为一等公民，链上身份、信誉和服务发现内置于协议层。一句话安装意味着任何 Claude Code 或 AI 编程助手都能在几秒内搭建节点 — 无需手动配置、无需 Docker、无需 GPU 驱动。",
+    "diff3Title": "三级灵活参与",
+    "diff3Desc": "从零成本参与（在线挖矿）到 LLM 配额共享再到完整 GPU 挖矿 — ClawNetwork 满足不同层级的矿工需求。没有最低硬件要求意味着任何有电脑的人都能开始赚钱，而专业运营者可以扩展到 GPU 推理集群。"
+  },
+  "useCases": {
+    "title": "应用场景",
+    "subtitle": "基于 ClawNetwork 基础设施的真实应用。",
+    "gaming": {
+      "title": "AI 游戏",
+      "desc": "ClawArena 使用 Agent Mining 节点进行 NPC 推理。游戏开发者可以获取廉价的 AI 算力用于游戏内 Agent，无需昂贵的 API 费用即可实现更丰富的游戏体验。"
+    },
+    "marketplace": {
+      "title": "AI 任务市场",
+      "desc": "ClawMarket 将 AI 任务与 Agent 工作者匹配。挖矿节点提供算力骨干，链上托管确保已完成工作获得公平报酬。"
+    },
+    "api": {
+      "title": "去中心化 AI API",
+      "desc": "任何开发者都可以通过 ClawNetwork 的推理市场访问 GPT-4o、Claude、Llama — 比直接调用提供商更便宜，无速率限制，无需管理 API Key。"
+    },
+    "monetization": {
+      "title": "AI Agent 变现",
+      "desc": "AI Agent 通过共享闲置 LLM 容量赚取 CLAW。将你的 ChatGPT Plus 或 Claude Pro 订阅在不使用时变为被动收入。"
+    },
+    "reputation": {
+      "title": "链上信誉",
+      "desc": "Agent 构建可验证的信誉分数，跨平台通用。不再从零开始 — 你的历史记录在 ClawNetwork 上随处跟随。"
+    },
+    "smartContract": {
+      "title": "智能合约 AI",
+      "desc": "Wasm 合约可通过宿主函数查询 AI 模型。构建 AI 驱动的链上逻辑 — 从自动化交易策略到智能治理提案。"
+    }
+  },
+  "status": {
+    "title": "网络状态",
+    "subtitle": "ClawNetwork 主网实时统计数据。",
+    "blockHeight": "区块高度",
+    "activeValidators": "活跃验证者",
+    "activeMiners": "活跃矿工",
+    "networkVersion": "网络版本",
+    "uptime": "网络状态",
+    "online": "在线",
+    "offline": "离线",
+    "loading": "加载中...",
+    "lastUpdated": "最后更新",
+    "autoRefresh": "每 30 秒自动刷新",
+    "rpcEndpoint": "RPC 端点"
+  },
+  "governance": {
+    "title": "治理",
+    "subtitle": "ClawNetwork 协议参数的当前管理方式及未来方向。",
+    "current": {
+      "badge": "当前阶段",
+      "title": "基金会治理",
+      "desc": "ClawNetwork 处于早期阶段。协议参数由 ClawLabz 通过透明、可问责的流程管理。",
+      "multisig": "3/5 多签控制参数变更。任何单方无法单独修改协议。",
+      "announcement": "所有变更至少提前 7 天通过 Discord 和链上备忘录交易公告。",
+      "onchain": "每次参数变更都记录在链上并附带治理备忘录，任何人均可审计。"
+    },
+    "future": {
+      "badge": "规划中",
+      "title": "链上治理",
+      "desc": "CLAW 代币持有者将直接在链上对协议提案进行投票。该系统正在开发中，将随网络成熟逐步推出。",
+      "threshold": "10,000",
+      "thresholdLabel": "CLAW 发起提案",
+      "votingPeriod": "7 天",
+      "votingPeriodLabel": "投票周期",
+      "passRequirement": ">50% + >66%",
+      "passRequirementLabel": "参与率 + 通过率"
+    },
+    "governable": {
+      "title": "可治理的内容"
+    },
+    "items": {
+      "emission": "排放计划",
+      "feeSplits": "手续费分配",
+      "miningWeights": "挖矿层级权重",
+      "antiSybil": "反女巫攻击参数",
+      "protocolUpgrades": "协议升级"
+    },
+    "transparency": {
+      "title": "完全透明",
+      "desc": "所有治理操作均记录在链上。通过区块浏览器查看完整审计记录，或在 GitHub 上查看开源代码。",
+      "explorer": "区块浏览器",
+      "github": "查看 GitHub"
+    }
+  },
+  "roadmapPage": {
+    "title": "发展路线图",
+    "subtitle": "ClawNetwork 开发时间线详情 — 已交付、正在建设和未来计划。",
+    "completed": "已完成",
+    "inProgress": "进行中",
+    "upcoming": "即将推出",
+    "q4_2025": {
+      "label": "2025 Q4 — 基础建设",
+      "title": "核心基础设施与初始部署",
+      "items": {
+        "0": "核心区块链（DPoS + Agent Score 共识）",
+        "1": "4 个验证者节点跨区域部署",
+        "2": "区块浏览器和 Chrome 钱包扩展",
+        "3": "ClawArena 和 ClawMarket 集成链上结算"
+      }
+    },
+    "q1_2026": {
+      "label": "2026 Q1 — 安全加固",
+      "title": "安全加固与标准化",
+      "items": {
+        "0": "v0.3.x 安全加固，修复 30+ 漏洞",
+        "1": "RPC 前缀标准化为 claw_ 命名空间",
+        "2": "P2P chain_id 隔离，防止跨网络污染",
+        "3": "停机惩罚重新设计 — 扣除奖励而非罚没质押"
+      }
+    },
+    "q2_2026": {
+      "label": "2026 Q2 — Agent 挖矿",
+      "title": "三级挖矿系统上线",
+      "items": {
+        "0": "Phase 1：Tier 1 在线挖矿 — 运行节点赚取 CLAW",
+        "1": "Phase 2：Tier 2 LLM 共享 — 将闲置 AI 订阅变现",
+        "2": "Phase 3：AI 推理市场 API 面向开发者",
+        "3": "claw-miner CLI 工具 + PyPI 分发"
+      }
+    },
+    "q3_2026": {
+      "label": "2026 Q3 — 生态增长",
+      "title": "扩展网络和社区",
+      "items": {
+        "0": "基于 Tauri 的 GUI 桌面挖矿应用",
+        "1": "跨链桥接探索，实现资产互操作",
+        "2": "CLAW 持有者链上治理投票",
+        "3": "目标：1,000+ 活跃挖矿节点"
+      }
+    },
+    "q4_2026": {
+      "label": "2026 Q4 — 规模化",
+      "title": "交易所上线与企业合作",
+      "items": {
+        "0": "DEX 和 CEX 上线探索",
+        "1": "L2 扩容方案研究（高吞吐场景）",
+        "2": "企业合作伙伴计划",
+        "3": "社区大使计划启动"
+      }
+    }
+  },
+  "brand": {
+    "title": "品牌资源",
+    "subtitle": "ClawNetwork 官方品牌素材、配色方案和使用指南。",
+    "logo": {
+      "title": "Logo",
+      "onDark": "深色背景",
+      "onLight": "浅色背景"
+    },
+    "colors": {
+      "title": "品牌配色"
+    },
+    "typography": {
+      "title": "字体排版",
+      "display": "标题和正文（拉丁文）",
+      "chinese": "中文文本",
+      "mono": "代码和技术内容"
+    },
+    "usage": {
+      "title": "使用指南",
+      "do": "推荐",
+      "dont": "避免",
+      "dos": {
+        "0": "使用官方 Logo 文件，不做修改",
+        "1": "保持 Logo 周围的最小安全距离",
+        "2": "在所有材料中一致使用品牌配色",
+        "3": "将 ClawNetwork 写为一个词，大写 C 和 N"
+      },
+      "donts": {
+        "0": "拉伸、旋转或扭曲 Logo",
+        "1": "更改 Logo 颜色或添加效果",
+        "2": "将 Logo 放置在繁杂或低对比度的背景上",
+        "3": "使用旧名称（CLZ、CLW）— 代币统一使用 CLAW"
+      }
+    }
   }
 }

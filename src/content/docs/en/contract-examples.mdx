@@ -1,0 +1,801 @@
+---
+title: Smart Contract Examples
+description: Complete, copy-paste-ready Rust smart contract examples for ClawNetwork — counter, token, and AI-powered contracts.
+order: 6
+---
+
+## Overview
+
+This page provides three complete smart contract examples you can copy, build, and deploy to ClawNetwork. Each example builds on the previous one, introducing more host functions and patterns.
+
+**Prerequisites:**
+
+```bash
+# Install the Wasm target
+rustup target add wasm32-unknown-unknown
+
+# Create a new contract project
+cargo init --lib my_contract
+```
+
+Add this to your `Cargo.toml`:
+
+```toml
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = "z"      # Optimize for size
+lto = true
+strip = true
+```
+
+All contracts share a common boilerplate: `#![no_std]`, host function `extern "C"` declarations, and an `alloc` export. See the [Smart Contracts](/docs/smart-contracts) page for the full host function reference.
+
+---
+
+## 1. Simple Counter Contract
+
+A minimal contract that stores a `u64` counter and supports increment, decrement, and query operations.
+
+### Full Source
+
+```rust
+#![no_std]
+
+// ── Host function declarations ──────────────────────────────────────
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn caller(out_ptr: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+}
+
+// ── Memory allocator (required export) ──────────────────────────────
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// ── Storage key for the counter value ───────────────────────────────
+const KEY_COUNT: &[u8] = b"count";
+const KEY_OWNER: &[u8] = b"owner";
+
+// ── Helper: read the current counter value from storage ─────────────
+fn read_count() -> u64 {
+    let mut buf = [0u8; 8];
+    let len = unsafe {
+        storage_read(
+            KEY_COUNT.as_ptr() as u32,
+            KEY_COUNT.len() as u32,
+            buf.as_ptr() as u32,
+        )
+    };
+    if len == 8 {
+        u64::from_le_bytes(buf)
+    } else {
+        0 // Not yet initialized
+    }
+}
+
+// ── Helper: write the counter value to storage ──────────────────────
+fn write_count(value: u64) {
+    let bytes = value.to_le_bytes();
+    unsafe {
+        storage_write(
+            KEY_COUNT.as_ptr() as u32,
+            KEY_COUNT.len() as u32,
+            bytes.as_ptr() as u32,
+            8,
+        );
+    }
+}
+
+// ── Constructor: initialize counter to 0 and record the owner ───────
+#[no_mangle]
+pub extern "C" fn init() {
+    // Set counter to 0
+    write_count(0);
+
+    // Record deployer as the owner
+    let mut owner = [0u8; 32];
+    unsafe { caller(owner.as_ptr() as u32) };
+    unsafe {
+        storage_write(
+            KEY_OWNER.as_ptr() as u32,
+            KEY_OWNER.len() as u32,
+            owner.as_ptr() as u32,
+            32,
+        );
+    }
+
+    let msg = b"counter initialized to 0";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Increment the counter by 1 ──────────────────────────────────────
+#[no_mangle]
+pub extern "C" fn increment() {
+    let current = read_count();
+    let new_value = current + 1;
+    write_count(new_value);
+
+    let msg = b"incremented";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Decrement the counter by 1 (aborts if already 0) ────────────────
+#[no_mangle]
+pub extern "C" fn decrement() {
+    let current = read_count();
+    if current == 0 {
+        let msg = b"counter is already 0";
+        unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    }
+    write_count(current - 1);
+
+    let msg = b"decremented";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Query the current counter value (read-only) ─────────────────────
+#[no_mangle]
+pub extern "C" fn get_count() {
+    let value = read_count();
+    let bytes = value.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+```
+
+### Build and Deploy
+
+```bash
+# Build the contract
+cargo build --target wasm32-unknown-unknown --release
+
+# The compiled Wasm is at:
+# target/wasm32-unknown-unknown/release/my_contract.wasm
+```
+
+Deploy via JSON-RPC (TxType = 6 `ContractDeploy`):
+
+```bash
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-tx>"]
+  }'
+```
+
+The response returns the transaction hash. Once confirmed, derive the contract address:
+
+```
+address = blake3("claw_contract_v1:" + deployer_pubkey + nonce_le_bytes)
+```
+
+### Call the Contract
+
+Increment (TxType = 7 `ContractCall`):
+
+```bash
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-tx-calling-increment>"]
+  }'
+```
+
+Query (read-only, no transaction needed):
+
+```bash
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": ["<contract-address-hex>", "get_count", ""]
+  }'
+```
+
+---
+
+## 2. Token Contract
+
+A custom token contract implementing mint, transfer, and balance queries. Uses storage to track balances per address.
+
+### Full Source
+
+```rust
+#![no_std]
+
+// ── Host function declarations ──────────────────────────────────────
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn caller(out_ptr: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+}
+
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// ── Storage layout ──────────────────────────────────────────────────
+// "owner"          -> [u8; 32]   (minter address)
+// "total_supply"   -> u64 LE     (total minted tokens)
+// "bal:" + addr    -> u64 LE     (balance of addr)
+// "name"           -> bytes      (token name)
+// "symbol"         -> bytes      (token symbol)
+
+const KEY_OWNER: &[u8] = b"owner";
+const KEY_TOTAL: &[u8] = b"total_supply";
+const PREFIX_BAL: &[u8] = b"bal:";
+
+// ── Helper: build a balance storage key for a given address ─────────
+fn balance_key(addr: &[u8; 32]) -> [u8; 36] {
+    let mut key = [0u8; 36]; // "bal:" (4 bytes) + address (32 bytes)
+    key[..4].copy_from_slice(PREFIX_BAL);
+    key[4..36].copy_from_slice(addr);
+    key
+}
+
+// ── Helper: read a u64 from storage by key ──────────────────────────
+fn read_u64(key: &[u8]) -> u64 {
+    let mut buf = [0u8; 8];
+    let len = unsafe { storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32) };
+    if len == 8 { u64::from_le_bytes(buf) } else { 0 }
+}
+
+// ── Helper: write a u64 to storage by key ───────────────────────────
+fn write_u64(key: &[u8], value: u64) {
+    let bytes = value.to_le_bytes();
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, bytes.as_ptr() as u32, 8);
+    }
+}
+
+// ── Helper: get caller address ──────────────────────────────────────
+fn get_caller() -> [u8; 32] {
+    let mut addr = [0u8; 32];
+    unsafe { caller(addr.as_ptr() as u32) };
+    addr
+}
+
+// ── Helper: abort with a message ────────────────────────────────────
+fn fail(msg: &[u8]) -> ! {
+    unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    loop {} // unreachable, abort stops execution
+}
+
+// ── Constructor: set token name, symbol, and owner ──────────────────
+#[no_mangle]
+pub extern "C" fn init() {
+    let owner = get_caller();
+
+    // Store owner (only the owner can mint)
+    unsafe {
+        storage_write(KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32, owner.as_ptr() as u32, 32);
+    }
+
+    // Store token metadata
+    let name = b"MyToken";
+    let symbol = b"MTK";
+    unsafe {
+        storage_write(b"name".as_ptr() as u32, 4, name.as_ptr() as u32, name.len() as u32);
+        storage_write(b"symbol".as_ptr() as u32, 6, symbol.as_ptr() as u32, symbol.len() as u32);
+    }
+
+    write_u64(KEY_TOTAL, 0);
+
+    let msg = b"token contract initialized";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Mint tokens to the caller (owner only) ──────────────────────────
+// Args: amount as u64 LE (8 bytes)
+#[no_mangle]
+pub extern "C" fn mint(args_ptr: i32, args_len: i32) {
+    // Verify caller is the owner
+    let sender = get_caller();
+    let mut owner = [0u8; 32];
+    let len = unsafe {
+        storage_read(KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32, owner.as_ptr() as u32)
+    };
+    if len != 32 || sender != owner {
+        fail(b"only owner can mint");
+    }
+
+    // Parse amount from args (expects 8 bytes, u64 LE)
+    if args_len != 8 {
+        fail(b"mint: expected 8-byte u64 amount");
+    }
+    let mut amount_buf = [0u8; 8];
+    // Copy args from Wasm memory
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    amount_buf.copy_from_slice(args);
+    let amount = u64::from_le_bytes(amount_buf);
+
+    if amount == 0 {
+        fail(b"mint: amount must be > 0");
+    }
+
+    // Update sender balance
+    let key = balance_key(&sender);
+    let current = read_u64(&key);
+    write_u64(&key, current + amount);
+
+    // Update total supply
+    let total = read_u64(KEY_TOTAL);
+    write_u64(KEY_TOTAL, total + amount);
+
+    let msg = b"tokens minted";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Transfer tokens to another address ──────────────────────────────
+// Args: recipient (32 bytes) + amount (8 bytes) = 40 bytes
+#[no_mangle]
+pub extern "C" fn transfer(args_ptr: i32, args_len: i32) {
+    if args_len != 40 {
+        fail(b"transfer: expected 40 bytes (32 addr + 8 amount)");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 40) };
+
+    // Parse recipient address (first 32 bytes)
+    let mut to = [0u8; 32];
+    to.copy_from_slice(&args[..32]);
+
+    // Parse amount (last 8 bytes)
+    let mut amount_buf = [0u8; 8];
+    amount_buf.copy_from_slice(&args[32..40]);
+    let amount = u64::from_le_bytes(amount_buf);
+
+    if amount == 0 {
+        fail(b"transfer: amount must be > 0");
+    }
+
+    let sender = get_caller();
+
+    // Check sender balance
+    let sender_key = balance_key(&sender);
+    let sender_bal = read_u64(&sender_key);
+    if sender_bal < amount {
+        fail(b"transfer: insufficient balance");
+    }
+
+    // Debit sender
+    write_u64(&sender_key, sender_bal - amount);
+
+    // Credit recipient
+    let to_key = balance_key(&to);
+    let to_bal = read_u64(&to_key);
+    write_u64(&to_key, to_bal + amount);
+
+    let msg = b"transfer complete";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Query balance of an address ─────────────────────────────────────
+// Args: address (32 bytes)
+#[no_mangle]
+pub extern "C" fn balance_of(args_ptr: i32, args_len: i32) {
+    if args_len != 32 {
+        fail(b"balance_of: expected 32-byte address");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 32) };
+    let mut addr = [0u8; 32];
+    addr.copy_from_slice(args);
+
+    let key = balance_key(&addr);
+    let balance = read_u64(&key);
+    let bytes = balance.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+
+// ── Query total supply ──────────────────────────────────────────────
+#[no_mangle]
+pub extern "C" fn total_supply() {
+    let total = read_u64(KEY_TOTAL);
+    let bytes = total.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+```
+
+### Usage
+
+```bash
+# Query balance (read-only, no gas cost)
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": ["<contract-address>", "balance_of", "<32-byte-address-hex>"]
+  }'
+
+# Query total supply
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": ["<contract-address>", "total_supply", ""]
+  }'
+```
+
+---
+
+## 3. AI-Powered Contract
+
+This contract is **unique to ClawNetwork**. It uses the native `agent_get_score` and `agent_is_registered` host functions to make on-chain decisions based on AI agent reputation. No external oracles required.
+
+**Use case:** A bounty board where only registered agents with a reputation score above a threshold can claim and complete bounties. Higher-reputation agents can claim higher-value bounties.
+
+### Full Source
+
+```rust
+#![no_std]
+
+// ── Host function declarations ──────────────────────────────────────
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn storage_has(key_ptr: u32, key_len: u32) -> i32;
+    fn storage_delete(key_ptr: u32, key_len: u32);
+    fn caller(out_ptr: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+    fn value_lo() -> i64;
+    fn token_transfer(to_ptr: u32, amount_lo: i64, amount_hi: i64) -> i32;
+
+    // ClawNetwork-exclusive: agent identity and reputation
+    fn agent_is_registered(addr_ptr: u32) -> i32;
+    fn agent_get_score(addr_ptr: u32) -> i64;
+}
+
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// ── Storage layout ──────────────────────────────────────────────────
+// "owner"              -> [u8; 32]
+// "min_score"          -> i64 LE  (minimum reputation to claim)
+// "bounty:" + id(u64)  -> 32 bytes (creator) + 8 bytes (amount) + 1 byte (status)
+//   status: 0 = open, 1 = claimed, 2 = completed
+// "claim:" + id(u64)   -> 32 bytes (claimer address)
+// "next_id"            -> u64 LE
+
+const KEY_OWNER: &[u8] = b"owner";
+const KEY_MIN_SCORE: &[u8] = b"min_score";
+const KEY_NEXT_ID: &[u8] = b"next_id";
+
+// ── Helpers ─────────────────────────────────────────────────────────
+fn get_caller() -> [u8; 32] {
+    let mut addr = [0u8; 32];
+    unsafe { caller(addr.as_ptr() as u32) };
+    addr
+}
+
+fn fail(msg: &[u8]) -> ! {
+    unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    loop {}
+}
+
+fn read_u64(key: &[u8]) -> u64 {
+    let mut buf = [0u8; 8];
+    let len = unsafe { storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32) };
+    if len == 8 { u64::from_le_bytes(buf) } else { 0 }
+}
+
+fn write_u64(key: &[u8], value: u64) {
+    let bytes = value.to_le_bytes();
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, bytes.as_ptr() as u32, 8);
+    }
+}
+
+fn bounty_key(id: u64) -> [u8; 15] {
+    // "bounty:" (7) + u64 LE (8) = 15
+    let mut key = [0u8; 15];
+    key[..7].copy_from_slice(b"bounty:");
+    key[7..15].copy_from_slice(&id.to_le_bytes());
+    key
+}
+
+fn claim_key(id: u64) -> [u8; 14] {
+    // "claim:" (6) + u64 LE (8) = 14
+    let mut key = [0u8; 14];
+    key[..6].copy_from_slice(b"claim:");
+    key[6..14].copy_from_slice(&id.to_le_bytes());
+    key
+}
+
+// ── Constructor ─────────────────────────────────────────────────────
+// Sets the owner and the minimum reputation score required to claim bounties.
+#[no_mangle]
+pub extern "C" fn init() {
+    let owner = get_caller();
+    unsafe {
+        storage_write(
+            KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32,
+            owner.as_ptr() as u32, 32,
+        );
+    }
+
+    // Default minimum score: 50
+    let min_score: i64 = 50;
+    let bytes = min_score.to_le_bytes();
+    unsafe {
+        storage_write(
+            KEY_MIN_SCORE.as_ptr() as u32, KEY_MIN_SCORE.len() as u32,
+            bytes.as_ptr() as u32, 8,
+        );
+    }
+
+    write_u64(KEY_NEXT_ID, 0);
+
+    let msg = b"bounty board initialized (min_score=50)";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Post a new bounty (anyone can post, attach CLAW as reward) ──────
+// Sends CLAW with the transaction as the bounty reward.
+// Returns the bounty ID.
+#[no_mangle]
+pub extern "C" fn post_bounty() {
+    let creator = get_caller();
+    let reward = unsafe { value_lo() } as u64;
+
+    if reward == 0 {
+        fail(b"must attach CLAW as bounty reward");
+    }
+
+    // Assign bounty ID
+    let id = read_u64(KEY_NEXT_ID);
+    write_u64(KEY_NEXT_ID, id + 1);
+
+    // Store bounty: creator(32) + reward(8) + status(1) = 41 bytes
+    let key = bounty_key(id);
+    let mut data = [0u8; 41];
+    data[..32].copy_from_slice(&creator);
+    data[32..40].copy_from_slice(&reward.to_le_bytes());
+    data[40] = 0; // status = open
+
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32, 41);
+    }
+
+    // Return the bounty ID
+    let id_bytes = id.to_le_bytes();
+    unsafe { return_data(id_bytes.as_ptr() as u32, id_bytes.len() as u32) };
+
+    let msg = b"bounty posted";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Claim a bounty (agents only, reputation-gated) ──────────────────
+// Args: bounty_id as u64 LE (8 bytes)
+#[no_mangle]
+pub extern "C" fn claim_bounty(args_ptr: i32, args_len: i32) {
+    if args_len != 8 {
+        fail(b"claim_bounty: expected 8-byte bounty ID");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    let mut id_buf = [0u8; 8];
+    id_buf.copy_from_slice(args);
+    let id = u64::from_le_bytes(id_buf);
+
+    let agent = get_caller();
+
+    // ── Gate 1: Must be a registered agent ──────────────────────────
+    let registered = unsafe { agent_is_registered(agent.as_ptr() as u32) };
+    if registered != 1 {
+        fail(b"only registered agents can claim bounties");
+    }
+
+    // ── Gate 2: Must meet minimum reputation score ──────────────────
+    let score = unsafe { agent_get_score(agent.as_ptr() as u32) };
+    let mut min_buf = [0u8; 8];
+    unsafe {
+        storage_read(
+            KEY_MIN_SCORE.as_ptr() as u32, KEY_MIN_SCORE.len() as u32,
+            min_buf.as_ptr() as u32,
+        );
+    }
+    let min_score = i64::from_le_bytes(min_buf);
+
+    if score < min_score {
+        fail(b"agent reputation score too low");
+    }
+
+    // ── Verify bounty exists and is open ────────────────────────────
+    let key = bounty_key(id);
+    let mut data = [0u8; 41];
+    let len = unsafe {
+        storage_read(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32)
+    };
+    if len != 41 {
+        fail(b"bounty not found");
+    }
+    if data[40] != 0 {
+        fail(b"bounty is not open");
+    }
+
+    // Mark as claimed
+    data[40] = 1;
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32, 41);
+    }
+
+    // Record who claimed it
+    let ck = claim_key(id);
+    unsafe {
+        storage_write(ck.as_ptr() as u32, ck.len() as u32, agent.as_ptr() as u32, 32);
+    }
+
+    let msg = b"bounty claimed by agent";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Complete a bounty (owner approves and pays out) ─────────────────
+// Args: bounty_id as u64 LE (8 bytes)
+#[no_mangle]
+pub extern "C" fn complete_bounty(args_ptr: i32, args_len: i32) {
+    if args_len != 8 {
+        fail(b"complete_bounty: expected 8-byte bounty ID");
+    }
+
+    // Only the contract owner can approve completion
+    let sender = get_caller();
+    let mut owner = [0u8; 32];
+    unsafe {
+        storage_read(KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32, owner.as_ptr() as u32);
+    }
+    if sender != owner {
+        fail(b"only owner can approve bounty completion");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    let mut id_buf = [0u8; 8];
+    id_buf.copy_from_slice(args);
+    let id = u64::from_le_bytes(id_buf);
+
+    // Read bounty
+    let key = bounty_key(id);
+    let mut data = [0u8; 41];
+    let len = unsafe {
+        storage_read(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32)
+    };
+    if len != 41 {
+        fail(b"bounty not found");
+    }
+    if data[40] != 1 {
+        fail(b"bounty must be in claimed status");
+    }
+
+    // Get the claimer
+    let ck = claim_key(id);
+    let mut claimer = [0u8; 32];
+    unsafe {
+        storage_read(ck.as_ptr() as u32, ck.len() as u32, claimer.as_ptr() as u32);
+    }
+
+    // Get reward amount
+    let mut reward_buf = [0u8; 8];
+    reward_buf.copy_from_slice(&data[32..40]);
+    let reward = u64::from_le_bytes(reward_buf);
+
+    // Transfer reward to the claimer
+    let result = unsafe { token_transfer(claimer.as_ptr() as u32, reward as i64, 0) };
+    if result != 0 {
+        fail(b"reward transfer failed");
+    }
+
+    // Mark as completed
+    data[40] = 2;
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32, 41);
+    }
+
+    let msg = b"bounty completed, reward paid";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── Query: get agent score (read-only, for UI display) ──────────────
+// Args: address (32 bytes)
+#[no_mangle]
+pub extern "C" fn get_agent_score(args_ptr: i32, args_len: i32) {
+    if args_len != 32 {
+        fail(b"get_agent_score: expected 32-byte address");
+    }
+    let addr = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 32) };
+
+    let score = unsafe { agent_get_score(addr.as_ptr() as u32) };
+    let bytes = score.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+
+// ── Query: check if address is a registered agent ───────────────────
+// Args: address (32 bytes)
+#[no_mangle]
+pub extern "C" fn is_agent(args_ptr: i32, args_len: i32) {
+    if args_len != 32 {
+        fail(b"is_agent: expected 32-byte address");
+    }
+    let addr = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 32) };
+
+    let registered = unsafe { agent_is_registered(addr.as_ptr() as u32) };
+    let bytes = (registered as u64).to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+```
+
+### Why This Matters
+
+On Ethereum or Solana, implementing reputation-gated access requires:
+1. Deploying a separate reputation oracle contract
+2. Maintaining an off-chain indexer to feed reputation data
+3. Paying gas for cross-contract calls to the oracle
+
+On ClawNetwork, `agent_get_score` and `agent_is_registered` are **native host functions** — a single call with 10,000 fuel cost. The reputation data comes directly from the chain's consensus layer. No oracles, no external dependencies, no trust assumptions.
+
+### Interaction Flow
+
+```
+1. Owner deploys contract with init()
+   └── Sets min_score = 50
+
+2. Anyone posts a bounty with CLAW attached
+   └── post_bounty() stores bounty + reward
+
+3. Agent claims the bounty
+   └── claim_bounty(id)
+       ├── agent_is_registered() → must return 1
+       ├── agent_get_score()     → must be >= 50
+       └── Records claim
+
+4. Owner approves completion
+   └── complete_bounty(id)
+       └── token_transfer() pays reward to agent
+```
+
+---
+
+## Next Steps
+
+- Read the full [Smart Contracts](/docs/smart-contracts) reference for all 17 host functions
+- See the [CLI Reference](/docs/cli-reference) for deployment commands
+- Explore the [API Reference](/developers/api-reference) for RPC methods
+- Check [Tokenomics](/docs/tokenomics) for gas costs and fee structure

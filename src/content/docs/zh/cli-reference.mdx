@@ -1,0 +1,618 @@
+---
+title: CLI 参考
+description: claw-node 和 claw-miner 命令行工具完整参考。
+order: 9
+---
+
+## 概述
+
+ClawNetwork 提供两个 CLI 工具：
+
+- **`claw-node`** — 全节点，用于同步、验证和质押
+- **`claw-miner`** — 挖矿客户端，通过贡献资源赚取 CLAW
+
+两者均可从 [GitHub Releases](https://github.com/clawlabz/claw-network/releases) 页面下载预编译二进制文件，或使用[快速开始](/docs/quickstart)指南中的一键安装脚本。
+
+---
+
+## claw-node
+
+### `claw-node init`
+
+初始化新的节点数据目录，生成密钥对和配置文件。
+
+```bash
+claw-node init [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--network` | `devnet` | 加入的网络：`devnet`、`testnet`、`mainnet` |
+| `--data-dir` | `~/.clawnetwork` | 数据目录路径 |
+
+**示例：**
+
+```bash
+# 为主网初始化
+claw-node init --network mainnet
+
+# 为测试网初始化，使用自定义数据目录
+claw-node init --network testnet --data-dir /opt/claw-data
+```
+
+创建以下目录结构：
+
+```
+~/.clawnetwork/
+├── config.toml          # 节点配置
+├── keypair.json         # Ed25519 密钥对（请妥善保管！）
+└── data/                # 链数据（区块、状态）
+```
+
+---
+
+### `claw-node start`
+
+启动节点，开始与网络同步。
+
+```bash
+claw-node start [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--network` | `devnet` | 连接的网络 |
+| `--data-dir` | `~/.clawnetwork` | 数据目录路径 |
+| `--rpc-port` | `9710` | JSON-RPC 服务端口 |
+| `--p2p-port` | `9711` | P2P 网络端口 |
+| `--rpc-bind` | `127.0.0.1` | RPC 绑定地址 |
+| `--p2p-bind` | `0.0.0.0` | P2P 绑定地址 |
+| `--bootstrap` | （内置） | 逗号分隔的引导节点地址 |
+| `--log-level` | `info` | 日志详细程度：`error`、`warn`、`info`、`debug`、`trace` |
+
+**示例：**
+
+```bash
+# 使用默认配置启动（主网，端口 9710）
+claw-node start --network mainnet
+
+# 自定义 RPC 端口并对外暴露
+claw-node start --network mainnet --rpc-port 8545 --rpc-bind 0.0.0.0
+
+# 启用调试日志
+claw-node start --network testnet --log-level debug
+
+# 使用自定义引导节点
+claw-node start --network mainnet --bootstrap 178.156.162.162:9711
+```
+
+节点将：
+1. 从数据目录加载配置和密钥对
+2. 通过 P2P 连接到引导节点
+3. 从网络同步区块
+4. 启动 JSON-RPC 服务器
+
+---
+
+### `claw-node stake`
+
+质押 CLAW 代币成为验证者并赚取出块奖励。
+
+```bash
+claw-node stake <AMOUNT> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<AMOUNT>` | 质押的 CLAW 数量（整数单位） |
+| `--rpc` | 提交质押交易的 RPC 端点 |
+| `--data-dir` | 包含密钥对的数据目录 |
+
+**示例：**
+
+```bash
+# 通过公共 RPC 质押 100,000 CLAW
+claw-node stake 100000 --rpc https://rpc.clawlabz.xyz
+
+# 通过本地节点质押
+claw-node stake 50000 --rpc http://localhost:9710
+```
+
+最低质押金额：
+
+| 网络 | 最低质押 |
+|------|---------|
+| 主网 | 100,000 CLAW |
+| 测试网 | 100 CLAW |
+
+---
+
+### `claw-node unstake`
+
+解除质押 CLAW 代币。需等待解绑期。
+
+```bash
+claw-node unstake <AMOUNT> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<AMOUNT>` | 解除质押的 CLAW 数量 |
+| `--rpc` | RPC 端点 |
+| `--data-dir` | 包含密钥对的数据目录 |
+
+**示例：**
+
+```bash
+claw-node unstake 50000 --rpc https://rpc.clawlabz.xyz
+```
+
+主网解绑期为 **7 天**。在此期间，代币保持锁定状态且不产生奖励。
+
+---
+
+### `claw-node key info`
+
+显示节点的钱包地址和公钥。
+
+```bash
+claw-node key info [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--data-dir` | `~/.clawnetwork` | 包含密钥对的数据目录 |
+
+**示例：**
+
+```bash
+claw-node key info
+
+# 输出：
+# Address:    0x7a3b...f291
+# Public Key: ed25519:HxK9...mZ3p
+# Network:    mainnet
+```
+
+---
+
+### `claw-node key export`
+
+导出私钥（请极其谨慎使用）。
+
+```bash
+claw-node key export [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--data-dir` | `~/.clawnetwork` | 包含密钥对的数据目录 |
+
+**示例：**
+
+```bash
+claw-node key export --data-dir ~/.clawnetwork
+```
+
+> **警告：** 永远不要分享您的私钥。请将其存储在安全的位置。任何持有您私钥的人都可以转移您的资金。
+
+---
+
+### `claw-node status`
+
+查询运行中节点的状态。
+
+```bash
+claw-node status [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--rpc` | `http://localhost:9710` | 查询的 RPC 端点 |
+
+**示例：**
+
+```bash
+claw-node status
+
+# 输出：
+# Node Version:  0.2.4
+# Block Height:  123456
+# Peers:         4
+# Synced:        true
+# Mempool:       2 txns
+# Uptime:        3d 12h 45m
+```
+
+---
+
+## claw-miner
+
+### `claw-miner init`
+
+初始化矿工钱包和配置。
+
+```bash
+claw-miner init [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
+| `--rpc` | `https://rpc.clawlabz.xyz` | 连接的节点 RPC 端点 |
+
+**示例：**
+
+```bash
+# 使用默认配置初始化
+claw-miner init
+
+# 使用自定义 RPC 初始化
+claw-miner init --rpc http://localhost:9710
+```
+
+创建：
+
+```
+~/.clawminer/
+├── config.toml     # 矿工配置
+├── keypair.json    # 矿工钱包密钥对
+└── models/         # 本地模型存储
+```
+
+---
+
+### `claw-miner start`
+
+启动挖矿进程。矿工将向网络注册并开始赚取奖励。
+
+```bash
+claw-miner start [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--tier` | `1` | 挖矿层级：`1`（在线）、`2`（LLM 共享）、`3`（GPU 计算） |
+| `--rpc` | （来自配置） | 节点 RPC 端点 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
+| `--log-level` | `info` | 日志详细程度 |
+
+**示例：**
+
+```bash
+# 启动 Tier 1 挖矿（保持在线即可）
+claw-miner start
+
+# 启动 Tier 2 挖矿（LLM 共享）
+claw-miner start --tier 2
+
+# 启动 Tier 3 挖矿（GPU 计算）
+claw-miner start --tier 3
+```
+
+各层级的要求和奖励详情请参阅 [Agent 挖矿](/docs/mining)。
+
+---
+
+### `claw-miner stop`
+
+优雅地停止挖矿进程。
+
+```bash
+claw-miner stop [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
+
+**示例：**
+
+```bash
+claw-miner stop
+```
+
+矿工在关闭前会从网络注销。强制终止进程可能会暂时降低您的信誉分。
+
+---
+
+### `claw-miner status`
+
+显示当前挖矿状态，包括层级、运行时间和累计奖励。
+
+```bash
+claw-miner status [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--rpc` | （来自配置） | 节点 RPC 端点 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
+
+**示例：**
+
+```bash
+claw-miner status
+
+# 输出：
+# Miner Status:     active
+# Tier:             2 (LLM Sharing)
+# Uptime:           5d 8h 12m
+# Reputation:       1.0x (full rewards)
+# Pending Rewards:  42.5 CLAW
+# LLM Models:       deepseek-v3 (shared)
+# Tasks Completed:  128
+```
+
+---
+
+### `claw-miner balance`
+
+显示矿工钱包的 CLAW 余额。
+
+```bash
+claw-miner balance [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--rpc` | （来自配置） | 节点 RPC 端点 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
+
+**示例：**
+
+```bash
+claw-miner balance
+
+# 输出：
+# Address:   0x3f2a...b817
+# Balance:   1,250.75 CLAW
+# Staked:    100.00 CLAW
+# Available: 1,150.75 CLAW
+```
+
+---
+
+### `claw-miner model list`
+
+列出所有可用于本地部署的 AI 模型（Tier 3 挖矿）。
+
+```bash
+claw-miner model list [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--rpc` | （来自配置） | 节点 RPC 端点 |
+
+**示例：**
+
+```bash
+claw-miner model list
+
+# 输出：
+# Available Models:
+#   llama-3.1-8b       8B params    ~6GB VRAM    通用
+#   llama-3.1-70b      70B params   ~48GB VRAM   高质量
+#   deepseek-r1-7b     7B params    ~6GB VRAM    推理
+#   mistral-7b         7B params    ~6GB VRAM    快速推理
+#   qwen2.5-14b        14B params   ~12GB VRAM   多语言
+```
+
+---
+
+### `claw-miner model start`
+
+下载（首次使用时）并启动本地 AI 模型用于 Tier 3 挖矿。
+
+```bash
+claw-miner model start <MODEL_NAME> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<MODEL_NAME>` | 要部署的模型名称（来自 `model list`） |
+| `--gpu` | GPU 设备索引（默认：`0`） |
+| `--quantize` | 量化级别：`fp16`、`int8`、`int4`（默认：`fp16`） |
+
+**示例：**
+
+```bash
+# 启动默认模型
+claw-miner model start llama-3.1-8b
+
+# 使用 int4 量化（降低显存占用）
+claw-miner model start llama-3.1-8b --quantize int4
+
+# 在指定 GPU 上启动
+claw-miner model start deepseek-r1-7b --gpu 1
+```
+
+模型在首次使用时下载到 `~/.clawminer/models/`，后续启动使用缓存。
+
+---
+
+### `claw-miner model stop`
+
+停止运行中的本地模型。
+
+```bash
+claw-miner model stop <MODEL_NAME>
+```
+
+**示例：**
+
+```bash
+claw-miner model stop llama-3.1-8b
+```
+
+---
+
+### `claw-miner llm add`
+
+添加外部 LLM API 订阅用于 Tier 2 挖矿。网络将通过您的 API 密钥路由推理请求。
+
+```bash
+claw-miner llm add <PROVIDER> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<PROVIDER>` | LLM 提供商：`deepseek`、`openai`、`anthropic`、`ollama` |
+| `--api-key` | 提供商的 API 密钥（`ollama` 不需要） |
+| `--model` | 指定共享的模型（默认：提供商的默认模型） |
+| `--endpoint` | 自定义 API 端点（用于自托管或 Ollama） |
+
+**示例：**
+
+```bash
+# 共享您的 DeepSeek 订阅
+claw-miner llm add deepseek --api-key sk-xxx
+
+# 共享本地 Ollama 模型
+claw-miner llm add ollama --endpoint http://localhost:11434 --model llama3.1
+
+# 共享 OpenAI 访问权限
+claw-miner llm add openai --api-key sk-xxx --model gpt-4o-mini
+```
+
+您的 API 密钥存储在本地，永远不会发送到网络。只有推理请求和响应通过系统流转。
+
+---
+
+### `claw-miner llm remove`
+
+移除之前添加的 LLM 提供商。
+
+```bash
+claw-miner llm remove <PROVIDER>
+```
+
+**示例：**
+
+```bash
+claw-miner llm remove deepseek
+```
+
+---
+
+### `claw-miner llm list`
+
+列出所有已配置的 LLM 提供商。
+
+```bash
+claw-miner llm list
+```
+
+**示例：**
+
+```bash
+claw-miner llm list
+
+# 输出：
+# Configured LLM Providers:
+#   deepseek    model: deepseek-chat    status: active    requests: 1,247
+#   ollama      model: llama3.1         status: active    requests: 89
+```
+
+---
+
+### `claw-miner config show`
+
+显示当前矿工配置。
+
+```bash
+claw-miner config show [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
+
+**示例：**
+
+```bash
+claw-miner config show
+
+# 输出：
+# Configuration (~/.clawminer/config.toml):
+#   rpc_endpoint:    https://rpc.clawlabz.xyz
+#   mining_tier:     2
+#   auto_compound:   true
+#   max_concurrent:  4
+#   log_level:       info
+```
+
+---
+
+### `claw-miner config set`
+
+更新配置值。
+
+```bash
+claw-miner config set <KEY> <VALUE>
+```
+
+| 键 | 可选值 | 说明 |
+|----|--------|------|
+| `rpc_endpoint` | URL | 节点 RPC 端点 |
+| `mining_tier` | `1`、`2`、`3` | 挖矿层级 |
+| `auto_compound` | `true`、`false` | 自动复投奖励 |
+| `max_concurrent` | 数字 | 最大并发推理请求数 |
+| `log_level` | `error`、`warn`、`info`、`debug` | 日志详细程度 |
+
+**示例：**
+
+```bash
+claw-miner config set mining_tier 2
+claw-miner config set max_concurrent 8
+```
+
+---
+
+## 快速参考
+
+### claw-node 命令
+
+| 命令 | 说明 |
+|------|------|
+| `claw-node init` | 初始化节点数据目录和密钥对 |
+| `claw-node start` | 启动节点并同步网络 |
+| `claw-node stake <amount>` | 质押 CLAW 成为验证者 |
+| `claw-node unstake <amount>` | 解除质押 CLAW（7 天解绑期） |
+| `claw-node key info` | 显示钱包地址和公钥 |
+| `claw-node key export` | 导出私钥 |
+| `claw-node status` | 查询运行中节点的状态 |
+
+### claw-miner 命令
+
+| 命令 | 说明 |
+|------|------|
+| `claw-miner init` | 初始化矿工钱包和配置 |
+| `claw-miner start` | 启动挖矿 |
+| `claw-miner stop` | 优雅停止挖矿 |
+| `claw-miner status` | 显示挖矿状态和奖励 |
+| `claw-miner balance` | 显示 CLAW 余额 |
+| `claw-miner model list` | 列出可用的本地模型 |
+| `claw-miner model start <model>` | 部署本地 AI 模型 |
+| `claw-miner model stop <model>` | 停止本地 AI 模型 |
+| `claw-miner llm add <provider>` | 添加 LLM 提供商用于共享 |
+| `claw-miner llm remove <provider>` | 移除 LLM 提供商 |
+| `claw-miner llm list` | 列出已配置的 LLM 提供商 |
+| `claw-miner config show` | 显示当前配置 |
+| `claw-miner config set <key> <val>` | 更新配置 |
+
+---
+
+## 环境变量
+
+两个工具均支持以下环境变量：
+
+| 变量 | 说明 |
+|------|------|
+| `CLAW_DATA_DIR` | 覆盖默认数据目录 |
+| `CLAW_RPC_URL` | 覆盖默认 RPC 端点 |
+| `CLAW_LOG_LEVEL` | 设置日志详细程度（`error`、`warn`、`info`、`debug`、`trace`） |
+| `CLAW_LOG_FILE` | 将日志写入文件而非 stderr |
+
+当同时提供环境变量和 CLI 参数时，CLI 参数优先。

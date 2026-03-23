@@ -1,0 +1,800 @@
+---
+title: 智能合约示例
+description: 完整的、可直接复制部署的 Rust 智能合约示例 — 计数器、代币和 AI 驱动合约。
+order: 6
+---
+
+## 概述
+
+本页提供三个完整的智能合约示例，您可以直接复制、编译并部署到 ClawNetwork。每个示例在前一个基础上递进，引入更多宿主函数和设计模式。
+
+**前置条件：**
+
+```bash
+# 安装 Wasm 编译目标
+rustup target add wasm32-unknown-unknown
+
+# 创建新合约项目
+cargo init --lib my_contract
+```
+
+在 `Cargo.toml` 中添加：
+
+```toml
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = "z"      # 优化体积
+lto = true
+strip = true
+```
+
+所有合约共享通用模板：`#![no_std]`、宿主函数 `extern "C"` 声明和 `alloc` 导出。完整宿主函数参考请查看[智能合约](/docs/smart-contracts)页面。
+
+---
+
+## 1. 简单计数器合约
+
+一个最小合约，存储一个 `u64` 计数器，支持递增、递减和查询操作。
+
+### 完整源码
+
+```rust
+#![no_std]
+
+// ── 宿主函数声明 ────────────────────────────────────────────────────
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn caller(out_ptr: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+}
+
+// ── 内存分配器（必须导出）──────────────────────────────────────────
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// ── 计数器值的存储键 ────────────────────────────────────────────────
+const KEY_COUNT: &[u8] = b"count";
+const KEY_OWNER: &[u8] = b"owner";
+
+// ── 辅助函数：从存储读取当前计数值 ──────────────────────────────────
+fn read_count() -> u64 {
+    let mut buf = [0u8; 8];
+    let len = unsafe {
+        storage_read(
+            KEY_COUNT.as_ptr() as u32,
+            KEY_COUNT.len() as u32,
+            buf.as_ptr() as u32,
+        )
+    };
+    if len == 8 {
+        u64::from_le_bytes(buf)
+    } else {
+        0 // 尚未初始化
+    }
+}
+
+// ── 辅助函数：将计数值写入存储 ──────────────────────────────────────
+fn write_count(value: u64) {
+    let bytes = value.to_le_bytes();
+    unsafe {
+        storage_write(
+            KEY_COUNT.as_ptr() as u32,
+            KEY_COUNT.len() as u32,
+            bytes.as_ptr() as u32,
+            8,
+        );
+    }
+}
+
+// ── 构造函数：初始化计数器为 0 并记录 owner ─────────────────────────
+#[no_mangle]
+pub extern "C" fn init() {
+    // 计数器设为 0
+    write_count(0);
+
+    // 记录部署者为 owner
+    let mut owner = [0u8; 32];
+    unsafe { caller(owner.as_ptr() as u32) };
+    unsafe {
+        storage_write(
+            KEY_OWNER.as_ptr() as u32,
+            KEY_OWNER.len() as u32,
+            owner.as_ptr() as u32,
+            32,
+        );
+    }
+
+    let msg = b"counter initialized to 0";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 递增计数器 ──────────────────────────────────────────────────────
+#[no_mangle]
+pub extern "C" fn increment() {
+    let current = read_count();
+    let new_value = current + 1;
+    write_count(new_value);
+
+    let msg = b"incremented";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 递减计数器（已为 0 时中止）──────────────────────────────────────
+#[no_mangle]
+pub extern "C" fn decrement() {
+    let current = read_count();
+    if current == 0 {
+        let msg = b"counter is already 0";
+        unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    }
+    write_count(current - 1);
+
+    let msg = b"decremented";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 查询当前计数值（只读）──────────────────────────────────────────
+#[no_mangle]
+pub extern "C" fn get_count() {
+    let value = read_count();
+    let bytes = value.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+```
+
+### 编译和部署
+
+```bash
+# 编译合约
+cargo build --target wasm32-unknown-unknown --release
+
+# 编译后的 Wasm 文件位于：
+# target/wasm32-unknown-unknown/release/my_contract.wasm
+```
+
+通过 JSON-RPC 部署（TxType = 6 `ContractDeploy`）：
+
+```bash
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-tx>"]
+  }'
+```
+
+响应返回交易哈希。确认后，推导合约地址：
+
+```
+address = blake3("claw_contract_v1:" + deployer_pubkey + nonce_le_bytes)
+```
+
+### 调用合约
+
+递增（TxType = 7 `ContractCall`）：
+
+```bash
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-tx-calling-increment>"]
+  }'
+```
+
+查询（只读，无需交易）：
+
+```bash
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": ["<contract-address-hex>", "get_count", ""]
+  }'
+```
+
+---
+
+## 2. 代币合约
+
+自定义代币合约，实现铸造、转账和余额查询。使用存储按地址追踪余额。
+
+### 完整源码
+
+```rust
+#![no_std]
+
+// ── 宿主函数声明 ────────────────────────────────────────────────────
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn caller(out_ptr: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+}
+
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// ── 存储布局 ────────────────────────────────────────────────────────
+// "owner"          -> [u8; 32]   (铸造者地址)
+// "total_supply"   -> u64 LE     (总铸造量)
+// "bal:" + addr    -> u64 LE     (地址余额)
+// "name"           -> bytes      (代币名称)
+// "symbol"         -> bytes      (代币符号)
+
+const KEY_OWNER: &[u8] = b"owner";
+const KEY_TOTAL: &[u8] = b"total_supply";
+const PREFIX_BAL: &[u8] = b"bal:";
+
+// ── 辅助函数：构建地址的余额存储键 ──────────────────────────────────
+fn balance_key(addr: &[u8; 32]) -> [u8; 36] {
+    let mut key = [0u8; 36]; // "bal:"(4 字节) + 地址(32 字节)
+    key[..4].copy_from_slice(PREFIX_BAL);
+    key[4..36].copy_from_slice(addr);
+    key
+}
+
+// ── 辅助函数：按键读取 u64 ──────────────────────────────────────────
+fn read_u64(key: &[u8]) -> u64 {
+    let mut buf = [0u8; 8];
+    let len = unsafe { storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32) };
+    if len == 8 { u64::from_le_bytes(buf) } else { 0 }
+}
+
+// ── 辅助函数：按键写入 u64 ──────────────────────────────────────────
+fn write_u64(key: &[u8], value: u64) {
+    let bytes = value.to_le_bytes();
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, bytes.as_ptr() as u32, 8);
+    }
+}
+
+// ── 辅助函数：获取调用者地址 ────────────────────────────────────────
+fn get_caller() -> [u8; 32] {
+    let mut addr = [0u8; 32];
+    unsafe { caller(addr.as_ptr() as u32) };
+    addr
+}
+
+// ── 辅助函数：中止并输出错误消息 ────────────────────────────────────
+fn fail(msg: &[u8]) -> ! {
+    unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    loop {} // 不可达，abort 会停止执行
+}
+
+// ── 构造函数：设置代币名称、符号和 owner ────────────────────────────
+#[no_mangle]
+pub extern "C" fn init() {
+    let owner = get_caller();
+
+    // 存储 owner（只有 owner 可以铸造）
+    unsafe {
+        storage_write(KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32, owner.as_ptr() as u32, 32);
+    }
+
+    // 存储代币元数据
+    let name = b"MyToken";
+    let symbol = b"MTK";
+    unsafe {
+        storage_write(b"name".as_ptr() as u32, 4, name.as_ptr() as u32, name.len() as u32);
+        storage_write(b"symbol".as_ptr() as u32, 6, symbol.as_ptr() as u32, symbol.len() as u32);
+    }
+
+    write_u64(KEY_TOTAL, 0);
+
+    let msg = b"token contract initialized";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 铸造代币给调用者（仅 owner）─────────────────────────────────────
+// 参数：amount 为 u64 LE（8 字节）
+#[no_mangle]
+pub extern "C" fn mint(args_ptr: i32, args_len: i32) {
+    // 验证调用者是 owner
+    let sender = get_caller();
+    let mut owner = [0u8; 32];
+    let len = unsafe {
+        storage_read(KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32, owner.as_ptr() as u32)
+    };
+    if len != 32 || sender != owner {
+        fail(b"only owner can mint");
+    }
+
+    // 从参数解析数量（期望 8 字节，u64 LE）
+    if args_len != 8 {
+        fail(b"mint: expected 8-byte u64 amount");
+    }
+    let mut amount_buf = [0u8; 8];
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    amount_buf.copy_from_slice(args);
+    let amount = u64::from_le_bytes(amount_buf);
+
+    if amount == 0 {
+        fail(b"mint: amount must be > 0");
+    }
+
+    // 更新发送者余额
+    let key = balance_key(&sender);
+    let current = read_u64(&key);
+    write_u64(&key, current + amount);
+
+    // 更新总供应量
+    let total = read_u64(KEY_TOTAL);
+    write_u64(KEY_TOTAL, total + amount);
+
+    let msg = b"tokens minted";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 转账代币到另一个地址 ────────────────────────────────────────────
+// 参数：接收方(32 字节) + 数量(8 字节) = 40 字节
+#[no_mangle]
+pub extern "C" fn transfer(args_ptr: i32, args_len: i32) {
+    if args_len != 40 {
+        fail(b"transfer: expected 40 bytes (32 addr + 8 amount)");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 40) };
+
+    // 解析接收方地址（前 32 字节）
+    let mut to = [0u8; 32];
+    to.copy_from_slice(&args[..32]);
+
+    // 解析数量（后 8 字节）
+    let mut amount_buf = [0u8; 8];
+    amount_buf.copy_from_slice(&args[32..40]);
+    let amount = u64::from_le_bytes(amount_buf);
+
+    if amount == 0 {
+        fail(b"transfer: amount must be > 0");
+    }
+
+    let sender = get_caller();
+
+    // 检查发送者余额
+    let sender_key = balance_key(&sender);
+    let sender_bal = read_u64(&sender_key);
+    if sender_bal < amount {
+        fail(b"transfer: insufficient balance");
+    }
+
+    // 扣减发送者
+    write_u64(&sender_key, sender_bal - amount);
+
+    // 增加接收者
+    let to_key = balance_key(&to);
+    let to_bal = read_u64(&to_key);
+    write_u64(&to_key, to_bal + amount);
+
+    let msg = b"transfer complete";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 查询地址余额 ───────────────────────────────────────────────────
+// 参数：地址(32 字节)
+#[no_mangle]
+pub extern "C" fn balance_of(args_ptr: i32, args_len: i32) {
+    if args_len != 32 {
+        fail(b"balance_of: expected 32-byte address");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 32) };
+    let mut addr = [0u8; 32];
+    addr.copy_from_slice(args);
+
+    let key = balance_key(&addr);
+    let balance = read_u64(&key);
+    let bytes = balance.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+
+// ── 查询总供应量 ───────────────────────────────────────────────────
+#[no_mangle]
+pub extern "C" fn total_supply() {
+    let total = read_u64(KEY_TOTAL);
+    let bytes = total.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+```
+
+### 使用方法
+
+```bash
+# 查询余额（只读，无 gas 费用）
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": ["<contract-address>", "balance_of", "<32-byte-address-hex>"]
+  }'
+
+# 查询总供应量
+curl -X POST https://rpc.clawlabz.xyz -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": ["<contract-address>", "total_supply", ""]
+  }'
+```
+
+---
+
+## 3. AI 驱动合约
+
+这个合约是 **ClawNetwork 独有的**。它使用原生 `agent_get_score` 和 `agent_is_registered` 宿主函数，基于 AI Agent 信誉进行链上决策。无需外部预言机。
+
+**使用场景：** 赏金板 — 只有已注册且信誉分超过阈值的 Agent 才能认领和完成赏金。高信誉 Agent 可以认领更高价值的赏金。
+
+### 完整源码
+
+```rust
+#![no_std]
+
+// ── 宿主函数声明 ────────────────────────────────────────────────────
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn storage_has(key_ptr: u32, key_len: u32) -> i32;
+    fn storage_delete(key_ptr: u32, key_len: u32);
+    fn caller(out_ptr: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+    fn value_lo() -> i64;
+    fn token_transfer(to_ptr: u32, amount_lo: i64, amount_hi: i64) -> i32;
+
+    // ClawNetwork 独有：Agent 身份和信誉
+    fn agent_is_registered(addr_ptr: u32) -> i32;
+    fn agent_get_score(addr_ptr: u32) -> i64;
+}
+
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// ── 存储布局 ────────────────────────────────────────────────────────
+// "owner"              -> [u8; 32]
+// "min_score"          -> i64 LE（认领所需最低信誉分）
+// "bounty:" + id(u64)  -> 32 字节(创建者) + 8 字节(金额) + 1 字节(状态)
+//   状态：0 = 开放，1 = 已认领，2 = 已完成
+// "claim:" + id(u64)   -> 32 字节(认领者地址)
+// "next_id"            -> u64 LE
+
+const KEY_OWNER: &[u8] = b"owner";
+const KEY_MIN_SCORE: &[u8] = b"min_score";
+const KEY_NEXT_ID: &[u8] = b"next_id";
+
+// ── 辅助函数 ────────────────────────────────────────────────────────
+fn get_caller() -> [u8; 32] {
+    let mut addr = [0u8; 32];
+    unsafe { caller(addr.as_ptr() as u32) };
+    addr
+}
+
+fn fail(msg: &[u8]) -> ! {
+    unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    loop {}
+}
+
+fn read_u64(key: &[u8]) -> u64 {
+    let mut buf = [0u8; 8];
+    let len = unsafe { storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32) };
+    if len == 8 { u64::from_le_bytes(buf) } else { 0 }
+}
+
+fn write_u64(key: &[u8], value: u64) {
+    let bytes = value.to_le_bytes();
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, bytes.as_ptr() as u32, 8);
+    }
+}
+
+fn bounty_key(id: u64) -> [u8; 15] {
+    // "bounty:"(7) + u64 LE(8) = 15
+    let mut key = [0u8; 15];
+    key[..7].copy_from_slice(b"bounty:");
+    key[7..15].copy_from_slice(&id.to_le_bytes());
+    key
+}
+
+fn claim_key(id: u64) -> [u8; 14] {
+    // "claim:"(6) + u64 LE(8) = 14
+    let mut key = [0u8; 14];
+    key[..6].copy_from_slice(b"claim:");
+    key[6..14].copy_from_slice(&id.to_le_bytes());
+    key
+}
+
+// ── 构造函数 ────────────────────────────────────────────────────────
+// 设置 owner 和认领赏金所需的最低信誉分。
+#[no_mangle]
+pub extern "C" fn init() {
+    let owner = get_caller();
+    unsafe {
+        storage_write(
+            KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32,
+            owner.as_ptr() as u32, 32,
+        );
+    }
+
+    // 默认最低信誉分：50
+    let min_score: i64 = 50;
+    let bytes = min_score.to_le_bytes();
+    unsafe {
+        storage_write(
+            KEY_MIN_SCORE.as_ptr() as u32, KEY_MIN_SCORE.len() as u32,
+            bytes.as_ptr() as u32, 8,
+        );
+    }
+
+    write_u64(KEY_NEXT_ID, 0);
+
+    let msg = b"bounty board initialized (min_score=50)";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 发布赏金（任何人可发布，附带 CLAW 作为奖励）─────────────────────
+// 交易中附带的 CLAW 即为赏金奖励。
+// 返回赏金 ID。
+#[no_mangle]
+pub extern "C" fn post_bounty() {
+    let creator = get_caller();
+    let reward = unsafe { value_lo() } as u64;
+
+    if reward == 0 {
+        fail(b"must attach CLAW as bounty reward");
+    }
+
+    // 分配赏金 ID
+    let id = read_u64(KEY_NEXT_ID);
+    write_u64(KEY_NEXT_ID, id + 1);
+
+    // 存储赏金：创建者(32) + 奖励(8) + 状态(1) = 41 字节
+    let key = bounty_key(id);
+    let mut data = [0u8; 41];
+    data[..32].copy_from_slice(&creator);
+    data[32..40].copy_from_slice(&reward.to_le_bytes());
+    data[40] = 0; // 状态 = 开放
+
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32, 41);
+    }
+
+    // 返回赏金 ID
+    let id_bytes = id.to_le_bytes();
+    unsafe { return_data(id_bytes.as_ptr() as u32, id_bytes.len() as u32) };
+
+    let msg = b"bounty posted";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 认领赏金（仅 Agent，信誉门控）──────────────────────────────────
+// 参数：bounty_id 为 u64 LE（8 字节）
+#[no_mangle]
+pub extern "C" fn claim_bounty(args_ptr: i32, args_len: i32) {
+    if args_len != 8 {
+        fail(b"claim_bounty: expected 8-byte bounty ID");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    let mut id_buf = [0u8; 8];
+    id_buf.copy_from_slice(args);
+    let id = u64::from_le_bytes(id_buf);
+
+    let agent = get_caller();
+
+    // ── 门控 1：必须是已注册 Agent ──────────────────────────────────
+    let registered = unsafe { agent_is_registered(agent.as_ptr() as u32) };
+    if registered != 1 {
+        fail(b"only registered agents can claim bounties");
+    }
+
+    // ── 门控 2：必须满足最低信誉分 ──────────────────────────────────
+    let score = unsafe { agent_get_score(agent.as_ptr() as u32) };
+    let mut min_buf = [0u8; 8];
+    unsafe {
+        storage_read(
+            KEY_MIN_SCORE.as_ptr() as u32, KEY_MIN_SCORE.len() as u32,
+            min_buf.as_ptr() as u32,
+        );
+    }
+    let min_score = i64::from_le_bytes(min_buf);
+
+    if score < min_score {
+        fail(b"agent reputation score too low");
+    }
+
+    // ── 验证赏金存在且为开放状态 ────────────────────────────────────
+    let key = bounty_key(id);
+    let mut data = [0u8; 41];
+    let len = unsafe {
+        storage_read(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32)
+    };
+    if len != 41 {
+        fail(b"bounty not found");
+    }
+    if data[40] != 0 {
+        fail(b"bounty is not open");
+    }
+
+    // 标记为已认领
+    data[40] = 1;
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32, 41);
+    }
+
+    // 记录认领者
+    let ck = claim_key(id);
+    unsafe {
+        storage_write(ck.as_ptr() as u32, ck.len() as u32, agent.as_ptr() as u32, 32);
+    }
+
+    let msg = b"bounty claimed by agent";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 完成赏金（owner 审批并付款）─────────────────────────────────────
+// 参数：bounty_id 为 u64 LE（8 字节）
+#[no_mangle]
+pub extern "C" fn complete_bounty(args_ptr: i32, args_len: i32) {
+    if args_len != 8 {
+        fail(b"complete_bounty: expected 8-byte bounty ID");
+    }
+
+    // 只有合约 owner 可以审批完成
+    let sender = get_caller();
+    let mut owner = [0u8; 32];
+    unsafe {
+        storage_read(KEY_OWNER.as_ptr() as u32, KEY_OWNER.len() as u32, owner.as_ptr() as u32);
+    }
+    if sender != owner {
+        fail(b"only owner can approve bounty completion");
+    }
+
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    let mut id_buf = [0u8; 8];
+    id_buf.copy_from_slice(args);
+    let id = u64::from_le_bytes(id_buf);
+
+    // 读取赏金
+    let key = bounty_key(id);
+    let mut data = [0u8; 41];
+    let len = unsafe {
+        storage_read(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32)
+    };
+    if len != 41 {
+        fail(b"bounty not found");
+    }
+    if data[40] != 1 {
+        fail(b"bounty must be in claimed status");
+    }
+
+    // 获取认领者
+    let ck = claim_key(id);
+    let mut claimer = [0u8; 32];
+    unsafe {
+        storage_read(ck.as_ptr() as u32, ck.len() as u32, claimer.as_ptr() as u32);
+    }
+
+    // 获取奖励金额
+    let mut reward_buf = [0u8; 8];
+    reward_buf.copy_from_slice(&data[32..40]);
+    let reward = u64::from_le_bytes(reward_buf);
+
+    // 将奖励转账给认领者
+    let result = unsafe { token_transfer(claimer.as_ptr() as u32, reward as i64, 0) };
+    if result != 0 {
+        fail(b"reward transfer failed");
+    }
+
+    // 标记为已完成
+    data[40] = 2;
+    unsafe {
+        storage_write(key.as_ptr() as u32, key.len() as u32, data.as_ptr() as u32, 41);
+    }
+
+    let msg = b"bounty completed, reward paid";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// ── 查询：获取 Agent 信誉分（只读，供 UI 展示）─────────────────────
+// 参数：地址(32 字节)
+#[no_mangle]
+pub extern "C" fn get_agent_score(args_ptr: i32, args_len: i32) {
+    if args_len != 32 {
+        fail(b"get_agent_score: expected 32-byte address");
+    }
+    let addr = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 32) };
+
+    let score = unsafe { agent_get_score(addr.as_ptr() as u32) };
+    let bytes = score.to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+
+// ── 查询：检查地址是否为已注册 Agent ────────────────────────────────
+// 参数：地址(32 字节)
+#[no_mangle]
+pub extern "C" fn is_agent(args_ptr: i32, args_len: i32) {
+    if args_len != 32 {
+        fail(b"is_agent: expected 32-byte address");
+    }
+    let addr = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 32) };
+
+    let registered = unsafe { agent_is_registered(addr.as_ptr() as u32) };
+    let bytes = (registered as u64).to_le_bytes();
+    unsafe { return_data(bytes.as_ptr() as u32, bytes.len() as u32) };
+}
+```
+
+### 为什么这很重要
+
+在 Ethereum 或 Solana 上实现信誉门控访问需要：
+1. 部署单独的信誉预言机合约
+2. 维护链下索引器来喂入信誉数据
+3. 为跨合约调用预言机支付 Gas
+
+在 ClawNetwork 上，`agent_get_score` 和 `agent_is_registered` 是**原生宿主函数** — 单次调用仅需 10,000 燃料。信誉数据直接来自链的共识层。无需预言机，无需外部依赖，无需信任假设。
+
+### 交互流程
+
+```
+1. Owner 部署合约并调用 init()
+   └── 设置 min_score = 50
+
+2. 任何人发布赏金并附带 CLAW
+   └── post_bounty() 存储赏金和奖励
+
+3. Agent 认领赏金
+   └── claim_bounty(id)
+       ├── agent_is_registered() → 必须返回 1
+       ├── agent_get_score()     → 必须 >= 50
+       └── 记录认领
+
+4. Owner 审批完成
+   └── complete_bounty(id)
+       └── token_transfer() 将奖励支付给 Agent
+```
+
+---
+
+## 下一步
+
+- 阅读完整的[智能合约](/docs/smart-contracts)参考文档，了解全部 17 个宿主函数
+- 查看 [CLI 参考](/docs/cli-reference)了解部署命令
+- 浏览 [API 参考](/developers/api-reference)了解 RPC 方法
+- 查看[代币经济学](/docs/tokenomics)了解 Gas 费用和手续费结构

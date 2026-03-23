@@ -1,0 +1,211 @@
+---
+title: Mining Quick Start Guide
+description: Step-by-step guide to install claw-miner and start earning CLAW.
+order: 8
+---
+
+## Prerequisites
+
+- **Python 3.10+** — Check with `python3 --version`
+- **Internet connection** — Stable connection for syncing and heartbeats
+- **A CLAW wallet** — Created automatically during setup
+
+## Option A: One-Line Install via AI Agent (Recommended)
+
+The fastest way to get started. Copy this prompt to your AI agent (Claude Code, ChatGPT, Codex, or any AI assistant):
+
+```
+Help me install the ClawNetwork mining node: https://raw.githubusercontent.com/clawlabz/claw-miner/main/docs/install.md
+```
+
+Your AI agent will read the installation guide and walk you through the entire process. Once installed, you can manage everything through natural language:
+
+```
+Start mining
+Check my balance
+Show mining status
+Stop mining
+```
+
+## Option B: Manual Install
+
+### 1. Install claw-miner
+
+```bash
+pip install clawminer
+```
+
+### 2. Initialize
+
+```bash
+claw-miner init
+```
+
+This creates your wallet and registers your node on the network. Save the seed phrase it displays — this is the only way to recover your wallet.
+
+### 3. Start Mining
+
+```bash
+claw-miner start
+```
+
+That's it. You're now mining Tier 1 (online mining) and earning CLAW.
+
+## Check Your Status
+
+```bash
+# View mining status, uptime, and reputation
+claw-miner status
+
+# Check your CLAW balance
+claw-miner balance
+```
+
+Example output:
+
+```
+Mining Status: ACTIVE
+Tier: 1 (Online)
+Uptime: 99.2%
+Reputation: 0.5x (Day 12 — full rewards at Day 30)
+Earned today: 0.42 CLAW
+Total earned: 8.7 CLAW
+```
+
+## Upgrade to Tier 2: Share LLM Access
+
+Tier 2 lets you earn more by sharing AI model access with the network. You need 100 CLAW staked (earn it from Tier 1 first, or get some from the faucet).
+
+### Option 1: Share an LLM API subscription
+
+If you have an API key from OpenAI, Anthropic, DeepSeek, or another provider:
+
+```bash
+# Add your LLM provider
+claw-miner llm add deepseek
+
+# Set an hourly rate limit to protect your quota
+claw-miner llm limit 50/hour
+```
+
+Your API key **never leaves your machine**. The `claw-miner` process calls the LLM API locally on your behalf and returns results to the network.
+
+### Option 2: Run a local open-source model
+
+If you have a machine that can run a small model (even CPU-only):
+
+```bash
+# List available models
+claw-miner model list
+
+# Deploy a model (auto-downloads via Ollama)
+claw-miner model start llama-3.1-8b
+```
+
+### Supported LLM Providers
+
+| Provider | Command | Reward Weight |
+|----------|---------|--------------|
+| Claude (Opus/Sonnet) | `claw-miner llm add anthropic` | 2.0x |
+| GPT-4o | `claw-miner llm add openai` | 2.0x |
+| DeepSeek V3/R1 | `claw-miner llm add deepseek` | 1.5x |
+| Gemini | `claw-miner llm add google` | 1.2x |
+| Custom OpenAI-compatible | `claw-miner llm add custom --endpoint URL` | 0.8x–2.0x |
+
+## Upgrade to Tier 3: GPU Mining
+
+Tier 3 is for users with dedicated GPUs who want maximum rewards. You need 1,000 CLAW staked and a GPU with 6GB+ VRAM.
+
+```bash
+# Deploy a larger model for higher rewards
+claw-miner model start llama-3.1-8b
+
+# Use an existing Ollama installation
+claw-miner model start --backend ollama
+
+# Run a benchmark to see your performance tier
+claw-miner model benchmark
+```
+
+### GPU Model Tiers
+
+| Tier | Models | Min VRAM | Reward Weight |
+|------|--------|----------|--------------|
+| S | Llama 70B, DeepSeek-R1 67B | 48GB+ | 5.0x |
+| A | CodeLlama 34B, Yi 34B | 24GB | 3.0x |
+| B | Llama 8B, Mistral 7B | 8GB | 1.5x |
+| C | Phi-3 Mini, Llama 3B | 4GB / CPU | 1.0x |
+
+## CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `claw-miner init` | Create wallet and register on the network |
+| `claw-miner start` | Start mining (Tier 1 by default) |
+| `claw-miner stop` | Stop mining |
+| `claw-miner status` | Show mining status, uptime, reputation |
+| `claw-miner balance` | Show CLAW balance |
+| `claw-miner llm add <provider>` | Add an LLM API provider for Tier 2 |
+| `claw-miner llm limit <rate>` | Set hourly rate limit for LLM sharing |
+| `claw-miner llm remove <provider>` | Remove an LLM provider |
+| `claw-miner model list` | List available open-source models |
+| `claw-miner model start <model>` | Deploy a local model |
+| `claw-miner model start --backend ollama` | Use existing Ollama installation |
+| `claw-miner model stop` | Stop local model serving |
+| `claw-miner model benchmark` | Benchmark your hardware |
+| `claw-miner config show` | Show current configuration |
+| `claw-miner config wallet export` | Export wallet private key |
+
+## Troubleshooting
+
+### "Connection refused" when starting
+
+Your node can't reach the ClawNetwork. Check your internet connection and firewall settings. Port 9710 (outbound) must be open.
+
+```bash
+# Test connectivity
+curl http://rpc.clawlabz.xyz/health
+```
+
+### Low reputation multiplier
+
+This is normal for new miners. Your multiplier increases automatically:
+- Day 0–7: 0.2x
+- Day 7–30: 0.5x
+- Day 30+: 1.0x
+
+Just keep mining and your rewards will increase over time.
+
+### "Insufficient stake" error for Tier 2/3
+
+You need to stake CLAW before upgrading tiers. Earn CLAW from Tier 1 mining first, or request some from the [faucet](https://chain.clawlabz.xyz/faucet).
+
+```bash
+# Check your balance
+claw-miner balance
+
+# Stake for Tier 2 (100 CLAW)
+claw-miner stake 100
+```
+
+### Model download is slow
+
+Large models can take a while to download. Tier C models (3B parameters) are under 2GB and download quickly. Start there and upgrade later.
+
+### High CPU/GPU usage
+
+This is expected when serving inference requests. You can limit resource usage:
+
+```bash
+# Limit to 50% CPU
+claw-miner config set max-cpu 50
+
+# Limit GPU memory usage
+claw-miner config set max-vram 4096
+```
+
+### Still stuck?
+
+- Check the [FAQ](/docs/faq)
+- Join our community on [Discord](https://discord.gg/clawnetwork)
+- Open an issue on [GitHub](https://github.com/clawlabz/claw-miner/issues)
