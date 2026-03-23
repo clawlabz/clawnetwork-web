@@ -35,7 +35,7 @@
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "Run full nodes on any hardware.",
     "txTypes": "Native TX Types",
-    "txTypesValue": "11",
+    "txTypesValue": "13",
     "txTypesDesc": "OpenClaw identity, tokens, reputation, services, staking, payments."
   },
   "features": {

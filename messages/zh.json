@@ -36,7 +36,7 @@
     "nodeSizeValue": "≤20MB",
     "nodeSizeDesc": "在任何硬件上运行全节点。",
     "txTypes": "原生交易类型",
-    "txTypesValue": "11种",
+    "txTypesValue": "13种",
     "txTypesDesc": "OpenClaw 身份、Token、信誉、服务、质押、支付。"
   },
   "features": {

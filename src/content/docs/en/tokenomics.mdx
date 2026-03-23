@@ -20,7 +20,7 @@ order: 6
 
 | Allocation | Percentage | Amount | Vesting |
 |-----------|-----------|--------|---------|
-| Node Incentives | 40% | 400M | 10-year block reward release |
+| Node Incentives | 40% | 400M | 10-year block reward release (65% validators, 35% Agent Mining) |
 | Ecosystem & Grants | 25% | 250M | DAO governance (initially multi-sig) |
 | Team (ClawLabz) | 15% | 150M | 1-year lock + 1-year linear |
 | Early Contributors | 10% | 100M | CLZ→CLAW 1:1 migration |
@@ -28,7 +28,11 @@ order: 6
 
 ## Block Rewards
 
-Validators earn CLAW from the 400M Node Incentives pool via a **decaying emission schedule**:
+Validators and miners earn CLAW from the 400M Node Incentives pool via a **decaying emission schedule**.
+
+### Before Agent Mining Upgrade (Heights 0–1999)
+
+100% of block rewards go to validators:
 
 | Year | Reward per Block | Annual Emission (~10.5M blocks/yr) |
 |------|-----------------|-----------------------------------|
@@ -39,7 +43,20 @@ Validators earn CLAW from the 400M Node Incentives pool via a **decaying emissio
 | 5–9 | 2 CLAW | ~21M CLAW/yr |
 | 10+ | 1 CLAW | ~10.5M CLAW/yr |
 
-Block rewards are distributed proportionally to all 21 active validators based on their consensus weight. Once the Node Incentives pool is exhausted, validators earn solely from transaction fees.
+### After Agent Mining Upgrade (Height 2000+)
+
+A geometric halving schedule replaces the original linear decay. Block rewards are split between validators (65%) and Agent Mining (35%):
+
+| Year | Reward per Block | Validators (65%) | Agent Mining (35%) |
+|------|-----------------|-------------------|---------------------|
+| 1 | 8 CLAW | 5.2 CLAW | 2.8 CLAW |
+| 2 | 4 CLAW | 2.6 CLAW | 1.4 CLAW |
+| 3 | 2 CLAW | 1.3 CLAW | 0.7 CLAW |
+| 4 | 1 CLAW | 0.65 CLAW | 0.35 CLAW |
+| 5 | 0.5 CLAW | 0.325 CLAW | 0.175 CLAW |
+| 6+ | 0.25 CLAW | 0.1625 CLAW | 0.0875 CLAW |
+
+Block rewards are distributed proportionally to all 21 active validators based on their consensus weight. The Agent Mining share is distributed to registered miners based on liveness proofs. Once the Node Incentives pool is exhausted, validators and miners earn solely from transaction fees.
 
 ## Fee Distribution
 

@@ -1,12 +1,12 @@
 ---
 title: 交易类型
-description: 11 种原生交易类型，专为 AI Agent 经济设计。
+description: 13 种原生交易类型，专为 AI Agent 经济设计。
 order: 4
 ---
 
 ## 概述
 
-ClawNetwork 有 **11 种原生交易类型** — 核心 Agent 和验证者操作无需智能合约。
+ClawNetwork 有 **13 种原生交易类型** — 核心 Agent、验证者和挖矿操作无需智能合约。
 
 每笔交易包含：
 - `sender` — Ed25519 公钥 (32 字节)
@@ -129,6 +129,28 @@ ClawNetwork 有 **11 种原生交易类型** — 核心 Agent 和验证者操作
 - 每个 Platform Agent 每 epoch（100 块 / 约 5 分钟）**最多提交一次报告**。
 - 平台信任权重随质押量缩放：`min(platform_stake / 100,000, 1.0)`。
 - 虚假报告可导致 Platform Agent 质押被罚没。
+
+## Agent Mining
+
+### 15. `miner.register` — 矿工注册
+
+注册为 Agent Mining 矿工节点，获取区块奖励中 35% 的 Agent Mining 份额。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| — | — | 无额外字段 |
+
+发送方注册为矿工后即有资格获得 Agent Mining 奖励。仅已注册 Agent 可注册为矿工。
+
+### 16. `miner.heartbeat` — 矿工心跳
+
+已注册矿工定期提交的活跃证明。**此交易免 Gas 费。**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| — | — | 无额外字段 |
+
+矿工须定期提交心跳以保持奖励资格。错过心跳将降低矿工的奖励份额。此交易无需支付 Gas 费。
 
 ## 手续费结构
 

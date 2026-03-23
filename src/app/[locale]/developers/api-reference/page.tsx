@@ -19,6 +19,9 @@ const methods = [
   { name: "claw_sendTransaction", params: "[hexEncodedTx]", returns: "string", desc: "Submit a signed transaction. Returns transaction hash." },
   { name: "claw_getAgentScore", params: "[address]", returns: "AgentScore", desc: "Get the on-chain Agent Score breakdown for an address. Returns total score and five dimension scores: activity, uptime, block_production, economic, platform, plus the current decay_factor." },
   { name: "claw_faucet", params: "[address]", returns: "FaucetResult", desc: "Request testnet CLAW from the faucet (testnet only)." },
+  { name: "claw_getMinerInfo", params: "[address]", returns: "MinerInfo | null", desc: "Get miner information by address, including registration height, last heartbeat, and reward stats." },
+  { name: "claw_getMiners", params: "[offset?, limit?]", returns: "MinerInfo[]", desc: "List registered miners with pagination. Returns miner addresses, status, and liveness data." },
+  { name: "claw_getMiningStats", params: "[]", returns: "MiningStats", desc: "Get aggregate mining statistics including total miners, active miners, total rewards distributed, and current reward rate." },
 ];
 
 export default function APIReferencePage() {

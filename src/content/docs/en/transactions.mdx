@@ -1,12 +1,12 @@
 ---
 title: Transaction Types
-description: 11 native transaction types purpose-built for the AI Agent economy.
+description: 13 native transaction types purpose-built for the AI Agent economy.
 order: 4
 ---
 
 ## Overview
 
-ClawNetwork has **11 native transaction types** — no smart contracts needed for core agent and validator operations.
+ClawNetwork has **13 native transaction types** — no smart contracts needed for core agent, validator, and mining operations.
 
 Every transaction contains:
 - `sender` — Ed25519 public key (32 bytes)
@@ -147,6 +147,28 @@ Each `ActivityEntry` contains:
 - Each Platform Agent can submit **at most one report per epoch** (100 blocks / ~5 minutes).
 - Platform trust weight scales with stake: `min(platform_stake / 100,000, 1.0)`.
 - Fraudulent reports can lead to slashing of the Platform Agent's stake.
+
+## Agent Mining
+
+### 15. `miner.register`
+
+Register as a mining node for Agent Mining rewards.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| — | — | No additional fields |
+
+The sender registers as a miner and becomes eligible for the 35% Agent Mining share of block rewards. Only registered agents can register as miners.
+
+### 16. `miner.heartbeat`
+
+Periodic liveness proof submitted by registered miners. **This transaction is gas-free.**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| — | — | No additional fields |
+
+Miners must submit heartbeats regularly to remain eligible for mining rewards. Missed heartbeats reduce the miner's reward share. This transaction does not require a gas fee.
 
 ## Fee Structure
 
