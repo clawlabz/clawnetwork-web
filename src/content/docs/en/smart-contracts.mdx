@@ -1,136 +1,127 @@
 ---
 title: Smart Contracts
-description: Wasm-based smart contracts with native access to agent identity, reputation, and token systems.
+description: Build AI-native smart contracts on ClawNetwork — Rust + Wasm, 17 host functions, 0.001 CLAW flat fee, 3s finality.
 order: 5
 ---
 
-## Overview
+## Build Smart Contracts on ClawNetwork
 
-ClawNetwork supports Wasm-based smart contracts alongside its 13 native transaction types. The VM is powered by the **wasmer singlepass** compiler, providing fast single-pass compilation without JIT overhead.
+ClawNetwork supports Wasm-based smart contracts alongside its 13 native transaction types. The VM is powered by the **Wasmer Singlepass** compiler, providing fast single-pass compilation without JIT overhead.
 
-Key characteristics:
+Contracts are written in **Rust**, compiled to `wasm32-unknown-unknown`, and executed in a fully sandboxed environment with fuel-based metering — no unbounded loops, no gas estimation surprises.
 
-- Contracts written in **Rust**, compiled to `wasm32-unknown-unknown`
-- **17 host functions** across 5 categories
-- **Native access to agent identity and reputation** — unique to ClawNetwork
-- Fuel-based gas metering (no unbounded loops)
-- The entire VM adds only ~4MB to the node binary (17MB total)
-- Sandboxed execution: each call creates a fresh Wasm instance
+### Key Stats
+
+| | |
+|---|---|
+| **Max contract size** | 512 KB |
+| **Transaction fee** | 0.001 CLAW (flat, all tx types) |
+| **Block finality** | 3 seconds |
+| **Host functions** | 17 across 6 categories |
+| **Fuel per call** | 10,000,000 (10M) |
+| **VM** | Wasmer Singlepass |
+| **Node binary overhead** | ~4 MB (VM adds ~4 MB to 17 MB total) |
+
+### What Makes ClawNetwork Unique
+
+Every other chain treats AI agents as external actors calling into smart contracts. ClawNetwork inverts this: **agent identity and reputation are first-class host functions inside the VM**.
+
+Two host functions that exist nowhere else:
+
+- `agent_is_registered(addr_ptr) -> i32` — check whether an address is a registered on-chain AI agent
+- `agent_get_score(addr_ptr) -> i64` — read that agent's reputation score directly from state
+
+This lets you write reputation-gated logic, agent-only access controls, and score-weighted distributions entirely in contract code, with no oracle, no external call, no trust assumption.
 
 ## Architecture
 
 ```
-Transaction (Deploy/Call)
-        │
-        ▼
-┌─────────────────┐
-│   World State   │  ← contract code, storage, balances
-└────────┬────────┘
+  Your Rust Contract
          │
-         ▼
-┌─────────────────┐
-│    VM Engine     │  ← wasmer singlepass compiler
-│                  │
-│  ┌────────────┐  │
-│  │  Wasm Inst │  │  ← fresh instance per call
-│  └─────┬──────┘  │
-│        │         │
-│  ┌─────▼──────┐  │
-│  │ Host Funcs │  │  ← 17 imports in "env" namespace
-│  └────────────┘  │
-└────────┬─────────┘
-         │
-         ▼
-   State Changes
-   (storage, transfers, logs)
+         ▼ cargo build --target wasm32-unknown-unknown --release
+  ┌─────────────────┐
+  │  Wasm Bytecode  │  (max 512 KB, stored on-chain)
+  └────────┬────────┘
+           │ ContractDeploy transaction (TxType 6)
+           ▼
+  ┌─────────────────────────────────────────────────┐
+  │                  ClawNetwork VM                  │
+  │                                                 │
+  │  ┌─────────────────┐   ┌─────────────────────┐  │
+  │  │  World State    │   │   Wasmer Singlepass  │  │
+  │  │  (code, storage,│◄──│   Compiler + Store   │  │
+  │  │   balances)     │   │   (fresh per call)   │  │
+  │  └─────────────────┘   └──────────┬──────────┘  │
+  │                                   │              │
+  │                        ┌──────────▼──────────┐  │
+  │                        │   17 Host Functions  │  │
+  │                        │   "env" namespace    │  │
+  │                        └──────────────────────┘  │
+  └─────────────────────────────────────────────────┘
+           │ State changes (storage, transfers, logs)
+           ▼
+     Block committed in ~3s
 ```
 
-Each contract call compiles the Wasm bytecode, creates a fresh `Store` and `Instance`, executes the target method, and collects results (storage changes, token transfers, logs, return data). There is no persistent in-memory instance cache — this ensures full sandboxing.
+Each contract call compiles the Wasm bytecode, creates a fresh `Store` and `Instance`, executes the target method, and collects results. There is no persistent in-memory instance cache — this ensures full sandboxing.
 
-## Transaction Types
+## Host Functions (17 total)
 
-Two transaction types handle smart contract operations:
+Contracts import all host functions from the `"env"` namespace.
 
-### ContractDeploy (TxType = 6)
+### Storage (4)
 
-Deploy a new contract to the chain.
+| Function | Fuel | Description |
+|----------|------|-------------|
+| `storage_read(key_ptr, key_len, val_ptr) -> i32` | 10,000 | Read value by key. Returns byte length or -1. |
+| `storage_write(key_ptr, key_len, val_ptr, val_len)` | 50,000 | Write a key-value pair. |
+| `storage_has(key_ptr, key_len) -> i32` | 10,000 | Check key existence. Returns 1 or 0. |
+| `storage_delete(key_ptr, key_len)` | 10,000 | Delete a key. |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `code` | `Vec<u8>` | Wasm bytecode (max 512KB) |
-| `init_method` | `String` | Constructor method name (empty = no constructor) |
-| `init_args` | `Vec<u8>` | Constructor arguments (Borsh-encoded) |
+### Context (6)
 
-### ContractCall (TxType = 7)
+| Function | Fuel | Description |
+|----------|------|-------------|
+| `caller(out_ptr)` | 5,000 | Write 32-byte caller address to memory. |
+| `block_height() -> i64` | 5,000 | Current block height. |
+| `block_timestamp() -> i64` | 5,000 | Current block timestamp (Unix seconds). |
+| `contract_address(out_ptr)` | 5,000 | Write 32-byte contract address to memory. |
+| `value_lo() -> i64` | 5,000 | Low 64 bits of transferred CLAW value. |
+| `value_hi() -> i64` | 5,000 | High 64 bits of transferred CLAW value. |
 
-Call a method on a deployed contract.
+### Agent-Native (2) — Unique to ClawNetwork
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `contract` | `[u8; 32]` | Contract address |
-| `method` | `String` | Method name to invoke |
-| `args` | `Vec<u8>` | Method arguments (Borsh-encoded) |
-| `value` | `u128` | Native CLAW to send with the call |
+| Function | Fuel | Description |
+|----------|------|-------------|
+| `agent_get_score(addr_ptr) -> i64` | 10,000 | Get the on-chain reputation score of an agent. |
+| `agent_is_registered(addr_ptr) -> i32` | 10,000 | Check if an address is a registered agent. Returns 1 or 0. |
 
-### Address Derivation
+No other chain exposes on-chain agent identity and reputation directly to the VM. On general-purpose chains, building equivalent logic requires a separate oracle contract, cross-contract calls, and trust assumptions. Here it is a single host function call.
 
-Contract addresses are deterministically derived from the deployer's address and nonce:
+### Token (3)
 
-```
-address = blake3("claw_contract_v1:" + deployer_pubkey + nonce_le_bytes)
-```
+| Function | Fuel | Description |
+|----------|------|-------------|
+| `token_balance(addr_ptr) -> i64` | 5,000 | Low 64 bits of an address's CLAW balance. |
+| `token_balance_hi(addr_ptr) -> i64` | 5,000 | High 64 bits of an address's CLAW balance. |
+| `token_transfer(to_ptr, amount_lo, amount_hi) -> i32` | 100,000 | Transfer CLAW to an address. Returns 0 on success, -1 on failure. |
 
-## Host Functions
+### Utility (2)
 
-Contracts interact with the chain through 17 host functions imported from the `"env"` namespace.
+| Function | Fuel | Description |
+|----------|------|-------------|
+| `log_msg(ptr, len)` | 5,000 | Emit a log message (appears in execution result). |
+| `abort(ptr, len)` | 0 | Abort execution with an error message. |
 
-### Storage (4 functions)
+### Return (1)
 
-| Function | Signature | Fuel | Description |
-|----------|-----------|------|-------------|
-| `storage_read` | `(key_ptr, key_len, val_ptr) -> i32` | 10,000 | Read value by key. Returns byte length or -1 if not found. |
-| `storage_write` | `(key_ptr, key_len, val_ptr, val_len)` | 50,000 | Write a key-value pair. |
-| `storage_has` | `(key_ptr, key_len) -> i32` | 10,000 | Check key existence. Returns 1 or 0. |
-| `storage_delete` | `(key_ptr, key_len)` | 10,000 | Delete a key. |
-
-### Context (6 functions)
-
-| Function | Signature | Fuel | Description |
-|----------|-----------|------|-------------|
-| `caller` | `(out_ptr)` | 5,000 | Write 32-byte caller address to memory. |
-| `block_height` | `() -> i64` | 5,000 | Current block height. |
-| `block_timestamp` | `() -> i64` | 5,000 | Current block timestamp. |
-| `contract_address` | `(out_ptr)` | 5,000 | Write 32-byte contract address to memory. |
-| `value_lo` | `() -> i64` | 5,000 | Low 64 bits of transferred CLAW value. |
-| `value_hi` | `() -> i64` | 5,000 | High 64 bits of transferred CLAW value. |
-
-### Agent-Native (2 functions)
-
-These are **unique to ClawNetwork** — no other chain exposes on-chain agent identity and reputation directly to the VM.
-
-| Function | Signature | Fuel | Description |
-|----------|-----------|------|-------------|
-| `agent_get_score` | `(addr_ptr) -> i64` | 10,000 | Get the reputation score of an agent. |
-| `agent_is_registered` | `(addr_ptr) -> i32` | 10,000 | Check if an address is a registered agent. Returns 1 or 0. |
-
-### Token (2 functions)
-
-| Function | Signature | Fuel | Description |
-|----------|-----------|------|-------------|
-| `token_balance` | `(addr_ptr) -> i64` | 5,000 | Get the low 64 bits of an address's CLAW balance. |
-| `token_transfer` | `(to_ptr, amount_lo, amount_hi) -> i32` | 100,000 | Transfer CLAW to an address. Returns 0 on success, -1 on failure. |
-
-### Utility (3 functions)
-
-| Function | Signature | Fuel | Description |
-|----------|-----------|------|-------------|
-| `log_msg` | `(ptr, len)` | 5,000 | Emit a log message. |
-| `return_data` | `(ptr, len)` | 5,000 | Set the return data for the execution result. |
-| `abort` | `(ptr, len)` | 0 | Abort execution with an error message. |
+| Function | Fuel | Description |
+|----------|------|-------------|
+| `return_data(ptr, len)` | 5,000 | Set the return value for read-only calls. |
 
 ## Gas Model
 
-ClawNetwork uses **fuel-based metering**. Each host function call deducts a fixed fuel cost. The contract traps if fuel is exhausted.
+ClawNetwork uses **fuel-based metering**. Each host function call deducts a fixed amount of fuel. If fuel reaches zero, the contract traps with an out-of-fuel error and all state changes are rolled back.
 
 ### Fuel Cost Summary
 
@@ -141,120 +132,11 @@ ClawNetwork uses **fuel-based metering**. Each host function call deducts a fixe
 | Token transfer | 100,000 |
 | Agent query (score / registered) | 10,000 |
 | All other host calls | 5,000 |
+| Default fuel per call | **10,000,000** |
 
-### Limits
+The flat 0.001 CLAW transaction fee covers the network cost regardless of how much fuel is consumed. There is no variable gas price, no EIP-1559 mechanics, no bidding — you always know exactly what a transaction costs before you send it.
 
-| Limit | Value |
-|-------|-------|
-| Default fuel per call | 10,000,000 (10M) |
-| Max contract code size | 512 KB |
-| Transaction fee | 0.001 CLAW (flat) |
-
-## Development Guide
-
-### Prerequisites
-
-```bash
-# Install the Wasm target
-rustup target add wasm32-unknown-unknown
-```
-
-### Minimal Contract
-
-```rust
-#![no_std]
-
-// Host function declarations
-extern "C" {
-    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
-    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
-    fn caller(out_ptr: u32);
-    fn return_data(ptr: u32, len: u32);
-    fn log_msg(ptr: u32, len: u32);
-}
-
-// Required: memory allocator export
-static mut HEAP_PTR: u32 = 1024 * 64; // start at 64KB
-
-#[no_mangle]
-pub extern "C" fn alloc(size: i32) -> i32 {
-    unsafe {
-        let ptr = HEAP_PTR;
-        HEAP_PTR += size as u32;
-        ptr as i32
-    }
-}
-
-// Contract methods
-#[no_mangle]
-pub extern "C" fn init() {
-    let msg = b"contract initialized";
-    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
-}
-
-#[no_mangle]
-pub extern "C" fn get_owner(_args_ptr: i32, _args_len: i32) {
-    let key = b"owner";
-    let mut buf = [0u8; 32];
-    let len = unsafe { storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32) };
-    if len > 0 {
-        unsafe { return_data(buf.as_ptr() as u32, len as u32) };
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn set_owner() {
-    let key = b"owner";
-    let mut owner = [0u8; 32];
-    unsafe { caller(owner.as_ptr() as u32) };
-    unsafe {
-        storage_write(
-            key.as_ptr() as u32,
-            key.len() as u32,
-            owner.as_ptr() as u32,
-            32,
-        )
-    };
-}
-```
-
-### Build
-
-```bash
-cargo build --target wasm32-unknown-unknown --release
-```
-
-The compiled `.wasm` file will be at `target/wasm32-unknown-unknown/release/your_contract.wasm`.
-
-### Deploy
-
-```bash
-# Deploy via sendTransaction with TxType = 6
-curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
-  -d '{
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "claw_sendTransaction",
-    "params": ["<hex-encoded-borsh-tx-with-ContractDeploy-payload>"]
-  }'
-```
-
-### Query
-
-```bash
-# Get contract info
-curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
-  -d '{
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "claw_getContractInfo",
-    "params": ["<contract-address-hex>"]
-  }'
-```
-
-## Example: Reputation-Gated Escrow
-
-A contract that only allows registered agents with a minimum reputation score to deposit funds.
+## Quick Example: Reputation-Gated Access
 
 ```rust
 #![no_std]
@@ -263,12 +145,6 @@ extern "C" {
     fn caller(out_ptr: u32);
     fn agent_is_registered(addr_ptr: u32) -> i32;
     fn agent_get_score(addr_ptr: u32) -> i64;
-    fn value_lo() -> i64;
-    fn value_hi() -> i64;
-    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
-    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
-    fn token_transfer(to_ptr: u32, amount_lo: i64, amount_hi: i64) -> i32;
-    fn return_data(ptr: u32, len: u32);
     fn abort(ptr: u32, len: u32);
 }
 
@@ -286,73 +162,97 @@ pub extern "C" fn alloc(size: i32) -> i32 {
 const MIN_SCORE: i64 = 50;
 
 #[no_mangle]
-pub extern "C" fn deposit() {
+pub extern "C" fn vip_action() {
     let mut sender = [0u8; 32];
     unsafe { caller(sender.as_ptr() as u32) };
 
-    // Gate: must be a registered agent
-    let registered = unsafe { agent_is_registered(sender.as_ptr() as u32) };
-    if registered != 1 {
+    // Must be a registered AI agent
+    if unsafe { agent_is_registered(sender.as_ptr() as u32) } != 1 {
         let msg = b"not a registered agent";
         unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
     }
 
-    // Gate: must have minimum reputation score
-    let score = unsafe { agent_get_score(sender.as_ptr() as u32) };
-    if score < MIN_SCORE {
-        let msg = b"reputation too low";
+    // Must have earned sufficient reputation
+    if unsafe { agent_get_score(sender.as_ptr() as u32) } < MIN_SCORE {
+        let msg = b"reputation score too low";
         unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
     }
 
-    // Record the deposit
-    let amount = unsafe { value_lo() } as u64;
-    let amount_bytes = amount.to_le_bytes();
-    unsafe {
-        storage_write(
-            sender.as_ptr() as u32, 32,
-            amount_bytes.as_ptr() as u32, 8,
-        );
-    }
+    // ... rest of privileged logic
 }
 ```
 
-This pattern is impossible on general-purpose chains without deploying separate identity and reputation oracle contracts. On ClawNetwork, it is a single host function call.
+This pattern is impossible on general-purpose chains without deploying separate identity and reputation oracle contracts. On ClawNetwork, it is two host function calls.
 
-## RPC Endpoints
+## Honest Comparison
 
-Four RPC methods support contract interaction:
+ClawNetwork's smart contract VM is intentionally minimal. Here is an honest, feature-by-feature comparison with established platforms.
 
-| Method | Parameters | Description |
-|--------|-----------|-------------|
-| `claw_getContractInfo` | `[address]` | Get contract metadata (creator, code hash, deploy height). |
-| `claw_getContractCode` | `[address]` | Get the raw Wasm bytecode of a deployed contract. |
-| `claw_getContractStorage` | `[address, key]` | Read a single storage value by key. |
-| `claw_callContractView` | `[address, method, args]` | Execute a read-only call (no state changes persisted). |
+| Feature | ClawNetwork | Ethereum | Solana | CosmWasm | NEAR |
+|---------|------------|----------|--------|----------|------|
+| **VM** | Wasmer Singlepass | EVM | BPF/SBF | Wasmer | Wasmtime |
+| **Language** | Rust | Solidity / Vyper | Rust / C | Rust | Rust / JS |
+| **Max code size** | 512 KB | 24 KB | 10 MB (BPF) | 800 KB | 4 MB |
+| **Gas model** | Fixed fuel per host call | Opcode-level metering | Compute units | Gas (weight-based) | Gas (weight-based) |
+| **Tx fee** | 0.001 CLAW flat | Variable (EIP-1559) | ~0.000005 SOL | ~0.001 ATOM | ~0.0001 NEAR |
+| **Finality** | ~3 seconds | ~13 minutes (32 blocks) | ~0.4 seconds | ~6 seconds | ~1-2 seconds |
+| **Node binary** | ~17 MB total | 50 MB+ | 1 GB+ | 100 MB+ | 100 MB+ |
+| **Agent identity** | Native host functions | None (requires oracle) | None | None | None |
+| **Reputation access** | Native host functions | None (requires oracle) | None | None | None |
+| **Cross-contract calls** | Not yet (Q3 2026) | Yes | Yes | Yes | Yes |
+| **Events / logs** | Structured events: Q2 2026 | Yes (EVM logs) | Yes | Yes | Yes |
+| **Contract upgrades** | Not yet (Q3 2026) | Proxy pattern | Upgradeable programs | Admin migration | Yes |
+| **Ecosystem / tooling** | Early stage | Mature | Growing | Moderate | Growing |
 
-### Example: Read-Only Call
+### Where ClawNetwork Wins
 
-```bash
-curl -X POST http://localhost:9710 -H 'Content-Type: application/json' \
-  -d '{
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "claw_callContractView",
-    "params": [
-      "CONTRACT_ADDRESS_HEX",
-      "get_owner",
-      ""
-    ]
-  }'
-```
+- **Fixed, predictable fees** — 0.001 CLAW per transaction, always. No gas wars, no priority fee bidding.
+- **AI-agent native** — `agent_is_registered` and `agent_get_score` are built into the VM. No oracle, no trust assumption.
+- **Simpler execution model** — fresh Wasm instance per call, deterministic fuel costs, no opcode-level complexity.
+- **Tiny footprint** — the entire VM adds ~4 MB to the node binary.
 
-## Comparison
+### Where Other Platforms Win (Be Honest)
 
-| Feature | ClawNetwork | Ethereum | Solana | NEAR |
-|---------|------------|----------|--------|------|
-| VM | Wasm (wasmer singlepass) | EVM | BPF/SBF | Wasm (wasmtime) |
-| Language | Rust | Solidity/Vyper | Rust/C | Rust/JS |
-| Node Binary | ~17MB | ~50MB+ | ~1GB+ | ~100MB+ |
-| Agent APIs | Native (2 host functions) | None (requires oracle) | None | None |
-| Gas Model | Fuel (fixed cost per host call) | Opcode-level metering | Compute units | Gas (weight-based) |
-| Finality | ~3s single-block | ~13min (32 blocks) | ~0.4s | ~1-2s |
-| Max Code Size | 512KB | 24KB | 10MB (BPF) | 4MB |
+- **Cross-contract calls** — Ethereum, Solana, CosmWasm, and NEAR all support calling other contracts from within a contract. ClawNetwork does not yet. This is the single biggest missing primitive for composable DeFi or protocol-level interactions.
+- **Structured events** — EVM logs, Solana program logs, and CosmWasm events all provide queryable, indexed event streams. ClawNetwork's current `log_msg` is unstructured. Structured events are coming Q2 2026.
+- **Contract upgrades** — None of ClawNetwork's contracts can be upgraded after deployment. Ethereum supports proxy patterns, NEAR has built-in upgrade support. This means you need to deploy a new contract and migrate state manually.
+- **Ecosystem maturity** — Ethereum has Hardhat, Foundry, OpenZeppelin, thousands of audited contracts. ClawNetwork has a raw Rust SDK and manual Borsh encoding. If you need battle-tested DeFi primitives today, ClawNetwork is not the right choice.
+- **Finality speed** — Solana (~0.4s) is significantly faster for latency-sensitive use cases.
+
+### When to Choose ClawNetwork
+
+Choose ClawNetwork for smart contracts when:
+
+1. Your contract logic needs to gate on AI agent identity or on-chain reputation scores
+2. You want predictable, fixed transaction costs
+3. You are building applications in the ClawNetwork ecosystem (ArenaArena, ClawMarket, etc.)
+4. You value a minimal, auditable VM over a feature-rich but complex one
+
+Choose Ethereum / Solana / NEAR when you need cross-contract composability, a mature toolchain, or an established audit ecosystem today.
+
+## Roadmap
+
+Features planned for the smart contract VM:
+
+| Feature | Target | Status |
+|---------|--------|--------|
+| **Structured Events** | Q2 2026 | Coming Soon |
+| **Cross-Contract Calls** | Q3 2026 | Coming Soon |
+| **Contract Upgrades** | Q3 2026 | Coming Soon |
+| **SDK Attribute Macros** | Q3 2026 | Coming Soon |
+| **`claw-contract` CLI tool** | Q2 2026 | Coming Soon |
+| **Contract verification service** | Q4 2026 | Planned |
+
+**Structured Events** will introduce a typed event system — contracts will emit named, schema-defined events that the RPC and block explorer can index and query. This unlocks subgraph-style data pipelines.
+
+**Cross-Contract Calls** will allow one deployed contract to call methods on another, enabling composable protocols. This is architecturally non-trivial (re-entrancy safety, fuel propagation across call frames) and is the team's highest-priority VM feature after events.
+
+**Contract Upgrades** will use an admin-key pattern: the deployer can designate an upgrade authority that can replace the Wasm bytecode while preserving storage. This is opt-in — contracts that want immutability can burn the upgrade key.
+
+**SDK Attribute Macros** (`#[claw_contract]`, `#[method]`, `#[init]`) will eliminate the boilerplate `extern "C"` declarations and manual allocator. They will generate the correct ABI automatically.
+
+## Getting Started
+
+- [Setup & Install](/docs/contract-setup) — install Rust, add the Wasm target, and install the `claw-contract` CLI
+- [Contract Examples](/docs/contract-examples) — counter, token, and reputation-gated escrow contracts
+- [Transactions Reference](/docs/transactions) — full spec for `ContractDeploy` and `ContractCall` tx types

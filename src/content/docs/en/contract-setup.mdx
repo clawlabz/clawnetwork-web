@@ -1,0 +1,347 @@
+---
+title: Contract Setup
+description: Install Rust, add the wasm32 target, and set up your environment to build and deploy ClawNetwork smart contracts.
+order: 6
+---
+
+## Prerequisites
+
+You need **Rust 1.75 or newer** and the `wasm32-unknown-unknown` compilation target. Everything else is part of the standard Rust toolchain.
+
+If you already have Rust installed, jump to [Add the Wasm Target](#add-the-wasm-target).
+
+## Install Rust
+
+### macOS / Linux
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Follow the on-screen prompts. When asked about installation type, the default ("Proceed with standard installation") is correct.
+
+After installation, reload your shell or source the environment file:
+
+```bash
+source "$HOME/.cargo/env"
+```
+
+### Windows
+
+Download and run `rustup-init.exe` from [rustup.rs](https://rustup.rs). The installer handles PATH setup automatically. Use PowerShell or Windows Terminal after installation.
+
+### Verify
+
+```bash
+rustc --version
+# Expected: rustc 1.75.0 (or newer)
+
+cargo --version
+# Expected: cargo 1.75.0 (or newer)
+```
+
+## Add the Wasm Target
+
+ClawNetwork contracts compile to `wasm32-unknown-unknown` — a bare-metal Wasm target with no system interface. Add it with:
+
+```bash
+rustup target add wasm32-unknown-unknown
+```
+
+Verify the target is installed:
+
+```bash
+rustup target list --installed | grep wasm32
+# Expected output:
+# wasm32-unknown-unknown
+```
+
+## Create a Contract Project
+
+Create a new Rust library project:
+
+```bash
+cargo new --lib my_contract
+cd my_contract
+```
+
+Update `Cargo.toml` to produce a `cdylib` (required for Wasm export):
+
+```toml
+[package]
+name = "my_contract"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = "z"       # optimize for size
+lto = true
+codegen-units = 1
+panic = "abort"       # required for no_std Wasm
+strip = true
+```
+
+## Write a Minimal Contract
+
+Replace `src/lib.rs` with:
+
+```rust
+#![no_std]
+
+// All host functions must be declared extern "C"
+extern "C" {
+    fn log_msg(ptr: u32, len: u32);
+    fn return_data(ptr: u32, len: u32);
+    fn caller(out_ptr: u32);
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+}
+
+// Required: bump allocator for memory management
+static mut HEAP_PTR: u32 = 1024 * 64; // start at 64 KB
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe {
+        let ptr = HEAP_PTR;
+        HEAP_PTR += size as u32;
+        ptr as i32
+    }
+}
+
+// Constructor — called once on deploy (if init_method = "init")
+#[no_mangle]
+pub extern "C" fn init() {
+    let mut owner = [0u8; 32];
+    unsafe { caller(owner.as_ptr() as u32) };
+    let key = b"owner";
+    unsafe {
+        storage_write(
+            key.as_ptr() as u32,
+            key.len() as u32,
+            owner.as_ptr() as u32,
+            32,
+        )
+    };
+    let msg = b"contract initialized";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// Read method — call via claw_callContractView
+#[no_mangle]
+pub extern "C" fn get_owner(_args_ptr: i32, _args_len: i32) {
+    let key = b"owner";
+    let mut buf = [0u8; 32];
+    let len = unsafe {
+        storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32)
+    };
+    if len > 0 {
+        unsafe { return_data(buf.as_ptr() as u32, len as u32) };
+    }
+}
+```
+
+### Key Rules
+
+- `#![no_std]` is required — the Wasm target has no standard library
+- Every exported function must be `#[no_mangle] pub extern "C" fn`
+- The `alloc` function must be exported — the host uses it to write input data into your contract's memory
+- Arguments arrive via raw memory pointers; use Borsh encoding for structured data
+
+## Build
+
+```bash
+cargo build --target wasm32-unknown-unknown --release
+```
+
+The compiled binary is at:
+
+```
+target/wasm32-unknown-unknown/release/my_contract.wasm
+```
+
+Check the file size:
+
+```bash
+ls -lh target/wasm32-unknown-unknown/release/my_contract.wasm
+# Should be well under 512 KB for most contracts
+```
+
+If your contract is unexpectedly large (over 100 KB for a simple contract), check that `opt-level = "z"`, `lto = true`, and `strip = true` are set in `[profile.release]`.
+
+## Install claw-contract CLI (Optional)
+
+The `claw-contract` CLI provides a convenient wrapper for building, inspecting, and deploying contracts. It is not required — you can use `cargo` and `curl` directly.
+
+### Install from Source
+
+```bash
+# Clone the node repository
+git clone https://github.com/clawlabz/claw-network.git
+cd claw-network/claw-node
+
+# Build and install the CLI (requires the repo to be checked out locally)
+cargo install --path . --bin claw-contract 2>/dev/null || \
+  echo "Note: claw-contract CLI is in active development. Use cargo build + curl as shown below."
+```
+
+The `claw-contract` binary will be available at `~/.cargo/bin/claw-contract` once released.
+
+Verify:
+
+```bash
+claw-contract --version
+```
+
+### Without the CLI
+
+Until `claw-contract` is published to crates.io, use `cargo build` + the JSON-RPC API directly:
+
+```bash
+# Build
+cargo build --target wasm32-unknown-unknown --release
+
+# Encode and deploy (requires the clawnetwork-sdk or manual Borsh encoding)
+# See the Deploy section below
+```
+
+## Deploy
+
+Contract deployment uses `ContractDeploy` (TxType 6). The Wasm bytecode must be Borsh-encoded as part of a signed transaction. The easiest way is via the TypeScript SDK:
+
+```typescript
+import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+import { readFileSync } from 'fs';
+
+const wallet = Wallet.fromPrivateKey(process.env.PRIVATE_KEY!);
+const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
+
+const wasmBytes = readFileSync('./target/wasm32-unknown-unknown/release/my_contract.wasm');
+
+const result = await client.contract.deploy({
+  code: wasmBytes,
+  initMethod: 'init',   // calls init() on deploy; pass '' to skip
+  initArgs: [],         // Borsh-encoded constructor args
+});
+
+console.log('Contract address:', result.contractAddress);
+```
+
+Or via raw JSON-RPC if you handle Borsh encoding manually:
+
+```bash
+curl -X POST https://rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-signed-tx>"]
+  }'
+```
+
+### Address Derivation
+
+Contract addresses are deterministic:
+
+```
+contract_address = blake3("claw_contract_v1:" + deployer_pubkey_bytes + nonce_le_bytes)
+```
+
+You can compute the expected address before broadcasting, which is useful for pre-funding a contract before deployment.
+
+## Call a Deployed Contract
+
+```bash
+# Read-only call (no state change, no fee)
+curl -X POST https://rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": [
+      "CONTRACT_ADDRESS_HEX",
+      "get_owner",
+      ""
+    ]
+  }'
+```
+
+```bash
+# State-changing call (requires signed ContractCall tx, TxType 7)
+curl -X POST https://rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-signed-tx-with-contract-call>"]
+  }'
+```
+
+## Read Contract State
+
+```bash
+# Get contract metadata
+curl -X POST https://rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_getContractInfo",
+    "params": ["CONTRACT_ADDRESS_HEX"]
+  }'
+
+# Read a storage key directly
+curl -X POST https://rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_getContractStorage",
+    "params": ["CONTRACT_ADDRESS_HEX", "KEY_HEX"]
+  }'
+```
+
+## Troubleshooting
+
+### `error[E0463]: can't find crate for 'std'`
+
+You are missing `#![no_std]` at the top of your `lib.rs`, or you are importing a crate that depends on std. ClawNetwork contracts must be `no_std`.
+
+### `wasm32-unknown-unknown` not found
+
+Run `rustup target add wasm32-unknown-unknown`. If `rustup` is not in your PATH, source `$HOME/.cargo/env` first.
+
+### Contract size over 512 KB
+
+Check `Cargo.toml` `[profile.release]`: ensure `opt-level = "z"`, `lto = true`, `strip = true`. Also check if you are pulling in large dependencies — most utility crates have a large std dependency tree. Prefer `#![no_std]`-compatible alternatives or inline the logic directly.
+
+### `error: linker 'cc' not found` (Linux)
+
+Install build tools:
+
+```bash
+# Ubuntu / Debian
+sudo apt-get install build-essential
+
+# Fedora / RHEL
+sudo dnf groupinstall "Development Tools"
+```
+
+### `cannot find function 'alloc'` at runtime
+
+Your contract is missing the exported `alloc` function. Add the bump allocator shown above. Without it, the host cannot write argument data into your contract's memory.
+
+### Rust version too old
+
+Run `rustup update stable` to update to the latest stable release. ClawNetwork contracts require Rust 1.75+.
+
+## Next Steps
+
+- [Smart Contract Overview](/docs/smart-contracts) — architecture, host functions, gas model, and comparison table
+- [Contract Examples](/docs/contract-examples) — counter, fungible token, and reputation-gated escrow

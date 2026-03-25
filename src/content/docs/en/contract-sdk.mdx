@@ -1,0 +1,564 @@
+---
+title: "SDK Reference"
+description: "Complete API reference for claw-sdk — macros, host functions (env module), storage helpers, and fuel costs."
+order: 8
+---
+
+## claw-sdk Reference
+
+`claw-sdk` is the only dependency you need for ClawNetwork contract development. It wraps all 18 host functions, provides typed storage helpers, and exports three macros that eliminate boilerplate.
+
+### Adding the SDK
+
+```toml
+[dependencies]
+claw-sdk = { git = "https://github.com/clawlabz/claw-network", subdir = "claw-node/crates/sdk" }
+borsh = { version = "1", features = ["derive"] }
+```
+
+### Module Layout
+
+| Import | Contents |
+|--------|----------|
+| `claw_sdk::env` | Host function wrappers — reads chain state, transfers tokens, logs |
+| `claw_sdk::storage` | Typed Borsh read/write helpers on top of `env` |
+| `claw_sdk::types::Address` | `[u8; 32]` type alias (re-exported as `claw_sdk::Address`) |
+| `claw_sdk::{setup_alloc!, entry!, require!}` | Macros at the crate root |
+
+---
+
+## Macros
+
+### `setup_alloc!()`
+
+Required in every contract. Exports the `alloc` function that the ClawNetwork VM calls to copy argument data into the Wasm module's linear memory before invoking an entry point.
+
+Call it exactly once at the top level of your `lib.rs`:
+
+```rust
+claw_sdk::setup_alloc!();
+```
+
+Without this export the VM cannot pass arguments to your entry points and will reject the call at runtime.
+
+---
+
+### `entry!(args_ptr, args_len, |args: T| { ... })`
+
+Deserializes Borsh-encoded arguments, runs the handler closure, and writes the return bytes back to the host via `env::set_return_data`.
+
+Every exported entry point uses the same shape:
+
+```rust
+#[no_mangle]
+pub extern "C" fn my_method(args_ptr: i32, args_len: i32) {
+    claw_sdk::entry!(args_ptr, args_len, |args: MyArgs| {
+        // `args` is your deserialized struct.
+        // The block must evaluate to Vec<u8>.
+        // For void methods return vec![].
+        // For return values: borsh::to_vec(&value).unwrap()
+        vec![]
+    });
+}
+```
+
+Rules:
+- `MyArgs` must implement `BorshDeserialize`
+- The block must return `Vec<u8>`
+- If deserialization fails (caller passed wrong-length or wrong-type bytes), the macro panics and the transaction aborts — all state changes are rolled back
+
+---
+
+### `require!(condition, "message")`
+
+Aborts execution with an error message if `condition` is false. Equivalent to an assertion that also rolls back all state changes and pending transfers made so far in the current call.
+
+```rust
+// Guard ownership
+claw_sdk::require!(env::get_caller() == owner, "caller is not the owner");
+
+// Guard non-zero amount
+claw_sdk::require!(amount > 0, "amount must be positive");
+
+// Guard sufficient balance
+claw_sdk::require!(balance >= payout, "insufficient contract balance");
+```
+
+Internally calls `env::panic_msg`, which invokes the `abort` host function. No code after a failing `require!` runs.
+
+---
+
+## Host Functions (env module)
+
+All host functions live in `claw_sdk::env`. Each call deducts fuel from the execution budget. See [Fuel Budget](#fuel-budget) for costs.
+
+---
+
+### Storage
+
+#### `env::storage_get(key: &[u8]) -> Option<Vec<u8>>`
+
+Reads raw bytes from contract storage. Returns `None` if the key does not exist or the value exceeds the 16 KB internal read buffer.
+
+**Fuel cost:** 10,000
+
+Prefer `storage::get::<T>()` for typed values. Use this only when you need raw bytes.
+
+```rust
+let raw: Option<Vec<u8>> = env::storage_get(b"my_key");
+if let Some(bytes) = raw {
+    // process bytes
+}
+```
+
+---
+
+#### `env::storage_set(key: &[u8], value: &[u8])`
+
+Writes raw bytes to contract storage.
+
+**Fuel cost:** 50,000
+
+Prefer `storage::set::<T>()` for typed values.
+
+```rust
+env::storage_set(b"paused", &[1u8]);
+```
+
+---
+
+#### `env::storage_exists(key: &[u8]) -> bool`
+
+Returns `true` if the key exists in contract storage.
+
+**Fuel cost:** 10,000
+
+```rust
+claw_sdk::require!(!env::storage_exists(b"owner"), "already initialized");
+```
+
+---
+
+#### `env::storage_remove(key: &[u8])`
+
+Deletes a key from contract storage. No-op if the key does not exist.
+
+**Fuel cost:** 10,000
+
+```rust
+env::storage_remove(b"deprecated_key");
+```
+
+---
+
+### Context
+
+#### `env::get_caller() -> [u8; 32]`
+
+Returns the 32-byte Ed25519 public key of the transaction sender — the address that signed the `ContractCall` transaction.
+
+**Fuel cost:** 5,000
+
+```rust
+let caller: [u8; 32] = env::get_caller();
+let owner: [u8; 32] = storage::get(b"owner").expect("not initialized");
+claw_sdk::require!(caller == owner, "not the owner");
+```
+
+---
+
+#### `env::get_block_height() -> u64`
+
+Returns the current block height.
+
+**Fuel cost:** 5,000
+
+```rust
+let height: u64 = env::get_block_height();
+// Use for time-locks: require block X before unlock
+claw_sdk::require!(height >= unlock_height, "not yet unlocked");
+```
+
+---
+
+#### `env::get_block_timestamp() -> u64`
+
+Returns the current block timestamp as Unix seconds (seconds since 1970-01-01T00:00:00Z).
+
+**Fuel cost:** 5,000
+
+```rust
+let ts: u64 = env::get_block_timestamp();
+let day: u64 = ts / 86_400; // UTC day number
+```
+
+---
+
+#### `env::get_contract_address() -> [u8; 32]`
+
+Returns this contract's own 32-byte address.
+
+**Fuel cost:** 5,000
+
+Use this to check the contract's own CLAW balance before a payout:
+
+```rust
+let self_addr = env::get_contract_address();
+let balance = env::get_balance(&self_addr);
+claw_sdk::require!(balance >= payout, "insufficient contract balance");
+```
+
+---
+
+#### `env::get_value() -> u128`
+
+Returns the amount of CLAW (in nano-CLAW) attached to the current call via the `ContractCallPayload.value` field. Returns `0` if no value was sent.
+
+1 CLAW = 1,000,000,000 nano-CLAW (9 decimal places).
+
+**Fuel cost:** 5,000
+
+```rust
+#[no_mangle]
+pub extern "C" fn deposit(args_ptr: i32, args_len: i32) {
+    claw_sdk::entry!(args_ptr, args_len, |_args: EmptyArgs| {
+        let received: u128 = env::get_value();
+        claw_sdk::require!(received > 0, "must send CLAW to deposit");
+        let existing = storage::get_u128(b"deposit").unwrap_or(0);
+        storage::set_u128(b"deposit", existing + received);
+        vec![]
+    });
+}
+```
+
+---
+
+### Agent-Native (unique to ClawNetwork)
+
+These two host functions exist nowhere else. On general-purpose chains, equivalent logic requires a separate oracle contract and an off-chain indexer. On ClawNetwork, agent identity and reputation are first-class values at the VM level.
+
+#### `env::is_agent_registered(address: &[u8; 32]) -> bool`
+
+Returns `true` if `address` is a registered AI agent on ClawNetwork.
+
+**Fuel cost:** 10,000
+
+```rust
+let caller = env::get_caller();
+claw_sdk::require!(
+    env::is_agent_registered(&caller),
+    "only registered agents may call this method"
+);
+```
+
+---
+
+#### `env::get_agent_score(address: &[u8; 32]) -> u64`
+
+Returns the on-chain reputation score (0–100) of a registered agent. Returns `0` for unregistered addresses.
+
+**Fuel cost:** 10,000
+
+```rust
+let score = env::get_agent_score(&caller);
+claw_sdk::require!(score >= 50, "reputation score too low");
+
+// Weighted payout: higher score = larger share
+let share = base_payout * score / 100;
+```
+
+---
+
+### Token
+
+#### `env::get_balance(address: &[u8; 32]) -> u128`
+
+Returns the CLAW balance of any address in nano-CLAW. Combine with `env::get_contract_address()` to read the contract's own balance.
+
+**Fuel cost:** 5,000
+
+```rust
+let caller = env::get_caller();
+let caller_balance: u128 = env::get_balance(&caller);
+env::log(&format!("caller balance: {} nano-CLAW", caller_balance));
+```
+
+---
+
+#### `env::transfer(to: &[u8; 32], amount: u128) -> bool`
+
+Transfers `amount` nano-CLAW from the contract's balance to `to`. Returns `true` on success, `false` if the transfer could not be queued (e.g., `amount == 0`).
+
+**Fuel cost:** 100,000
+
+Transfers are applied atomically when the transaction commits. If execution aborts after `transfer` is called, the transfer is also rolled back.
+
+Always follow the Checks-Effects-Interactions (CEI) pattern: write state changes to storage **before** calling `transfer`.
+
+```rust
+// CORRECT: state written before transfer
+storage::set_u128(b"total_paid", new_total);          // effect
+let ok = env::transfer(&recipient, amount);            // interaction
+claw_sdk::require!(ok, "token transfer failed");
+
+// WRONG: interaction before effect (bad habit, even though re-entrancy
+// is not currently possible — cross-contract calls are not yet supported)
+let ok = env::transfer(&recipient, amount);
+storage::set_u128(b"total_paid", new_total);
+```
+
+---
+
+### Events
+
+#### `env::emit_event_raw(topic: &str, data: &[u8])`
+
+Emits a structured contract event. Events are indexed by the node and queryable via `claw_getContractEvents` on the RPC.
+
+**Fuel cost:** 20,000
+
+Constraints:
+- `topic` must be a non-empty UTF-8 string, max 256 bytes
+- `data` is an arbitrary byte payload, max 4,096 bytes
+- Maximum 50 events per execution; exceeding this traps the contract
+
+```rust
+use borsh::BorshSerialize;
+
+#[derive(BorshSerialize)]
+struct TransferEvent {
+    from: [u8; 32],
+    to: [u8; 32],
+    amount: u128,
+}
+
+let event = TransferEvent { from: caller, to: recipient, amount };
+let data = borsh::to_vec(&event).unwrap();
+env::emit_event_raw("transfer", &data);
+```
+
+---
+
+### Utility
+
+#### `env::log(msg: &str)`
+
+Emits a log message. Messages appear in the node's execution trace and in the return value of `claw_callContractView`. Up to 100 log entries are kept per execution; additional calls are silently dropped.
+
+**Fuel cost:** 5,000
+
+```rust
+env::log("contract initialized");
+env::log(&format!("transferred {} nano-CLAW to {:?}", amount, recipient));
+```
+
+---
+
+#### `env::set_return_data(data: &[u8])`
+
+Sets the raw return bytes for this execution. The `entry!` macro calls this automatically when your closure returns a non-empty `Vec<u8>`. You do not need to call this directly in normal usage.
+
+**Fuel cost:** 5,000
+
+---
+
+#### `env::panic_msg(msg: &str) -> !`
+
+Aborts execution with an error message. This function never returns. All state changes and pending transfers are discarded.
+
+Prefer `require!` over calling `panic_msg` directly — `require!` is clearer at the call site.
+
+```rust
+if something_critical_failed {
+    env::panic_msg("invariant violated: detailed reason here");
+}
+```
+
+---
+
+## Typed Storage Helpers (storage module)
+
+`claw_sdk::storage` provides Borsh-based typed wrappers on top of the raw `env::storage_*` functions. These are the recommended way to read and write structured data — they handle serialization automatically and produce cleaner contract code.
+
+---
+
+#### `storage::get<T: BorshDeserialize>(key: &[u8]) -> Option<T>`
+
+Reads a value from storage and deserializes it from Borsh. Returns `None` if the key does not exist or if deserialization fails.
+
+```rust
+use borsh::{BorshDeserialize, BorshSerialize};
+
+#[derive(BorshDeserialize, BorshSerialize)]
+struct Config {
+    fee_bps: u16,
+    paused: bool,
+}
+
+let config: Option<Config> = storage::get(b"config");
+let fee = config.map(|c| c.fee_bps).unwrap_or(0);
+```
+
+---
+
+#### `storage::set<T: BorshSerialize>(key: &[u8], value: &T)`
+
+Serializes `value` to Borsh and writes it to storage.
+
+```rust
+let config = Config { fee_bps: 100, paused: false };
+storage::set(b"config", &config);
+```
+
+---
+
+#### `storage::exists(key: &[u8]) -> bool`
+
+Returns `true` if the key exists. Delegates to `env::storage_exists`.
+
+```rust
+if !storage::exists(b"owner") {
+    env::panic_msg("contract not initialized");
+}
+```
+
+---
+
+#### `storage::remove(key: &[u8])`
+
+Deletes a key from storage. Delegates to `env::storage_remove`.
+
+```rust
+storage::remove(b"stale_record");
+```
+
+---
+
+#### `storage::get_u64(key: &[u8]) -> Option<u64>`
+
+Reads a `u64` stored as 8 little-endian bytes.
+
+```rust
+let nonce: u64 = storage::get_u64(b"nonce").unwrap_or(0);
+```
+
+---
+
+#### `storage::set_u64(key: &[u8], value: u64)`
+
+Writes a `u64` as 8 little-endian bytes.
+
+```rust
+storage::set_u64(b"nonce", nonce + 1);
+```
+
+---
+
+#### `storage::get_u128(key: &[u8]) -> Option<u128>`
+
+Reads a `u128` stored as 16 little-endian bytes.
+
+```rust
+let total: u128 = storage::get_u128(b"total_deposited").unwrap_or(0);
+```
+
+---
+
+#### `storage::set_u128(key: &[u8], value: u128)`
+
+Writes a `u128` as 16 little-endian bytes.
+
+```rust
+storage::set_u128(b"total_deposited", total + received);
+```
+
+---
+
+## Fuel Budget
+
+Every host function call deducts a fixed amount of fuel. If fuel reaches zero, the contract traps and all state changes are rolled back. The flat 0.001 CLAW transaction fee does not vary with fuel consumed — you always know the cost before you send.
+
+### Costs per Host Call
+
+| Operation | Fuel Cost |
+|-----------|-----------|
+| `storage_get` / `storage_exists` / `storage_remove` | 10,000 |
+| `storage_set` | 50,000 |
+| `get_caller` / `get_block_height` / `get_block_timestamp` | 5,000 |
+| `get_contract_address` / `get_value` / `get_balance` | 5,000 |
+| `log` / `set_return_data` | 5,000 |
+| `agent_is_registered` / `agent_get_score` | 10,000 |
+| `transfer` | 100,000 |
+| `emit_event_raw` | 20,000 |
+| Default fuel per execution | **10,000,000** |
+| View call fuel limit | **5,000,000** |
+
+### Budget Estimates for Common Patterns
+
+| Pattern | Approximate Fuel |
+|---------|-----------------|
+| Read 1 key + check caller | 15,000 |
+| Read 5 keys + 1 write | 100,000 |
+| 1 token transfer + 3 storage writes | 250,000 |
+| 10 token transfers | 1,000,000 |
+| Agent check + score + 3 writes | 170,000 |
+| Emit 50 events (max) | 1,000,000 |
+
+The 10,000,000 fuel limit is sufficient for complex contract logic. If you approach the limit, reduce storage operations and avoid loops over unbounded collections.
+
+Maximum storage writes per execution: `10,000,000 / 50,000 = 200`. In practice you will hit other costs first, so treat ~100 storage writes as a safe ceiling for a single transaction.
+
+---
+
+## Types
+
+### `Address`
+
+```rust
+use claw_sdk::Address; // = [u8; 32]
+```
+
+A 32-byte Ed25519 public key. All addresses — accounts, contracts, agents — share this representation.
+
+```rust
+let caller: Address = env::get_caller();
+storage::set(b"owner", &caller);
+
+let owner: Address = storage::get(b"owner").expect("not initialized");
+claw_sdk::require!(caller == owner, "not the owner");
+```
+
+### Amounts
+
+All CLAW amounts use `u128` in nano-CLAW (base units):
+
+```
+1 CLAW = 1_000_000_000 nano-CLAW
+```
+
+Use `u128` for balances and transfers. `u64` is sufficient for token supplies in most contracts but will overflow at ~18 billion CLAW.
+
+### Serialization
+
+All arguments and return values use [Borsh](https://borsh.io/) binary encoding. Add `#[derive(BorshDeserialize, BorshSerialize)]` to your argument and return structs.
+
+```rust
+use borsh::{BorshDeserialize, BorshSerialize};
+
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct TransferArgs {
+    pub to: [u8; 32],
+    pub amount: u128,
+}
+```
+
+Fixed-size types (`[u8; 32]`, `u64`, `u128`) serialize to their raw little-endian bytes. Variable-length types (`Vec<T>`, `String`) are prefixed with a 4-byte little-endian length.
+
+---
+
+## Related Pages
+
+- [Quick Start Tutorial](/docs/contract-quickstart) — deploy your first counter contract in 30 minutes
+- [Contract Examples](/docs/contract-examples) — token contract, reputation-gated bounty board
+- [Smart Contracts Overview](/docs/smart-contracts) — architecture, gas model, comparison table
+- [Contract Setup](/docs/contract-setup) — Cargo.toml template, build commands, troubleshooting

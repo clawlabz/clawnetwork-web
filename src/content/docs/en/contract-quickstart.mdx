@@ -1,0 +1,344 @@
+---
+title: "Quick Start: Your First Contract"
+description: "Build, deploy, and call a smart contract on ClawNetwork in 4 steps — counter contract, testnet, ~30 minutes."
+order: 7
+---
+
+## Quick Start: Your First Contract
+
+Build and deploy a working smart contract on ClawNetwork in about 30 minutes.
+
+## Prerequisites
+
+- Rust 1.75+ installed — [Setup Guide](/docs/contract-setup)
+- `wasm32-unknown-unknown` target added (`rustup target add wasm32-unknown-unknown`)
+- A testnet account address and private key
+
+No prior ClawNetwork experience required.
+
+---
+
+## Step 1: Create the Project
+
+Create a new Rust library crate and configure it for Wasm output.
+
+```bash
+cargo new --lib my-counter
+cd my-counter
+```
+
+Replace the contents of `Cargo.toml`:
+
+```toml
+[package]
+name = "my-counter"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+claw-sdk = { git = "https://github.com/clawlabz/claw-network", subdir = "claw-node/crates/sdk" }
+borsh = { version = "1", features = ["derive"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+```
+
+Replace `src/lib.rs` with the counter contract:
+
+```rust
+use borsh::{BorshDeserialize, BorshSerialize};
+use claw_sdk::{env, storage};
+
+// Required: exports the `alloc` function the VM uses to copy args into memory.
+claw_sdk::setup_alloc!();
+
+// ── Argument types (must derive BorshDeserialize) ────────────────────────────
+
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct EmptyArgs {}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct IncrementArgs {
+    pub by: u64, // how much to add (use 1 for a simple increment)
+}
+
+// ── Entry points ─────────────────────────────────────────────────────────────
+
+/// Called once on deploy. Sets the counter to 0 and records the deployer as owner.
+#[no_mangle]
+pub extern "C" fn init(args_ptr: i32, args_len: i32) {
+    claw_sdk::entry!(args_ptr, args_len, |_args: EmptyArgs| {
+        claw_sdk::require!(!storage::exists(b"count"), "already initialized");
+
+        storage::set_u64(b"count", 0);
+        storage::set(b"owner", &env::get_caller());
+        env::log("counter initialized to 0");
+        vec![]
+    });
+}
+
+/// Adds `args.by` to the counter. Anyone can call this.
+#[no_mangle]
+pub extern "C" fn increment(args_ptr: i32, args_len: i32) {
+    claw_sdk::entry!(args_ptr, args_len, |args: IncrementArgs| {
+        claw_sdk::require!(args.by > 0, "increment amount must be > 0");
+        let current = storage::get_u64(b"count").unwrap_or(0);
+        storage::set_u64(b"count", current + args.by);
+        env::log("incremented");
+        vec![]
+    });
+}
+
+/// Returns the current counter value as a Borsh-encoded u64.
+/// Call via claw_callContractView — no transaction or fee required.
+#[no_mangle]
+pub extern "C" fn get_count(args_ptr: i32, args_len: i32) {
+    claw_sdk::entry!(args_ptr, args_len, |_args: EmptyArgs| {
+        let count = storage::get_u64(b"count").unwrap_or(0);
+        borsh::to_vec(&count).unwrap()
+    });
+}
+```
+
+The three entry points follow the same pattern:
+- `init` — runs once at deploy time, guarded against double-init
+- `increment` — state-changing call, requires a signed transaction
+- `get_count` — read-only view call, no fee
+
+---
+
+## Step 2: Build
+
+```bash
+cargo build --target wasm32-unknown-unknown --release
+```
+
+Expected output (last two lines):
+
+```
+   Compiling my-counter v0.1.0
+    Finished release [optimized] target(s) in 12.4s
+```
+
+Check the binary size:
+
+```bash
+ls -lh target/wasm32-unknown-unknown/release/my_counter.wasm
+# Typical output: -rw-r--r-- 1 user group 18K Mar 24 10:00 my_counter.wasm
+```
+
+With the release profile settings above, a simple counter compiles to roughly 15–30 KB — well within the 512 KB limit.
+
+If the binary is unexpectedly large (over 100 KB for this contract), verify that `opt-level = "z"`, `lto = true`, and `strip = true` are set in `[profile.release]`.
+
+---
+
+## Step 3: Deploy to Testnet
+
+Contract deployment requires a signed `ContractDeploy` transaction (TxType 6). The easiest way is via the TypeScript SDK or the `claw-contract` CLI.
+
+### Option A: TypeScript (recommended for scripts)
+
+```typescript
+import * as ed from "@noble/ed25519";
+import { sha512 } from "@noble/hashes/sha512";
+import { readFileSync } from "fs";
+
+// @noble/ed25519 requires sha512 sync on Node.js
+ed.etc.sha512Sync = (...m) => sha512(...m);
+
+const RPC = "https://testnet-rpc.clawlabz.xyz";
+const privateKey = Buffer.from(process.env.PRIVATE_KEY!, "hex");
+const publicKey = await ed.getPublicKeyAsync(privateKey);
+
+// Read compiled Wasm
+const wasm = readFileSync(
+  "target/wasm32-unknown-unknown/release/my_counter.wasm"
+);
+
+// Fetch current nonce
+const nonceRes = await fetch(RPC, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    jsonrpc: "2.0", id: 1,
+    method: "claw_getNonce",
+    params: [Buffer.from(publicKey).toString("hex")],
+  }),
+});
+const nonce: number = (await nonceRes.json()).result + 1;
+
+// Borsh-encode ContractDeployPayload:
+//   code:        Vec<u8>  (4-byte LE length + bytes)
+//   init_method: String   (4-byte LE length + utf-8 bytes)
+//   init_args:   Vec<u8>  (4-byte LE length + bytes)
+function u32le(n: number): Buffer {
+  const b = Buffer.alloc(4);
+  b.writeUInt32LE(n);
+  return b;
+}
+const method = Buffer.from("init");
+const initArgs = Buffer.alloc(0); // EmptyArgs = 0 bytes in Borsh
+const payload = Buffer.concat([
+  u32le(wasm.length), wasm,
+  u32le(method.length), method,
+  u32le(initArgs.length), initArgs,
+]);
+
+// Build and sign the transaction
+const txType = Buffer.from([6]);
+const fromBuf = Buffer.from(publicKey);
+const nonceBuf = Buffer.alloc(8);
+nonceBuf.writeBigUInt64LE(BigInt(nonce));
+
+const signedBytes = Buffer.concat([txType, fromBuf, nonceBuf, payload]);
+const signature = await ed.signAsync(signedBytes, privateKey);
+
+// Borsh-encode the full Transaction
+const tx = Buffer.concat([
+  txType, fromBuf, nonceBuf,
+  u32le(payload.length), payload,
+  Buffer.from(signature),
+]);
+
+// Submit
+const deployRes = await fetch(RPC, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    jsonrpc: "2.0", id: 2,
+    method: "claw_sendTransaction",
+    params: [tx.toString("hex")],
+  }),
+});
+const { result: txHash } = await deployRes.json();
+console.log("tx hash:", txHash);
+```
+
+### Option B: curl (manual Borsh encoding)
+
+If you handle Borsh encoding separately (e.g., via a build script), submit the hex-encoded transaction directly:
+
+```bash
+curl -X POST https://testnet-rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-signed-tx>"]
+  }'
+# Response: {"jsonrpc":"2.0","id":1,"result":"<tx-hash-hex>"}
+```
+
+### Finding Your Contract Address
+
+The contract address is the blake3 hash of the deployment transaction bytes — the same value as the transaction hash. Confirm deployment and get metadata:
+
+```bash
+curl -X POST https://testnet-rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_getContractInfo",
+    "params": ["<contract-address-hex>"]
+  }'
+```
+
+A successful response looks like:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "address": "<contract-address-hex>",
+    "deployer": "<your-address-hex>",
+    "code_size": 18432,
+    "deploy_height": 104821
+  }
+}
+```
+
+---
+
+## Step 4: Call Your Contract
+
+### State-changing call: `increment`
+
+`increment` modifies storage, so it requires a signed `ContractCall` transaction (TxType 7). The fee is 0.001 CLAW.
+
+```bash
+# Submit a signed ContractCall transaction (TxType 7)
+curl -X POST https://testnet-rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_sendTransaction",
+    "params": ["<hex-encoded-borsh-signed-tx-calling-increment>"]
+  }'
+```
+
+The `ContractCallPayload` Borsh layout:
+
+```
+contract:  [u8; 32]   (contract address)
+method:    String     (e.g., "increment")
+args:      Vec<u8>    (Borsh-encoded IncrementArgs = u64 LE)
+value:     u128       (CLAW to attach, 0 for this contract)
+```
+
+`IncrementArgs { by: 1 }` encodes to `[0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]` (8 bytes, little-endian u64).
+
+### Read-only call: `get_count`
+
+Read-only calls use `claw_callContractView` — no transaction, no signature, no fee.
+
+```bash
+curl -X POST https://testnet-rpc.clawlabz.xyz \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "claw_callContractView",
+    "params": [
+      "<contract-address-hex>",
+      "get_count",
+      ""
+    ]
+  }'
+```
+
+The response `result` field contains the Borsh-encoded return bytes (a little-endian u64). After one increment the decoded value is `1`.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "return_data": "0100000000000000",
+    "logs": []
+  }
+}
+```
+
+Decode in JavaScript: `Buffer.from("0100000000000000", "hex").readBigUInt64LE()` → `1n`.
+
+---
+
+## What's Next?
+
+You have deployed and called a live contract on testnet. From here:
+
+- [SDK Reference](/docs/contract-sdk) — complete API for all host functions, macros, and storage helpers
+- [Contract Examples](/docs/contract-examples) — token contract, reputation-gated bounty board
+- [Smart Contracts Overview](/docs/smart-contracts) — architecture, gas model, honest comparison table
+- [Contract Setup](/docs/contract-setup) — full Cargo.toml template, troubleshooting, deploy options

@@ -1,12 +1,12 @@
 ---
 title: Smart Contract Examples
-description: Complete, copy-paste-ready Rust smart contract examples for ClawNetwork — counter, token, and AI-powered contracts.
-order: 6
+description: Complete, copy-paste-ready Rust smart contract examples for ClawNetwork — counter, token, voting, reward vault, and arena pool walkthroughs.
+order: 9
 ---
 
 ## Overview
 
-This page provides three complete smart contract examples you can copy, build, and deploy to ClawNetwork. Each example builds on the previous one, introducing more host functions and patterns.
+This page provides complete smart contract examples you can copy, build, and deploy to ClawNetwork. Each example introduces more patterns and host functions, building toward the production contracts shipped with ClawNetwork.
 
 **Prerequisites:**
 
@@ -793,9 +793,485 @@ On ClawNetwork, `agent_get_score` and `agent_is_registered` are **native host fu
 
 ---
 
+## 4. Voting Contract
+
+A proposal-based on-chain voting contract. Any address can create proposals; any address can vote once per proposal. Proposals have a deadline expressed as a block timestamp — the contract checks `block_timestamp` against the deadline when accepting votes.
+
+### Architecture
+
+```
+Storage layout
+──────────────
+"owner"            → [u8; 32]    contract creator
+"next_id"          → u64 LE      auto-incrementing proposal counter
+"p:" + id (10 B)   → 96 bytes    proposal record (see below)
+  bytes  0–31:   creator address
+  bytes 32–39:   yes_votes (u64 LE)
+  bytes 40–47:   no_votes  (u64 LE)
+  bytes 48–55:   deadline  (u64 LE, unix timestamp)
+  bytes 56–63:   status    (u64 LE: 0=active, 1=passed, 2=rejected)
+  bytes 64–95:   description (up to 32 bytes, zero-padded)
+"v:" + id + addr   → 1 byte      voted marker (prevents double-voting)
+
+Entry points
+────────────
+init()                          record owner
+create_proposal(deadline, desc) create a new proposal; returns proposal ID
+vote(proposal_id, yes_or_no)    cast one vote; checks deadline
+finalize(proposal_id)           tally and mark passed/rejected (anyone can call)
+get_proposal(id) → bytes        read proposal record (view)
+```
+
+### Design Decisions
+
+**Time-based logic uses `block_timestamp`, not block height.** Block height advances at a predictable rate (~3 sec/block), but using the timestamp directly makes deadline semantics clear and independent of block time variability.
+
+**One-vote enforcement via composite key.** The voted marker key `"v:" + proposal_id_bytes + voter_address` (2 + 8 + 32 = 42 bytes) encodes both the proposal and the voter. Writing a 1-byte marker is cheaper than storing a full list and safe from collision.
+
+**Finalize is permissionless.** Any caller can call `finalize` after the deadline — no single party controls when the result is recorded. This removes a trust assumption present in many voting designs.
+
+### Full Source
+
+```rust
+#![no_std]
+
+extern "C" {
+    fn storage_read(key_ptr: u32, key_len: u32, val_ptr: u32) -> i32;
+    fn storage_write(key_ptr: u32, key_len: u32, val_ptr: u32, val_len: u32);
+    fn storage_has(key_ptr: u32, key_len: u32) -> i32;
+    fn caller(out_ptr: u32);
+    fn block_timestamp() -> i64;
+    fn return_data(ptr: u32, len: u32);
+    fn log_msg(ptr: u32, len: u32);
+    fn abort(ptr: u32, len: u32);
+}
+
+static mut HEAP_PTR: u32 = 1024 * 64;
+
+#[no_mangle]
+pub extern "C" fn alloc(size: i32) -> i32 {
+    unsafe { let ptr = HEAP_PTR; HEAP_PTR += size as u32; ptr as i32 }
+}
+
+fn fail(msg: &[u8]) -> ! {
+    unsafe { abort(msg.as_ptr() as u32, msg.len() as u32) };
+    loop {}
+}
+
+fn get_caller() -> [u8; 32] {
+    let mut a = [0u8; 32];
+    unsafe { caller(a.as_ptr() as u32) };
+    a
+}
+
+fn read_u64(key: &[u8]) -> u64 {
+    let mut buf = [0u8; 8];
+    let n = unsafe { storage_read(key.as_ptr() as u32, key.len() as u32, buf.as_ptr() as u32) };
+    if n == 8 { u64::from_le_bytes(buf) } else { 0 }
+}
+
+fn write_u64(key: &[u8], v: u64) {
+    let b = v.to_le_bytes();
+    unsafe { storage_write(key.as_ptr() as u32, key.len() as u32, b.as_ptr() as u32, 8) };
+}
+
+// "p:" (2 bytes) + u64 id (8 bytes) = 10-byte proposal key
+fn proposal_key(id: u64) -> [u8; 10] {
+    let mut k = [0u8; 10];
+    k[..2].copy_from_slice(b"p:");
+    k[2..10].copy_from_slice(&id.to_le_bytes());
+    k
+}
+
+// "v:" (2 bytes) + u64 id (8 bytes) + addr (32 bytes) = 42-byte voted key
+fn voted_key(id: u64, addr: &[u8; 32]) -> [u8; 42] {
+    let mut k = [0u8; 42];
+    k[..2].copy_from_slice(b"v:");
+    k[2..10].copy_from_slice(&id.to_le_bytes());
+    k[10..42].copy_from_slice(addr);
+    k
+}
+
+#[no_mangle]
+pub extern "C" fn init() {
+    let owner = get_caller();
+    unsafe { storage_write(b"owner".as_ptr() as u32, 5, owner.as_ptr() as u32, 32) };
+    write_u64(b"next_id", 0);
+    let msg = b"voting contract initialized";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// Args: deadline (u64 LE, 8 bytes) + description (up to 32 bytes) = 8–40 bytes
+// Returns: proposal id as u64 LE (8 bytes)
+#[no_mangle]
+pub extern "C" fn create_proposal(args_ptr: i32, args_len: i32) {
+    if args_len < 8 || args_len > 40 {
+        fail(b"create_proposal: args must be 8–40 bytes");
+    }
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, args_len as usize) };
+
+    let mut deadline_buf = [0u8; 8];
+    deadline_buf.copy_from_slice(&args[..8]);
+    let deadline = u64::from_le_bytes(deadline_buf);
+
+    let now = unsafe { block_timestamp() } as u64;
+    if deadline <= now {
+        fail(b"create_proposal: deadline must be in the future");
+    }
+
+    let creator = get_caller();
+    let id = read_u64(b"next_id");
+    write_u64(b"next_id", id + 1);
+
+    // Pack proposal record: creator(32)+yes(8)+no(8)+deadline(8)+status(8)+desc(32) = 96 bytes
+    let mut record = [0u8; 96];
+    record[..32].copy_from_slice(&creator);
+    // yes_votes=0, no_votes=0, status=0 already zero-initialized
+    record[48..56].copy_from_slice(&deadline.to_le_bytes());
+    let desc_len = (args_len as usize - 8).min(32);
+    record[64..64 + desc_len].copy_from_slice(&args[8..8 + desc_len]);
+
+    let pkey = proposal_key(id);
+    unsafe {
+        storage_write(pkey.as_ptr() as u32, pkey.len() as u32, record.as_ptr() as u32, 96);
+    }
+
+    let id_bytes = id.to_le_bytes();
+    unsafe { return_data(id_bytes.as_ptr() as u32, 8) };
+}
+
+// Args: proposal_id (u64 LE, 8 bytes) + vote (1 byte: 1=yes, 0=no) = 9 bytes
+#[no_mangle]
+pub extern "C" fn vote(args_ptr: i32, args_len: i32) {
+    if args_len != 9 {
+        fail(b"vote: expected 9 bytes (8 id + 1 vote)");
+    }
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 9) };
+
+    let mut id_buf = [0u8; 8];
+    id_buf.copy_from_slice(&args[..8]);
+    let id = u64::from_le_bytes(id_buf);
+    let vote_yes = args[8] != 0;
+
+    let voter = get_caller();
+
+    // Prevent double voting
+    let vk = voted_key(id, &voter);
+    let already = unsafe { storage_has(vk.as_ptr() as u32, vk.len() as u32) };
+    if already == 1 {
+        fail(b"vote: already voted on this proposal");
+    }
+
+    // Load proposal record
+    let pkey = proposal_key(id);
+    let mut record = [0u8; 96];
+    let rlen = unsafe {
+        storage_read(pkey.as_ptr() as u32, pkey.len() as u32, record.as_ptr() as u32)
+    };
+    if rlen != 96 { fail(b"vote: proposal not found") };
+
+    // Check status is active (bytes 56–63 == 0)
+    let mut status_buf = [0u8; 8];
+    status_buf.copy_from_slice(&record[56..64]);
+    if u64::from_le_bytes(status_buf) != 0 {
+        fail(b"vote: proposal is not active");
+    }
+
+    // Check deadline has not passed
+    let mut deadline_buf = [0u8; 8];
+    deadline_buf.copy_from_slice(&record[48..56]);
+    let deadline = u64::from_le_bytes(deadline_buf);
+    let now = unsafe { block_timestamp() } as u64;
+    if now > deadline {
+        fail(b"vote: voting period has ended");
+    }
+
+    // Increment the appropriate vote count
+    if vote_yes {
+        let mut yes_buf = [0u8; 8];
+        yes_buf.copy_from_slice(&record[32..40]);
+        let yes = u64::from_le_bytes(yes_buf) + 1;
+        record[32..40].copy_from_slice(&yes.to_le_bytes());
+    } else {
+        let mut no_buf = [0u8; 8];
+        no_buf.copy_from_slice(&record[40..48]);
+        let no = u64::from_le_bytes(no_buf) + 1;
+        record[40..48].copy_from_slice(&no.to_le_bytes());
+    }
+
+    // Persist updated record and mark voter
+    unsafe {
+        storage_write(pkey.as_ptr() as u32, pkey.len() as u32, record.as_ptr() as u32, 96);
+        storage_write(vk.as_ptr() as u32, vk.len() as u32, [1u8].as_ptr() as u32, 1);
+    }
+
+    let msg = b"vote cast";
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// Args: proposal_id (u64 LE, 8 bytes)
+// Permissionless: anyone can finalize after the deadline
+#[no_mangle]
+pub extern "C" fn finalize(args_ptr: i32, args_len: i32) {
+    if args_len != 8 { fail(b"finalize: expected 8-byte proposal id") };
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    let mut id_buf = [0u8; 8];
+    id_buf.copy_from_slice(args);
+    let id = u64::from_le_bytes(id_buf);
+
+    let pkey = proposal_key(id);
+    let mut record = [0u8; 96];
+    let rlen = unsafe {
+        storage_read(pkey.as_ptr() as u32, pkey.len() as u32, record.as_ptr() as u32)
+    };
+    if rlen != 96 { fail(b"finalize: proposal not found") };
+
+    let mut status_buf = [0u8; 8];
+    status_buf.copy_from_slice(&record[56..64]);
+    if u64::from_le_bytes(status_buf) != 0 { fail(b"finalize: already finalized") };
+
+    let mut deadline_buf = [0u8; 8];
+    deadline_buf.copy_from_slice(&record[48..56]);
+    let deadline = u64::from_le_bytes(deadline_buf);
+    let now = unsafe { block_timestamp() } as u64;
+    if now <= deadline { fail(b"finalize: voting period not ended") };
+
+    let mut yes_buf = [0u8; 8];
+    yes_buf.copy_from_slice(&record[32..40]);
+    let yes = u64::from_le_bytes(yes_buf);
+
+    let mut no_buf = [0u8; 8];
+    no_buf.copy_from_slice(&record[40..48]);
+    let no = u64::from_le_bytes(no_buf);
+
+    // 1 = passed, 2 = rejected (tie goes to rejection)
+    let new_status: u64 = if yes > no { 1 } else { 2 };
+    record[56..64].copy_from_slice(&new_status.to_le_bytes());
+
+    unsafe {
+        storage_write(pkey.as_ptr() as u32, pkey.len() as u32, record.as_ptr() as u32, 96);
+    }
+
+    let msg: &[u8] = if new_status == 1 { b"proposal passed" } else { b"proposal rejected" };
+    unsafe { log_msg(msg.as_ptr() as u32, msg.len() as u32) };
+}
+
+// Args: proposal_id (u64 LE, 8 bytes) — view function
+#[no_mangle]
+pub extern "C" fn get_proposal(args_ptr: i32, args_len: i32) {
+    if args_len != 8 { fail(b"get_proposal: expected 8-byte id") };
+    let args = unsafe { core::slice::from_raw_parts(args_ptr as *const u8, 8) };
+    let mut id_buf = [0u8; 8];
+    id_buf.copy_from_slice(args);
+    let id = u64::from_le_bytes(id_buf);
+
+    let pkey = proposal_key(id);
+    let mut record = [0u8; 96];
+    let rlen = unsafe {
+        storage_read(pkey.as_ptr() as u32, pkey.len() as u32, record.as_ptr() as u32)
+    };
+    if rlen != 96 { fail(b"get_proposal: not found") };
+    unsafe { return_data(record.as_ptr() as u32, 96) };
+}
+```
+
+### Security Considerations
+
+- **No voter allowlist.** Currently any address can vote. Add `agent_is_registered` checks to restrict to registered agents.
+- **Quorum is not enforced.** A proposal with 1 yes and 0 no passes. Add a minimum vote count check in `finalize` if quorum matters.
+- **Description is fixed-size.** The description field is capped at 32 bytes. For longer text, store a content hash on-chain and put the full text off-chain.
+- **Tie goes to rejection.** `yes > no` is the passing condition. Ties are rejected. This is a deliberate choice — change to `yes >= no` if your governance needs tie-breaking in favor of approval.
+
+---
+
+## 5. Reward Vault Walkthrough
+
+The Reward Vault (`contracts/reward-vault/`) is a production contract shipped with ClawNetwork. Platforms use it to distribute CLAW rewards to agents without giving platforms direct control over the vault balance. Source is in `contracts/reward-vault/src/`.
+
+### Architecture
+
+```
+Roles
+─────
+owner      — governs parameters, adds/removes platforms, can pause and withdraw
+platform   — authorized caller address (your platform agent); calls claim_reward
+recipient  — end user receiving CLAW
+
+State keys (contract KV store)
+──────────────────────────────
+KEY_VERSION          → u32         initialization guard
+KEY_OWNER            → [u8; 32]   owner address
+KEY_DAILY_CAP        → u128        max CLAW per recipient per UTC day (base units)
+KEY_MIN_GAMES        → u64         minimum activity threshold before earning starts
+KEY_PAUSED           → [u8; 1]    circuit-breaker: 0=live, 1=paused
+"plat:" + addr       → [u8; 1]    platform authorization marker
+"nc:" + addr         → u64        per-recipient monotonic nonce (anti-replay)
+"dc:" + addr + day   → u128       daily claimed total (cleanup-able after 365 days)
+```
+
+### The CEI Pattern (Checks-Effects-Interactions)
+
+`claim_reward` is the only method that moves CLAW and the most security-critical entry point. It follows the Checks-Effects-Interactions pattern strictly:
+
+```
+CHECKS     → verify paused=0
+           → verify caller is an authorized platform
+           → verify nonce == stored_nonce
+           → verify daily_claimed + amount <= daily_cap
+           → verify vault balance >= amount
+
+EFFECTS    → write new daily_claimed total
+           → increment stored_nonce
+
+INTERACTIONS → env::transfer(recipient, amount)
+```
+
+Writing state before calling `transfer` means that if the transfer somehow re-enters the contract, the nonce has already been incremented and a replay is blocked. ClawNetwork's VM does not currently support re-entrancy, but following CEI is a best practice regardless.
+
+### Nonce Protection
+
+Every recipient has a monotonic nonce stored on-chain. The platform must fetch the current nonce before submitting a `claim_reward` call and pass it as an argument. The contract checks `stored_nonce == args.nonce` and rejects any mismatch. After a successful claim, `stored_nonce` increments to `stored_nonce + 1`.
+
+This prevents two attack vectors:
+
+- **Replay attack**: resubmitting a previously valid claim transaction to claim twice.
+- **Race condition**: two concurrent claims for the same recipient — only one succeeds; the other fails the nonce check and the fee is lost (not the reward).
+
+### Daily Cap
+
+The daily cap is in CLAW base units (1 CLAW = 1,000,000,000 base units) and resets per UTC day. The day is derived from `block_timestamp / 86400`. The cap is enforced on-chain — there is no way to exceed it regardless of how many claims the platform submits. Pre-checking the cap off-chain before submitting is recommended to avoid wasting the 0.001 CLAW transaction fee.
+
+### Entry Points Reference
+
+| Method | Caller | Description |
+|--------|--------|-------------|
+| `init(owner, daily_cap, min_games, platforms[])` | deployer | One-time initialization |
+| `fund()` | anyone (payable) | Deposit CLAW into the vault |
+| `claim_reward(recipient, amount, nonce)` | authorized platform | Distribute CLAW to a user |
+| `set_daily_cap(new_cap)` | owner | Update the daily cap |
+| `add_platform(addr)` | owner | Authorize a new platform caller |
+| `remove_platform(addr)` | owner | Revoke a platform's authorization |
+| `pause()` / `unpause()` | owner | Emergency circuit-breaker |
+| `withdraw(amount)` | owner | Reclaim CLAW from the vault |
+| `get_daily_claimed(addr)` | anyone (view) | Query today's claimed amount for an address |
+| `cleanup_claims(addrs, before_day)` | owner | Prune old daily-claim storage entries |
+
+### Security Considerations
+
+- **Pause before upgrade.** If you deploy a new vault version, pause the old one first to prevent claims against a contract you are replacing.
+- **Rotate the owner key.** After deployment, transfer ownership to a multisig or a cold-key operator address. The deployer key should not be used for day-to-day operations.
+- **Monitor vault balance.** The contract rejects claims when balance is insufficient. Set an alert when the vault balance drops below 7 days of expected payout volume.
+- **Storage cleanup.** Daily claim records accumulate over time. Run `cleanup_claims` periodically (e.g., monthly) to keep storage costs low.
+
+---
+
+## 6. Arena Pool Walkthrough
+
+The Arena Pool (`contracts/arena-pool/`) is a game-wallet escrow contract. Players pre-deposit CLAW and the platform (ClawArena) locks entries, settles games, and distributes winnings — all without the platform ever holding the funds directly.
+
+### Architecture
+
+```
+Roles
+─────
+owner      — can pause, cleanup stale games, claim accumulated platform fees
+platform   — authorized caller (ClawArena); locks entries and settles games
+player     — end user with a CLAW balance in the pool
+
+State (single borsh blob stored under key "__state__")
+──────────────────────────────────────────────────────
+version               u32
+paused                bool
+owner                 [u8; 32]
+platform              [u8; 32]
+fee_bps               u16         platform fee in basis points (max 10000)
+burn_bps              u16         burn fraction in basis points
+balance               BTreeMap<[u8;32], u128>   total deposited (includes locked)
+locked                BTreeMap<[u8;32], u128>   currently locked in active games
+games                 BTreeMap<[u8;32], GameInfo>
+total_fees_collected  u128
+
+GameInfo
+────────
+players      Vec<[u8; 32]>
+entry_fee    u128
+pot          u128        sum of locked entry fees
+status       u8          0=active, 1=settled, 2=refunded
+locked_at    u64         timestamp when entries were locked
+```
+
+### Game Wallet Pattern
+
+The pool separates `balance` (total deposited) from `locked` (committed to active games):
+
+```
+Player deposits 100 CLAW
+  → balance[player] += 100
+  → locked[player]  unchanged
+  → available(player) = balance - locked = 100
+
+Platform calls lock_entries(game_hash, [p1, p2], entry_fee=10)
+  → locked[p1] += 10, locked[p2] += 10
+  → game stored: pot=20, status=active
+  → available(p1) = 100 - 10 = 90   ← p1 can still withdraw the 90
+
+Platform calls settle_game(game_hash, winners=[p1], amounts=[18])
+  → locked[p1] -= 10, locked[p2] -= 10
+  → balance[p1] += 18   (net winnings after fee)
+  → fee accrues to total_fees_collected
+  → game status = settled
+
+Player calls withdraw(amount)
+  → transfers available(player) CLAW out of the contract
+```
+
+The platform never receives player funds directly. It only instructs the contract on how to route them after a game completes.
+
+### Emergency Refund
+
+If a game is locked but never settled (e.g., a platform outage), any address can call `refund_game_emergency` after a 1-hour timeout (`EMERGENCY_TIMEOUT_SECS = 3600`). This releases all locked entries back to the depositing players, bypassing the platform authorization check.
+
+The 1-hour window gives the platform time to settle games normally while ensuring players can always recover funds if the platform becomes unavailable.
+
+### Design: Separate Logic From Entry Points
+
+Arena Pool separates all business rules into a pure `logic.rs` module. The Wasm entry points in `lib.rs` are thin wrappers that:
+
+1. Deserialize the full `ContractState` from the `"__state__"` storage key
+2. Call the appropriate `logic::apply_*` function (no host calls inside)
+3. Flush any token transfers returned by the logic layer
+4. Serialize and save the updated state
+
+This means every invariant in the contract can be tested natively with `cargo test` — no Wasm VM required. The integration test suite (`tests/integration.rs`) covers the full deposit → lock → settle → withdraw cycle.
+
+### Entry Points Reference
+
+| Method | Caller | Description |
+|--------|--------|-------------|
+| `init(owner, platform, fee_bps, burn_bps)` | deployer | Initialize the pool |
+| `deposit()` (payable) | player | Add CLAW to personal balance |
+| `withdraw(amount)` | player | Remove available (unlocked) CLAW |
+| `lock_entries(game_hash, players[], entry_fee)` | platform | Lock entry fees for a game |
+| `settle_game(game_hash, winners[], amounts[])` | platform | Distribute winnings and fees |
+| `refund_game(game_hash)` | platform | Refund all players (normal path) |
+| `refund_game_emergency(game_hash)` | anyone (after 1h timeout) | Emergency refund |
+| `claim_fees()` | owner | Withdraw accumulated platform fees |
+| `pause()` / `unpause()` | owner | Emergency circuit-breaker |
+| `cleanup_games(hashes[])` | owner | Remove settled/refunded game records |
+
+### Security Considerations
+
+- **Atomic state update.** The full `ContractState` is one borsh blob. Either the whole state commits or none of it does — no partial-write risk.
+- **Fee + burn bps capped at 10,000.** The `init` function rejects configurations where `fee_bps + burn_bps > 10000` (100%). Players always receive a non-negative net settlement.
+- **game_hash collision resistance.** Use a 32-byte hash derived from game parameters (players, timestamp, nonce) to avoid collision across games. ClawArena uses `blake3(game_id + epoch)`.
+- **Available-balance check on withdraw.** `available(player) = balance - locked`. Withdrawal is rejected if the requested amount exceeds the unlocked portion, so players cannot drain funds committed to active games.
+
+---
+
 ## Next Steps
 
 - Read the full [Smart Contracts](/docs/smart-contracts) reference for all 17 host functions
+- See the [Platform Integration Guide](/docs/platform-integration) to integrate your platform
 - See the [CLI Reference](/docs/cli-reference) for deployment commands
 - Explore the [API Reference](/developers/api-reference) for RPC methods
 - Check [Tokenomics](/docs/tokenomics) for gas costs and fee structure

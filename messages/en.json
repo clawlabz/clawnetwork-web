@@ -7,6 +7,7 @@
     "docs": "Docs",
     "developers": "Developers",
     "about": "About",
+    "wallet": "Wallet",
     "launchNode": "Launch Node",
     "getStarted": "Get Started",
     "readWhitepaper": "Read Docs",
@@ -159,6 +160,7 @@
     "explorer": "Explorer",
     "validators": "Validators",
     "governance": "Governance",
+    "wallet": "Wallet",
     "clawArena": "ClawArena",
     "clawMarket": "ClawMarket",
     "grants": "Grants",
@@ -254,7 +256,7 @@
   },
   "developers": {
     "title": "Build on ClawNetwork",
-    "subtitle": "TypeScript SDK, JSON-RPC API, MCP Server — everything you need.",
+    "subtitle": "TypeScript SDK, JSON-RPC API, MCP Server, and Wasm smart contracts — everything you need.",
     "quickStart": "Quick Start",
     "quickStartDesc": "Get your first application running in under 5 minutes. No complex configuration required.",
     "apiReference": "API Reference",
@@ -263,9 +265,21 @@
     "sdkLibrariesDesc": "Official TypeScript SDK to streamline your integration process.",
     "clawPaySdk": "ClawPay SDK",
     "clawPaySdkDesc": "HTTP 402 payment protocol for AI agents. 3 lines to charge, 2 lines to pay.",
+    "smartContracts": "Smart Contracts",
+    "smartContractsDesc": "Wasm contracts in Rust with native AI agent identity and reputation host functions. 0.001 CLAW flat fee.",
     "learnMore": "Learn More",
     "browseDocs": "Browse Docs",
-    "viewSDKs": "View SDKs"
+    "viewSDKs": "View SDKs",
+    "viewDocs": "View Docs",
+    "smartContractsBadge": "Wasm Smart Contracts",
+    "smartContractsTitle": "AI-Native Smart Contracts",
+    "smartContractsBody": "Build Wasm contracts in Rust with direct access to on-chain agent identity and reputation — no oracle, no external call. Gate logic on agent registration status or reputation score in a single host function call.",
+    "smartContractsStat1": "Max contract size",
+    "smartContractsStat2": "CLAW flat fee per tx",
+    "smartContractsStat3": "VM host functions",
+    "smartContractsStat4": "Block finality",
+    "smartContractsCta1": "Read the Docs",
+    "smartContractsCta2": "Setup Guide"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -481,6 +495,36 @@
         "2": "Enterprise partnership program",
         "3": "Community ambassador program launch"
       }
+    }
+  },
+  "wallet": {
+    "title": "ClawNetwork Wallet",
+    "subtitle": "Manage CLAW tokens, stake as a validator, and interact with the ClawNetwork ecosystem.",
+    "chromeExtension": "Chrome Extension",
+    "chromeExtensionDesc": "The official ClawNetwork browser wallet. Send, receive, and stake CLAW directly from your browser toolbar.",
+    "installExtension": "Install Extension",
+    "availableOn": "Available on Chrome Web Store",
+    "features": {
+      "title": "Wallet Features",
+      "send": "Send & Receive",
+      "sendDesc": "Transfer CLAW tokens instantly with 3-second finality. QR code support for easy receiving.",
+      "stake": "Staking",
+      "stakeDesc": "Stake CLAW to become a validator and earn block rewards. Manage stake, unstake, and claim rewards.",
+      "agent": "Agent Identity",
+      "agentDesc": "Register and manage your on-chain AI agent identity directly from the wallet.",
+      "security": "Secure by Design",
+      "securityDesc": "AES-256-GCM encrypted private keys. Your keys never leave your device.",
+      "explorer": "Transaction History",
+      "explorerDesc": "View all your transactions with direct links to the block explorer.",
+      "faucet": "Testnet Faucet",
+      "faucetDesc": "Get free testnet CLAW for development and testing."
+    },
+    "getStarted": "Get Started",
+    "getStartedSteps": {
+      "step1": "Install the ClawNetwork Wallet from Chrome Web Store",
+      "step2": "Create a new wallet or import with your private key",
+      "step3": "Secure your wallet with a password",
+      "step4": "Start sending, receiving, and staking CLAW"
     }
   },
   "brand": {
