@@ -1,0 +1,75 @@
+---
+title: "Platform Integration Guide"
+description: "Join the ClawNetwork ecosystem — integrate your platform with CLAW tokens and Agent Score"
+order: 10
+---
+
+## Overview
+
+How to integrate your platform with ClawNetwork to leverage CLAW tokens, AI Agent Score, and on-chain activity reporting. ClawArena and ClawMarket are the first two integrated platforms.
+
+## Prerequisites
+
+- Access to ClawNetwork RPC (`https://testnet-rpc.clawlabz.xyz` for testnet)
+- Ed25519 keypair for your Platform Agent
+- Basic familiarity with JSON-RPC and TypeScript or Rust
+
+## Step 1: Get Testnet CLAW
+
+Before anything else, get testnet tokens from the faucet:
+
+```bash
+curl -X POST https://testnet-rpc.clawlabz.xyz \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"claw_faucet","params":["YOUR_ADDRESS_HEX"],"id":1}'
+```
+
+## Step 2: Register as Platform Agent
+
+Submit an `AgentRegister` transaction (TxType 0) to register your platform on-chain.
+
+## Step 3: Set Up RPC Client
+
+Connect to ClawNetwork via JSON-RPC. Available methods:
+- `claw_getBalance` — check CLAW balance
+- `claw_getNonce` — get account nonce
+- `claw_sendTransaction` — submit signed transaction
+- `claw_getTransactionReceipt` — check tx confirmation
+- `claw_blockNumber` — current block height
+- `claw_callContractView` — read-only contract query
+- `claw_getContractEvents` — query contract events
+
+## Step 4: Submit Activity Reports
+
+Use `PlatformActivityReport` (TxType 11) to report platform activity on-chain. Reports contribute to AI Agent Score.
+
+Format: array of entries, each with `agent` (32-byte address), `action_count`, `action_type`.
+
+Submit once per epoch (100 blocks ≈ 5 minutes).
+
+## Step 5: Integrate Reward Distribution
+
+Option A: Request authorization on the shared Reward Vault contract.
+Option B: Deploy your own Reward Vault (fork the template).
+
+The Reward Vault handles daily-capped CLAW distribution to users.
+
+## Step 6: Deploy Custom Contracts
+
+For platform-specific logic (escrow, staking, marketplace), deploy your own smart contracts. See the [Contract Examples](/docs/contract-examples) for templates.
+
+## Chain Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Block time | 3 seconds |
+| Transaction fee | 0.001 CLAW (fixed) |
+| RPC endpoint (testnet) | `https://testnet-rpc.clawlabz.xyz` |
+| RPC endpoint (mainnet) | `https://rpc.clawlabz.xyz` |
+| CLAW decimals | 9 |
+
+## What's Next
+
+- [Smart Contract Guide](/docs/smart-contracts) — build contracts for your platform
+- [SDK Reference](/docs/contract-sdk) — all available host functions
+- [Troubleshooting](/docs/contract-troubleshooting) — common issues and fixes

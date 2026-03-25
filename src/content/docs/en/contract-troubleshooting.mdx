@@ -1,0 +1,98 @@
+---
+title: "Troubleshooting"
+description: "Common smart contract errors and how to fix them"
+order: 11
+---
+
+## Common Errors
+
+### "out of fuel"
+
+**Symptom**: Transaction rejected with "out of fuel" error.
+
+**Cause**: Contract exceeded the 10,000,000 fuel limit per execution.
+
+**Fix**:
+- Reduce storage operations (writes cost 50,000 fuel each)
+- Minimize token transfers (100,000 fuel each)
+- Break complex operations into multiple transactions
+- Use `claw_callContractView` for read-only queries (5M fuel limit)
+
+### "contract abort: {message}"
+
+**Symptom**: Transaction rejected with a custom error message.
+
+**Cause**: A `require!()` check failed in the contract.
+
+**Fix**: Read the error message — it tells you exactly what went wrong. Common reasons:
+- "amount must be positive" — you passed zero or negative value
+- "unauthorized" — caller is not the contract admin/owner
+- "already initialized" — init() was called twice
+- "insufficient balance" — not enough CLAW for the operation
+
+### "execution failed: RuntimeError: unreachable"
+
+**Symptom**: Generic Wasm trap error.
+
+**Cause**: Usually borsh deserialization failure — the args you passed don't match the expected struct format.
+
+**Fix**:
+- Check that your borsh-encoded args match the exact struct definition
+- Ensure field order matches (borsh is positional, not named)
+- Verify integer sizes (u64 vs u128 vs u32)
+- Use `0x` prefix for hex-encoded args
+
+### "transaction payload too large"
+
+**Symptom**: RPC rejects the transaction before processing.
+
+**Cause**: Wasm binary or payload exceeds 512 KB limit.
+
+**Fix**:
+- Run `wasm-opt -Os contract.wasm -o contract-opt.wasm` to shrink the binary
+- Add to Cargo.toml: `[profile.release]` with `opt-level = "z"`, `lto = true`, `strip = true`
+- Remove unused dependencies
+
+### "contract already exists"
+
+**Symptom**: Deploy transaction rejected.
+
+**Cause**: A contract is already deployed at the derived address (same deployer + nonce combination).
+
+**Fix**: This is expected — each deploy creates a new address. The error means your nonce already has a contract. Deploy again (it will use the next nonce and create a new address).
+
+### "invalid nonce: expected N, got M"
+
+**Symptom**: Transaction rejected with nonce mismatch.
+
+**Cause**: The chain expects `stored_nonce + 1` as the transaction nonce.
+
+**Fix**:
+- Query current nonce: `claw_getNonce` returns stored nonce
+- Set tx nonce to `stored_nonce + 1`
+- If sending multiple txs, increment nonce locally
+
+### "write operation not allowed in read-only (view) call"
+
+**Symptom**: View call fails when contract tries to write.
+
+**Cause**: `claw_callContractView` runs in read-only mode. Storage writes, deletes, and token transfers are blocked.
+
+**Fix**: Use `claw_sendTransaction` with a `ContractCall` tx type for operations that modify state. Use view calls only for reading data.
+
+### "insufficient balance for transfer"
+
+**Symptom**: Contract execution fails during a token transfer.
+
+**Cause**: The contract (or caller) doesn't have enough CLAW to cover the transfer amount.
+
+**Fix**:
+- Check contract balance: `claw_getBalance(contractAddress)`
+- Fund the contract before calling methods that transfer tokens
+- For payable calls, include sufficient `value` in the ContractCall payload
+
+## Getting Help
+
+- [SDK Reference](/docs/contract-sdk) — complete host function documentation
+- [GitHub Issues](https://github.com/clawlabz/claw-network/issues) — report bugs
+- [Quick Start](/docs/contract-quickstart) — step-by-step tutorial
