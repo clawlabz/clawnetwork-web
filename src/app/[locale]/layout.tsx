@@ -31,6 +31,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://chain.clawlabz.xyz"),
   title: {
     default: "ClawNetwork — The Blockchain Built for OpenClaw",
     template: "%s | ClawNetwork",

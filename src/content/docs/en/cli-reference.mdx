@@ -13,13 +13,22 @@ ClawNetwork provides two CLI tools:
 
 Both are available as pre-built binaries from the [GitHub Releases](https://github.com/clawlabz/claw-network/releases) page, or via the one-line installer described in the [Quick Start](/docs/quickstart) guide.
 
+### Global Flags
+
+These flags apply to all `claw-node` subcommands:
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--data-dir` | `~/.clawnetwork` | Data directory path |
+| `--log-format` | `text` | Log output format: `text` or `json` |
+
 ---
 
 ## claw-node
 
 ### `claw-node init`
 
-Initialize a new node data directory with keypair and configuration.
+Initialize a new node data directory with key file and configuration.
 
 ```bash
 claw-node init [OPTIONS]
@@ -28,7 +37,6 @@ claw-node init [OPTIONS]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--network` | `devnet` | Network to join: `devnet`, `testnet`, `mainnet` |
-| `--data-dir` | `~/.clawnetwork` | Data directory path |
 
 **Example:**
 
@@ -45,7 +53,7 @@ Creates the following structure:
 ```
 ~/.clawnetwork/
 ├── config.toml          # Node configuration
-├── keypair.json         # Ed25519 keypair (keep this safe!)
+├── key.json             # Ed25519 key file (keep this safe!)
 └── data/                # Chain data (blocks, state)
 ```
 
@@ -61,42 +69,174 @@ claw-node start [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--network` | `devnet` | Network to connect to |
-| `--data-dir` | `~/.clawnetwork` | Data directory path |
-| `--rpc-port` | `9710` | JSON-RPC server port |
-| `--p2p-port` | `9711` | P2P networking port |
-| `--rpc-bind` | `127.0.0.1` | RPC bind address |
-| `--p2p-bind` | `0.0.0.0` | P2P bind address |
-| `--bootstrap` | (built-in) | Comma-separated bootstrap peer addresses |
-| `--log-level` | `info` | Log verbosity: `error`, `warn`, `info`, `debug`, `trace` |
+| `--network`, `-n` | (from config) | Network to connect to |
+| `--rpc-port` | (from config) | JSON-RPC server port |
+| `--p2p-port` | (from config) | P2P networking port |
+| `--bootstrap` | (built-in) | Additional bootstrap peer addresses (multiaddr) |
+| `--single` | `false` | Force single-node mode (no P2P) |
+| `--sync-mode` | `full` | Sync mode: `full`, `fast`, or `light` |
 
 **Examples:**
 
 ```bash
-# Start with defaults (mainnet, port 9710)
+# Start with defaults (mainnet)
 claw-node start --network mainnet
 
-# Start with custom RPC port and expose to network
-claw-node start --network mainnet --rpc-port 8545 --rpc-bind 0.0.0.0
+# Start with custom RPC port
+claw-node start --network mainnet --rpc-port 8545
 
-# Start with debug logging
-claw-node start --network testnet --log-level debug
+# Start in single-node mode (no P2P, for development)
+claw-node start --network devnet --single
 
 # Start with a custom bootstrap peer
-claw-node start --network mainnet --bootstrap 178.156.162.162:9711
+claw-node start --network mainnet --bootstrap /ip4/178.156.162.162/tcp/9711
 ```
 
 The node will:
-1. Load configuration and keypair from the data directory
+1. Load configuration and key file from the data directory
 2. Connect to bootstrap peers via P2P
 3. Sync blocks from the network
 4. Start the JSON-RPC server
 
 ---
 
+### `claw-node status`
+
+Print the RPC endpoint URL for querying node status.
+
+```bash
+claw-node status
+```
+
+**Example:**
+
+```bash
+claw-node status
+
+# Output:
+# claw-node status: use RPC at http://localhost:9710
+```
+
+Use the JSON-RPC endpoint to query detailed node information such as block height, peers, and sync status.
+
+---
+
+### `claw-node key generate`
+
+Generate a new Ed25519 key file.
+
+```bash
+claw-node key generate
+```
+
+---
+
+### `claw-node key show`
+
+Display the node's wallet address.
+
+```bash
+claw-node key show
+```
+
+**Example:**
+
+```bash
+claw-node key show
+
+# Output:
+# Address: 7a3b...f291
+```
+
+---
+
+### `claw-node key import`
+
+Import a private key from a 64-character hex string (32 bytes Ed25519).
+
+```bash
+claw-node key import <PRIVATE_KEY_HEX>
+```
+
+| Argument | Description |
+|----------|-------------|
+| `<PRIVATE_KEY_HEX>` | 64-character hex-encoded Ed25519 private key |
+
+**Example:**
+
+```bash
+claw-node key import a1b2c3d4...
+```
+
+---
+
+### `claw-node key export`
+
+Export the private key (use with extreme caution).
+
+```bash
+claw-node key export
+```
+
+> **Warning:** Never share your private key. Store it in a secure location. Anyone with your private key can transfer your funds.
+
+---
+
+### `claw-node encrypt-key`
+
+Encrypt an existing plaintext `key.json` file. Requires the `CLAW_KEY_PASSWORD` environment variable to be set.
+
+```bash
+CLAW_KEY_PASSWORD=mypassword claw-node encrypt-key
+```
+
+---
+
+### `claw-node genesis`
+
+Export the default genesis config for a network as JSON.
+
+```bash
+claw-node genesis [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--network` | `devnet` | Network preset to export |
+
+**Example:**
+
+```bash
+claw-node genesis --network mainnet > genesis.json
+```
+
+---
+
+### `claw-node transfer`
+
+Transfer CLAW to another address.
+
+```bash
+claw-node transfer <TO> <AMOUNT> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<TO>` | Recipient address (hex, 64 chars) |
+| `<AMOUNT>` | Amount in CLAW (e.g. "10000" or "0.5") |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+**Example:**
+
+```bash
+claw-node transfer 7a3b...f291 1000 --rpc https://rpc.clawlabz.xyz
+```
+
+---
+
 ### `claw-node stake`
 
-Stake CLAW tokens to become a validator and earn block rewards.
+Stake CLAW tokens to become a validator. Uses single-owner delegation model.
 
 ```bash
 claw-node stake <AMOUNT> [OPTIONS]
@@ -105,17 +245,18 @@ claw-node stake <AMOUNT> [OPTIONS]
 | Argument / Flag | Description |
 |-----------------|-------------|
 | `<AMOUNT>` | Amount of CLAW to stake (in whole units) |
-| `--rpc` | RPC endpoint to submit the staking transaction |
-| `--data-dir` | Data directory containing the keypair |
+| `--validator-key` | Delegate to a specific validator address (hex, 64 chars). Omit for self-stake. |
+| `--commission` | Commission rate in basis points, 0-10000 (default: `8000`) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
 
 **Examples:**
 
 ```bash
-# Stake 100,000 CLAW via the public RPC
+# Self-stake 100,000 CLAW
 claw-node stake 100000 --rpc https://rpc.clawlabz.xyz
 
-# Stake via local node
-claw-node stake 50000 --rpc http://localhost:9710
+# Delegate to a validator with 80% commission
+claw-node stake 50000 --validator-key 3f2a...b817 --commission 8000
 ```
 
 Minimum staking amounts:
@@ -138,8 +279,8 @@ claw-node unstake <AMOUNT> [OPTIONS]
 | Argument / Flag | Description |
 |-----------------|-------------|
 | `<AMOUNT>` | Amount of CLAW to unstake |
-| `--rpc` | RPC endpoint |
-| `--data-dir` | Data directory containing the keypair |
+| `--validator-key` | Validator address to unstake from (required when unstaking as a stake owner) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
 
 **Example:**
 
@@ -151,78 +292,258 @@ The unbonding period is **7 days** on mainnet. During this period, tokens remain
 
 ---
 
-### `claw-node key info`
+### `claw-node claim-stake`
 
-Display the node's wallet address and public key.
+Claim matured unbonded stake after the unbonding period.
 
 ```bash
-claw-node key info [OPTIONS]
+claw-node claim-stake [OPTIONS]
 ```
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--data-dir` | `~/.clawnetwork` | Data directory containing the keypair |
+| Flag | Description |
+|------|-------------|
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
 
 **Example:**
 
 ```bash
-claw-node key info
-
-# Output:
-# Address:    0x7a3b...f291
-# Public Key: ed25519:HxK9...mZ3p
-# Network:    mainnet
+claw-node claim-stake --rpc https://rpc.clawlabz.xyz
 ```
 
 ---
 
-### `claw-node key export`
+### `claw-node change-delegation`
 
-Export the private key (use with extreme caution).
+Transfer ownership of a validator stake to a new single owner.
 
 ```bash
-claw-node key export [OPTIONS]
+claw-node change-delegation <VALIDATOR_KEY> <NEW_OWNER> [OPTIONS]
 ```
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--data-dir` | `~/.clawnetwork` | Data directory containing the keypair |
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<VALIDATOR_KEY>` | Validator address (hex, 64 chars) |
+| `<NEW_OWNER>` | New owner address (hex, 64 chars) |
+| `--commission` | New commission rate in basis points (default: `8000`) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
 
 **Example:**
 
 ```bash
-claw-node key export --data-dir ~/.clawnetwork
+claw-node change-delegation 3f2a...b817 9c1d...e432 --commission 7000
 ```
-
-> **Warning:** Never share your private key. Store it in a secure location. Anyone with your private key can transfer your funds.
 
 ---
 
-### `claw-node status`
+### `claw-node register-agent`
 
-Query the status of a running node.
+Register an AI Agent on-chain.
 
 ```bash
-claw-node status [OPTIONS]
+claw-node register-agent [OPTIONS]
 ```
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--rpc` | `http://localhost:9710` | RPC endpoint to query |
+| Flag | Description |
+|------|-------------|
+| `--name` | Agent name (required) |
+| `--metadata` | Key=value pairs (repeatable) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
 
 **Example:**
 
 ```bash
-claw-node status
-
-# Output:
-# Node Version:  0.2.4
-# Block Height:  123456
-# Peers:         4
-# Synced:        true
-# Mempool:       2 txns
-# Uptime:        3d 12h 45m
+claw-node register-agent --name "MyAgent" --metadata type=llm --metadata version=1.0
 ```
+
+---
+
+### `claw-node create-token`
+
+Create a new custom token.
+
+```bash
+claw-node create-token [OPTIONS]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--name` | Token name (required) |
+| `--symbol` | Token symbol (required) |
+| `--decimals` | Decimal places (required) |
+| `--initial-supply` | Initial supply in human units (required) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+**Example:**
+
+```bash
+claw-node create-token --name "MyToken" --symbol MTK --decimals 9 --initial-supply 1000000
+```
+
+---
+
+### `claw-node transfer-token`
+
+Transfer custom tokens.
+
+```bash
+claw-node transfer-token <TOKEN_ID> <TO> <AMOUNT> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<TOKEN_ID>` | Token ID (hex, 64 chars) |
+| `<TO>` | Recipient address (hex, 64 chars) |
+| `<AMOUNT>` | Amount in token base units |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+---
+
+### `claw-node approve-token`
+
+Approve a spender for custom tokens.
+
+```bash
+claw-node approve-token <TOKEN_ID> <SPENDER> <AMOUNT> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<TOKEN_ID>` | Token ID (hex, 64 chars) |
+| `<SPENDER>` | Spender address (hex, 64 chars) |
+| `<AMOUNT>` | Approved amount (0 to revoke) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+---
+
+### `claw-node burn-token`
+
+Burn custom tokens.
+
+```bash
+claw-node burn-token <TOKEN_ID> <AMOUNT> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<TOKEN_ID>` | Token ID (hex, 64 chars) |
+| `<AMOUNT>` | Amount to burn |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+---
+
+### `claw-node deploy-contract`
+
+Deploy a Wasm smart contract.
+
+```bash
+claw-node deploy-contract <WASM_FILE> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<WASM_FILE>` | Path to .wasm file |
+| `--init-method` | Constructor method name (default: none) |
+| `--init-args` | Constructor args as hex bytes (default: none) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+**Example:**
+
+```bash
+claw-node deploy-contract my_contract.wasm --init-method initialize --init-args 00ff
+```
+
+---
+
+### `claw-node call-contract`
+
+Call a smart contract method (write transaction).
+
+```bash
+claw-node call-contract <ADDRESS> <METHOD> [OPTIONS]
+```
+
+| Argument / Flag | Description |
+|-----------------|-------------|
+| `<ADDRESS>` | Contract address (hex, 64 chars) |
+| `<METHOD>` | Method name to call |
+| `--args` | Arguments as hex bytes (default: empty) |
+| `--value` | CLAW value to send (default: "0") |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+**Example:**
+
+```bash
+claw-node call-contract 3f2a...b817 transfer --args 00ff --value 10
+```
+
+---
+
+### `claw-node register-service`
+
+Register a service on-chain.
+
+```bash
+claw-node register-service [OPTIONS]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--service-type` | Service type, e.g. "llm-inference" (required) |
+| `--endpoint` | Service endpoint URL (required) |
+| `--price` | Price in CLAW (required) |
+| `--description` | Service description (default: empty) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+---
+
+### `claw-node contract info`
+
+Get contract metadata by address.
+
+```bash
+claw-node contract info <ADDRESS> [--rpc URL]
+```
+
+---
+
+### `claw-node contract storage`
+
+Get a storage value from a contract.
+
+```bash
+claw-node contract storage <ADDRESS> <KEY> [--rpc URL]
+```
+
+| Argument | Description |
+|----------|-------------|
+| `<ADDRESS>` | Contract address (hex, 64 chars) |
+| `<KEY>` | Storage key (hex-encoded) |
+
+---
+
+### `claw-node contract code`
+
+Get contract Wasm bytecode.
+
+```bash
+claw-node contract code <ADDRESS> [--rpc URL]
+```
+
+---
+
+### `claw-node contract call`
+
+Execute a read-only contract view call.
+
+```bash
+claw-node contract call <ADDRESS> <METHOD> [ARGS] [--rpc URL]
+```
+
+| Argument | Description |
+|----------|-------------|
+| `<ADDRESS>` | Contract address (hex, 64 chars) |
+| `<METHOD>` | Method name to call |
+| `[ARGS]` | Arguments as hex-encoded bytes (optional) |
 
 ---
 
@@ -256,7 +577,7 @@ Creates:
 ```
 ~/.clawminer/
 ├── config.toml     # Miner configuration
-├── keypair.json    # Miner wallet keypair
+├── key.json        # Miner wallet key file
 └── models/         # Local model storage
 ```
 
@@ -576,13 +897,32 @@ claw-miner config set max_concurrent 8
 
 | Command | Description |
 |---------|-------------|
-| `claw-node init` | Initialize node data directory and keypair |
+| `claw-node init` | Initialize node data directory and key file |
 | `claw-node start` | Start the node and sync with the network |
+| `claw-node status` | Print RPC endpoint URL |
+| `claw-node key generate` | Generate a new Ed25519 key file |
+| `claw-node key show` | Show wallet address |
+| `claw-node key import <key>` | Import private key from hex |
+| `claw-node key export` | Export private key |
+| `claw-node encrypt-key` | Encrypt plaintext key.json |
+| `claw-node genesis` | Export genesis config as JSON |
+| `claw-node transfer <to> <amount>` | Transfer CLAW |
 | `claw-node stake <amount>` | Stake CLAW to become a validator |
 | `claw-node unstake <amount>` | Unstake CLAW (7-day unbonding) |
-| `claw-node key info` | Show wallet address and public key |
-| `claw-node key export` | Export private key |
-| `claw-node status` | Query running node status |
+| `claw-node claim-stake` | Claim matured unbonded stake |
+| `claw-node change-delegation <validator> <owner>` | Transfer validator stake ownership |
+| `claw-node register-agent` | Register an AI Agent on-chain |
+| `claw-node create-token` | Create a custom token |
+| `claw-node transfer-token <id> <to> <amount>` | Transfer custom tokens |
+| `claw-node approve-token <id> <spender> <amount>` | Approve token spender |
+| `claw-node burn-token <id> <amount>` | Burn custom tokens |
+| `claw-node deploy-contract <wasm>` | Deploy a Wasm contract |
+| `claw-node call-contract <addr> <method>` | Call a contract method |
+| `claw-node register-service` | Register a service on-chain |
+| `claw-node contract info <addr>` | Get contract metadata |
+| `claw-node contract storage <addr> <key>` | Get contract storage value |
+| `claw-node contract code <addr>` | Get contract bytecode |
+| `claw-node contract call <addr> <method>` | Read-only contract view call |
 
 ### claw-miner commands
 
@@ -612,6 +952,7 @@ Both tools respect the following environment variables:
 |----------|-------------|
 | `CLAW_DATA_DIR` | Override the default data directory |
 | `CLAW_RPC_URL` | Override the default RPC endpoint |
+| `CLAW_KEY_PASSWORD` | Password for encrypting/decrypting key.json |
 | `CLAW_LOG_LEVEL` | Set log verbosity (`error`, `warn`, `info`, `debug`, `trace`) |
 | `CLAW_LOG_FILE` | Write logs to a file instead of stderr |
 

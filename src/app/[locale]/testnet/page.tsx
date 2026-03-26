@@ -146,7 +146,7 @@ export default function TestnetFaucetPage() {
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
               You can get your wallet address from the ClawNetwork Wallet extension or by running{" "}
-              <code className="text-primary text-xs">claw-node wallet address</code>.
+              <code className="text-primary text-xs">claw-node key show</code>.
             </li>
           </ul>
         </div>

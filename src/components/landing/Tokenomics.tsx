@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 
 export function Tokenomics() {
   const t = useTranslations("tokenomics");
-  const [mounted, setMounted] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [time, setTime] = useState(0);
+  const mounted = time > 0;
 
   useEffect(() => {
-    setMounted(true);
     let animationFrame: number;
     const start = Date.now();
     

@@ -1,12 +1,12 @@
 ---
 title: Transaction Types
-description: 13 native transaction types purpose-built for the AI Agent economy.
+description: 19 native transaction types purpose-built for the AI Agent economy.
 order: 4
 ---
 
 ## Overview
 
-ClawNetwork has **13 native transaction types** — no smart contracts needed for core agent, validator, and mining operations.
+ClawNetwork has **19 native transaction types** — no smart contracts needed for core agent, validator, token, and mining operations.
 
 Every transaction contains:
 - `sender` — Ed25519 public key (32 bytes)
@@ -17,7 +17,7 @@ Every transaction contains:
 
 ## Agent & Identity
 
-### 1. `agent.register`
+### 0. `AgentRegister`
 
 Register an AI agent identity on-chain.
 
@@ -28,7 +28,7 @@ Register an AI agent identity on-chain.
 
 ## Token Operations
 
-### 2. `token.transfer`
+### 1. `TokenTransfer`
 
 Transfer native CLAW tokens between addresses.
 
@@ -37,7 +37,7 @@ Transfer native CLAW tokens between addresses.
 | `to` | [u8; 32] | Recipient address |
 | `amount` | u128 | Amount in base units (1 CLAW = 10^9) |
 
-### 3. `token.create`
+### 2. `TokenCreate`
 
 Create a new custom token.
 
@@ -50,7 +50,7 @@ Create a new custom token.
 
 The token ID is computed as `blake3(sender + name + nonce)`.
 
-### 4. `token.mint_transfer`
+### 3. `TokenMintTransfer`
 
 Transfer custom tokens between addresses.
 
@@ -60,9 +60,28 @@ Transfer custom tokens between addresses.
 | `to` | [u8; 32] | Recipient address |
 | `amount` | u128 | Amount in token base units |
 
+### 12. `TokenApprove`
+
+Approve a spender to transfer custom tokens on your behalf. Set amount to 0 to revoke.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `token_id` | [u8; 32] | Token identifier |
+| `spender` | [u8; 32] | Spender address |
+| `amount` | u128 | Approved amount (0 to revoke) |
+
+### 13. `TokenBurn`
+
+Burn (destroy) custom tokens from your balance.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `token_id` | [u8; 32] | Token identifier |
+| `amount` | u128 | Amount to burn |
+
 ## Reputation & Services
 
-### 5. `reputation.attest` — **Deprecated**
+### 4. `ReputationAttest` — **Deprecated**
 
 > **Deprecated since v0.2.0.** Subjective peer-to-peer attestations have been replaced by the automatic [Agent Score](/docs/reputation) system, which computes reputation from verifiable on-chain behavior. This transaction type is retained for backward compatibility but **no longer contributes to Agent Score calculations**. It will be removed in a future release.
 
@@ -78,7 +97,7 @@ Write a reputation attestation for another agent.
 
 Reputation attestations are append-only — they cannot be modified or deleted.
 
-### 6. `service.register`
+### 5. `ServiceRegister`
 
 Register or update a service offering.
 
@@ -93,29 +112,83 @@ Register or update a service offering.
 
 Set `active: false` to deregister.
 
+## Smart Contracts
+
+### 6. `ContractDeploy`
+
+Deploy a Wasm smart contract to the chain.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `code` | Vec\<u8\> | Wasm bytecode |
+| `init_method` | String | Constructor method name (empty = no constructor) |
+| `init_args` | Vec\<u8\> | Constructor arguments (borsh-encoded) |
+
+The contract address is derived from the deployer address and nonce.
+
+### 7. `ContractCall`
+
+Call a method on a deployed smart contract (write transaction).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `contract` | [u8; 32] | Contract address |
+| `method` | String | Method name to invoke |
+| `args` | Vec\<u8\> | Method arguments (borsh-encoded) |
+| `value` | u128 | Native CLAW to send with the call |
+
+### 17. `ContractUpgradeAnnounce`
+
+Announce intent to upgrade a deployed contract. Starts a timelock period before the upgrade can be executed.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `contract` | [u8; 32] | Contract address to upgrade |
+| `new_code_hash` | [u8; 32] | blake3 hash of the new Wasm bytecode |
+
+Only the original contract deployer can announce an upgrade. The announcement must be followed by `ContractUpgradeExecute` after the timelock delay has elapsed.
+
+### 18. `ContractUpgradeExecute`
+
+Execute a previously announced contract upgrade after the timelock delay.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `contract` | [u8; 32] | Contract address to upgrade |
+| `new_code` | Vec\<u8\> | Full new Wasm bytecode |
+| `migrate_method` | Option\<String\> | Migration method name (None = no migration) |
+| `migrate_args` | Vec\<u8\> | Migration arguments (borsh-encoded) |
+
+The blake3 hash of `new_code` must match the hash previously announced via `ContractUpgradeAnnounce`.
+
 ## Staking & Validation
 
-### 7. `stake.deposit`
+ClawNetwork uses a **single-owner delegation** model. Each validator has at most one stake owner. This is not a public delegation market.
+
+### 8. `StakeDeposit`
 
 Lock CLAW tokens as validator stake. Requires minimum 10,000 CLAW.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `amount` | u128 | Amount to stake in base units |
+| `amount` | u128 | Amount to stake in base units (9 decimals) |
+| `validator` | [u8; 32] | Validator to delegate to ([0;32] = self-stake) |
+| `commission_bps` | u16 | Commission rate in basis points (0-10000) |
 
 Once staked, the sender becomes a validator candidate. The validator set is recalculated each epoch (100 blocks).
 
-### 8. `stake.withdraw`
+### 9. `StakeWithdraw`
 
 Initiate unbonding of staked CLAW. Starts a 7-day cooldown period (201,600 blocks).
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `amount` | u128 | Amount to unbond in base units |
+| `amount` | u128 | Amount to unbond in base units (9 decimals) |
+| `validator` | [u8; 32] | Validator to unstake from ([0;32] = self) |
 
 During the unbonding period, the tokens remain locked and cannot be transferred or re-staked.
 
-### 9. `stake.claim`
+### 10. `StakeClaim`
 
 Claim CLAW tokens after the unbonding period completes. No payload required — automatically claims all matured unbonding entries.
 
@@ -123,9 +196,19 @@ Claim CLAW tokens after the unbonding period completes. No payload required — 
 |-------|------|-------------|
 | — | — | No additional fields |
 
+### 14. `ChangeDelegation`
+
+Transfer ownership of a validator stake to a new single owner.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `validator` | [u8; 32] | Validator address |
+| `new_owner` | [u8; 32] | New stake owner address |
+| `commission_bps` | u16 | New commission rate in basis points (0-10000) |
+
 ## Platform Integration
 
-### 11. `platform.activity_report`
+### 11. `PlatformActivityReport`
 
 Submit platform activity data to the chain. This is the mechanism by which third-party platforms (games, task marketplaces, inference providers, etc.) report Agent activity for inclusion in [Agent Score](/docs/reputation) calculations.
 
@@ -150,23 +233,26 @@ Each `ActivityEntry` contains:
 
 ## Agent Mining
 
-### 15. `miner.register`
+### 15. `MinerRegister`
 
 Register as a mining node for Agent Mining rewards.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| — | — | No additional fields |
+| `tier` | u8 | Mining tier |
+| `ip_addr` | Vec\<u8\> | IP address (4 bytes IPv4, 16 bytes IPv6) |
+| `name` | String | Miner display name |
 
 The sender registers as a miner and becomes eligible for the 35% Agent Mining share of block rewards. Only registered agents can register as miners.
 
-### 16. `miner.heartbeat`
+### 16. `MinerHeartbeat`
 
 Periodic liveness proof submitted by registered miners. **This transaction is gas-free.**
 
 | Field | Type | Description |
 |-------|------|-------------|
-| — | — | No additional fields |
+| `latest_block_hash` | [u8; 32] | Hash of the latest known block |
+| `latest_height` | u64 | Height of the latest known block |
 
 Miners must submit heartbeats regularly to remain eligible for mining rewards. Missed heartbeats reduce the miner's reward share. This transaction does not require a gas fee.
 

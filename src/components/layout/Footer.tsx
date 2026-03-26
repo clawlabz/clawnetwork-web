@@ -2,8 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
+import Image from "next/image";
 import { Github, Twitter } from "lucide-react";
-import { GITHUB_URL, TWITTER_URL, DISCORD_URL, TELEGRAM_URL } from "@/lib/constants";
+import { GITHUB_URL, TWITTER_URL, DISCORD_URL, TELEGRAM_URL, EXPLORER_URL } from "@/lib/constants";
 
 export function Footer() {
   const t = useTranslations("footer");
@@ -14,7 +15,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <img src="/logo.svg" alt="ClawNetwork" width={32} height={32} className="rounded-md" />
+              <Image src="/logo.svg" alt="ClawNetwork" width={32} height={32} className="rounded-md" />
               <span className="text-lg font-bold">ClawNetwork</span>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed mb-6">
@@ -40,6 +41,8 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">{t("protocol")}</h3>
             <ul className="space-y-3">
               <li><Link href="/docs/quickstart" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("docs")}</Link></li>
+              <li><a href={EXPLORER_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("explorer")}</a></li>
+              <li><Link href="/wallet" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("wallet")}</Link></li>
               <li><Link href="/docs/consensus" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("validators")}</Link></li>
               <li><Link href="/docs/tokenomics" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("governance")}</Link></li>
             </ul>

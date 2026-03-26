@@ -13,13 +13,22 @@ ClawNetwork 提供两个 CLI 工具：
 
 两者均可从 [GitHub Releases](https://github.com/clawlabz/claw-network/releases) 页面下载预编译二进制文件，或使用[快速开始](/docs/quickstart)指南中的一键安装脚本。
 
+### 全局参数
+
+以下参数适用于所有 `claw-node` 子命令：
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--data-dir` | `~/.clawnetwork` | 数据目录路径 |
+| `--log-format` | `text` | 日志输出格式：`text` 或 `json` |
+
 ---
 
 ## claw-node
 
 ### `claw-node init`
 
-初始化新的节点数据目录，生成密钥对和配置文件。
+初始化新的节点数据目录，生成密钥文件和配置文件。
 
 ```bash
 claw-node init [OPTIONS]
@@ -28,7 +37,6 @@ claw-node init [OPTIONS]
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
 | `--network` | `devnet` | 加入的网络：`devnet`、`testnet`、`mainnet` |
-| `--data-dir` | `~/.clawnetwork` | 数据目录路径 |
 
 **示例：**
 
@@ -45,7 +53,7 @@ claw-node init --network testnet --data-dir /opt/claw-data
 ```
 ~/.clawnetwork/
 ├── config.toml          # 节点配置
-├── keypair.json         # Ed25519 密钥对（请妥善保管！）
+├── key.json             # Ed25519 密钥文件（请妥善保管！）
 └── data/                # 链数据（区块、状态）
 ```
 
@@ -61,42 +69,174 @@ claw-node start [OPTIONS]
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--network` | `devnet` | 连接的网络 |
-| `--data-dir` | `~/.clawnetwork` | 数据目录路径 |
-| `--rpc-port` | `9710` | JSON-RPC 服务端口 |
-| `--p2p-port` | `9711` | P2P 网络端口 |
-| `--rpc-bind` | `127.0.0.1` | RPC 绑定地址 |
-| `--p2p-bind` | `0.0.0.0` | P2P 绑定地址 |
-| `--bootstrap` | （内置） | 逗号分隔的引导节点地址 |
-| `--log-level` | `info` | 日志详细程度：`error`、`warn`、`info`、`debug`、`trace` |
+| `--network`、`-n` | （来自配置） | 连接的网络 |
+| `--rpc-port` | （来自配置） | JSON-RPC 服务端口 |
+| `--p2p-port` | （来自配置） | P2P 网络端口 |
+| `--bootstrap` | （内置） | 额外的引导节点地址（multiaddr 格式） |
+| `--single` | `false` | 强制单节点模式（无 P2P） |
+| `--sync-mode` | `full` | 同步模式：`full`、`fast` 或 `light` |
 
 **示例：**
 
 ```bash
-# 使用默认配置启动（主网，端口 9710）
+# 使用默认配置启动（主网）
 claw-node start --network mainnet
 
-# 自定义 RPC 端口并对外暴露
-claw-node start --network mainnet --rpc-port 8545 --rpc-bind 0.0.0.0
+# 自定义 RPC 端口
+claw-node start --network mainnet --rpc-port 8545
 
-# 启用调试日志
-claw-node start --network testnet --log-level debug
+# 单节点模式启动（无 P2P，用于开发）
+claw-node start --network devnet --single
 
 # 使用自定义引导节点
-claw-node start --network mainnet --bootstrap 178.156.162.162:9711
+claw-node start --network mainnet --bootstrap /ip4/178.156.162.162/tcp/9711
 ```
 
 节点将：
-1. 从数据目录加载配置和密钥对
+1. 从数据目录加载配置和密钥文件
 2. 通过 P2P 连接到引导节点
 3. 从网络同步区块
 4. 启动 JSON-RPC 服务器
 
 ---
 
+### `claw-node status`
+
+打印 RPC 端点 URL，用于查询节点状态。
+
+```bash
+claw-node status
+```
+
+**示例：**
+
+```bash
+claw-node status
+
+# 输出：
+# claw-node status: use RPC at http://localhost:9710
+```
+
+使用 JSON-RPC 端点查询详细的节点信息，如区块高度、对等节点数和同步状态。
+
+---
+
+### `claw-node key generate`
+
+生成新的 Ed25519 密钥文件。
+
+```bash
+claw-node key generate
+```
+
+---
+
+### `claw-node key show`
+
+显示节点的钱包地址。
+
+```bash
+claw-node key show
+```
+
+**示例：**
+
+```bash
+claw-node key show
+
+# 输出：
+# Address: 7a3b...f291
+```
+
+---
+
+### `claw-node key import`
+
+从 64 字符十六进制字符串导入私钥（32 字节 Ed25519）。
+
+```bash
+claw-node key import <PRIVATE_KEY_HEX>
+```
+
+| 参数 | 说明 |
+|------|------|
+| `<PRIVATE_KEY_HEX>` | 64 字符十六进制编码的 Ed25519 私钥 |
+
+**示例：**
+
+```bash
+claw-node key import a1b2c3d4...
+```
+
+---
+
+### `claw-node key export`
+
+导出私钥（请极其谨慎使用）。
+
+```bash
+claw-node key export
+```
+
+> **警告：** 永远不要分享您的私钥。请将其存储在安全的位置。任何持有您私钥的人都可以转移您的资金。
+
+---
+
+### `claw-node encrypt-key`
+
+加密已有的明文 `key.json` 文件。需要设置 `CLAW_KEY_PASSWORD` 环境变量。
+
+```bash
+CLAW_KEY_PASSWORD=mypassword claw-node encrypt-key
+```
+
+---
+
+### `claw-node genesis`
+
+将某个网络的默认创世配置导出为 JSON。
+
+```bash
+claw-node genesis [OPTIONS]
+```
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--network` | `devnet` | 要导出的网络预设 |
+
+**示例：**
+
+```bash
+claw-node genesis --network mainnet > genesis.json
+```
+
+---
+
+### `claw-node transfer`
+
+向另一个地址转账 CLAW。
+
+```bash
+claw-node transfer <TO> <AMOUNT> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<TO>` | 接收地址（十六进制，64 字符） |
+| `<AMOUNT>` | CLAW 金额（如 "10000" 或 "0.5"） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+**示例：**
+
+```bash
+claw-node transfer 7a3b...f291 1000 --rpc https://rpc.clawlabz.xyz
+```
+
+---
+
 ### `claw-node stake`
 
-质押 CLAW 代币成为验证者并赚取出块奖励。
+质押 CLAW 代币成为验证者。采用单一所有者委托模型。
 
 ```bash
 claw-node stake <AMOUNT> [OPTIONS]
@@ -105,17 +245,18 @@ claw-node stake <AMOUNT> [OPTIONS]
 | 参数 / 标志 | 说明 |
 |-------------|------|
 | `<AMOUNT>` | 质押的 CLAW 数量（整数单位） |
-| `--rpc` | 提交质押交易的 RPC 端点 |
-| `--data-dir` | 包含密钥对的数据目录 |
+| `--validator-key` | 委托给指定验证者地址（十六进制，64 字符）。省略则为自质押。 |
+| `--commission` | 佣金率（基点，0-10000，默认：`8000`） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
 
 **示例：**
 
 ```bash
-# 通过公共 RPC 质押 100,000 CLAW
+# 自质押 100,000 CLAW
 claw-node stake 100000 --rpc https://rpc.clawlabz.xyz
 
-# 通过本地节点质押
-claw-node stake 50000 --rpc http://localhost:9710
+# 委托给验证者，佣金率 80%
+claw-node stake 50000 --validator-key 3f2a...b817 --commission 8000
 ```
 
 最低质押金额：
@@ -138,8 +279,8 @@ claw-node unstake <AMOUNT> [OPTIONS]
 | 参数 / 标志 | 说明 |
 |-------------|------|
 | `<AMOUNT>` | 解除质押的 CLAW 数量 |
-| `--rpc` | RPC 端点 |
-| `--data-dir` | 包含密钥对的数据目录 |
+| `--validator-key` | 解除质押的验证者地址（作为质押所有者解除质押时必填） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
 
 **示例：**
 
@@ -151,78 +292,258 @@ claw-node unstake 50000 --rpc https://rpc.clawlabz.xyz
 
 ---
 
-### `claw-node key info`
+### `claw-node claim-stake`
 
-显示节点的钱包地址和公钥。
+解绑期满后领取已到期的质押。
 
 ```bash
-claw-node key info [OPTIONS]
+claw-node claim-stake [OPTIONS]
 ```
 
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `--data-dir` | `~/.clawnetwork` | 包含密钥对的数据目录 |
+| 参数 | 说明 |
+|------|------|
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
 
 **示例：**
 
 ```bash
-claw-node key info
-
-# 输出：
-# Address:    0x7a3b...f291
-# Public Key: ed25519:HxK9...mZ3p
-# Network:    mainnet
+claw-node claim-stake --rpc https://rpc.clawlabz.xyz
 ```
 
 ---
 
-### `claw-node key export`
+### `claw-node change-delegation`
 
-导出私钥（请极其谨慎使用）。
+将验证者质押的所有权转移给新的单一所有者。
 
 ```bash
-claw-node key export [OPTIONS]
+claw-node change-delegation <VALIDATOR_KEY> <NEW_OWNER> [OPTIONS]
 ```
 
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `--data-dir` | `~/.clawnetwork` | 包含密钥对的数据目录 |
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<VALIDATOR_KEY>` | 验证者地址（十六进制，64 字符） |
+| `<NEW_OWNER>` | 新所有者地址（十六进制，64 字符） |
+| `--commission` | 新佣金率（基点，默认：`8000`） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
 
 **示例：**
 
 ```bash
-claw-node key export --data-dir ~/.clawnetwork
+claw-node change-delegation 3f2a...b817 9c1d...e432 --commission 7000
 ```
-
-> **警告：** 永远不要分享您的私钥。请将其存储在安全的位置。任何持有您私钥的人都可以转移您的资金。
 
 ---
 
-### `claw-node status`
+### `claw-node register-agent`
 
-查询运行中节点的状态。
+在链上注册 AI Agent。
 
 ```bash
-claw-node status [OPTIONS]
+claw-node register-agent [OPTIONS]
 ```
 
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `--rpc` | `http://localhost:9710` | 查询的 RPC 端点 |
+| 参数 | 说明 |
+|------|------|
+| `--name` | Agent 名称（必填） |
+| `--metadata` | 键=值对（可重复） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
 
 **示例：**
 
 ```bash
-claw-node status
-
-# 输出：
-# Node Version:  0.2.4
-# Block Height:  123456
-# Peers:         4
-# Synced:        true
-# Mempool:       2 txns
-# Uptime:        3d 12h 45m
+claw-node register-agent --name "MyAgent" --metadata type=llm --metadata version=1.0
 ```
+
+---
+
+### `claw-node create-token`
+
+创建新的自定义 Token。
+
+```bash
+claw-node create-token [OPTIONS]
+```
+
+| 参数 | 说明 |
+|------|------|
+| `--name` | Token 名称（必填） |
+| `--symbol` | Token 符号（必填） |
+| `--decimals` | 精度位数（必填） |
+| `--initial-supply` | 初始供应量（人类单位，必填） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+**示例：**
+
+```bash
+claw-node create-token --name "MyToken" --symbol MTK --decimals 9 --initial-supply 1000000
+```
+
+---
+
+### `claw-node transfer-token`
+
+转移自定义 Token。
+
+```bash
+claw-node transfer-token <TOKEN_ID> <TO> <AMOUNT> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<TOKEN_ID>` | Token ID（十六进制，64 字符） |
+| `<TO>` | 接收地址（十六进制，64 字符） |
+| `<AMOUNT>` | Token 基础单位金额 |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+---
+
+### `claw-node approve-token`
+
+授权他人使用自定义 Token。
+
+```bash
+claw-node approve-token <TOKEN_ID> <SPENDER> <AMOUNT> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<TOKEN_ID>` | Token ID（十六进制，64 字符） |
+| `<SPENDER>` | 被授权地址（十六进制，64 字符） |
+| `<AMOUNT>` | 授权金额（0 表示撤销） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+---
+
+### `claw-node burn-token`
+
+销毁自定义 Token。
+
+```bash
+claw-node burn-token <TOKEN_ID> <AMOUNT> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<TOKEN_ID>` | Token ID（十六进制，64 字符） |
+| `<AMOUNT>` | 销毁金额 |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+---
+
+### `claw-node deploy-contract`
+
+部署 Wasm 智能合约。
+
+```bash
+claw-node deploy-contract <WASM_FILE> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<WASM_FILE>` | .wasm 文件路径 |
+| `--init-method` | 构造方法名（默认：无） |
+| `--init-args` | 构造参数（十六进制字节，默认：无） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+**示例：**
+
+```bash
+claw-node deploy-contract my_contract.wasm --init-method initialize --init-args 00ff
+```
+
+---
+
+### `claw-node call-contract`
+
+调用智能合约方法（写入交易）。
+
+```bash
+claw-node call-contract <ADDRESS> <METHOD> [OPTIONS]
+```
+
+| 参数 / 标志 | 说明 |
+|-------------|------|
+| `<ADDRESS>` | 合约地址（十六进制，64 字符） |
+| `<METHOD>` | 调用的方法名 |
+| `--args` | 参数（十六进制字节，默认：空） |
+| `--value` | 发送的 CLAW 金额（默认："0"） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+**示例：**
+
+```bash
+claw-node call-contract 3f2a...b817 transfer --args 00ff --value 10
+```
+
+---
+
+### `claw-node register-service`
+
+在链上注册服务。
+
+```bash
+claw-node register-service [OPTIONS]
+```
+
+| 参数 | 说明 |
+|------|------|
+| `--service-type` | 服务类型，如 "llm-inference"（必填） |
+| `--endpoint` | 服务端点 URL（必填） |
+| `--price` | CLAW 价格（必填） |
+| `--description` | 服务描述（默认：空） |
+| `--rpc` | RPC 端点（默认：`http://localhost:9710`） |
+
+---
+
+### `claw-node contract info`
+
+获取合约元数据。
+
+```bash
+claw-node contract info <ADDRESS> [--rpc URL]
+```
+
+---
+
+### `claw-node contract storage`
+
+获取合约的存储值。
+
+```bash
+claw-node contract storage <ADDRESS> <KEY> [--rpc URL]
+```
+
+| 参数 | 说明 |
+|------|------|
+| `<ADDRESS>` | 合约地址（十六进制，64 字符） |
+| `<KEY>` | 存储键（十六进制编码） |
+
+---
+
+### `claw-node contract code`
+
+获取合约 Wasm 字节码。
+
+```bash
+claw-node contract code <ADDRESS> [--rpc URL]
+```
+
+---
+
+### `claw-node contract call`
+
+执行只读合约视图调用。
+
+```bash
+claw-node contract call <ADDRESS> <METHOD> [ARGS] [--rpc URL]
+```
+
+| 参数 | 说明 |
+|------|------|
+| `<ADDRESS>` | 合约地址（十六进制，64 字符） |
+| `<METHOD>` | 调用的方法名 |
+| `[ARGS]` | 参数（十六进制编码字节，可选） |
 
 ---
 
@@ -256,7 +577,7 @@ claw-miner init --rpc http://localhost:9710
 ```
 ~/.clawminer/
 ├── config.toml     # 矿工配置
-├── keypair.json    # 矿工钱包密钥对
+├── key.json        # 矿工钱包密钥文件
 └── models/         # 本地模型存储
 ```
 
@@ -576,13 +897,32 @@ claw-miner config set max_concurrent 8
 
 | 命令 | 说明 |
 |------|------|
-| `claw-node init` | 初始化节点数据目录和密钥对 |
+| `claw-node init` | 初始化节点数据目录和密钥文件 |
 | `claw-node start` | 启动节点并同步网络 |
+| `claw-node status` | 打印 RPC 端点 URL |
+| `claw-node key generate` | 生成新的 Ed25519 密钥文件 |
+| `claw-node key show` | 显示钱包地址 |
+| `claw-node key import <key>` | 从十六进制导入私钥 |
+| `claw-node key export` | 导出私钥 |
+| `claw-node encrypt-key` | 加密明文 key.json |
+| `claw-node genesis` | 导出创世配置为 JSON |
+| `claw-node transfer <to> <amount>` | 转账 CLAW |
 | `claw-node stake <amount>` | 质押 CLAW 成为验证者 |
 | `claw-node unstake <amount>` | 解除质押 CLAW（7 天解绑期） |
-| `claw-node key info` | 显示钱包地址和公钥 |
-| `claw-node key export` | 导出私钥 |
-| `claw-node status` | 查询运行中节点的状态 |
+| `claw-node claim-stake` | 领取已到期的解绑质押 |
+| `claw-node change-delegation <validator> <owner>` | 转移验证者质押所有权 |
+| `claw-node register-agent` | 在链上注册 AI Agent |
+| `claw-node create-token` | 创建自定义 Token |
+| `claw-node transfer-token <id> <to> <amount>` | 转移自定义 Token |
+| `claw-node approve-token <id> <spender> <amount>` | 授权 Token 使用者 |
+| `claw-node burn-token <id> <amount>` | 销毁自定义 Token |
+| `claw-node deploy-contract <wasm>` | 部署 Wasm 合约 |
+| `claw-node call-contract <addr> <method>` | 调用合约方法 |
+| `claw-node register-service` | 在链上注册服务 |
+| `claw-node contract info <addr>` | 获取合约元数据 |
+| `claw-node contract storage <addr> <key>` | 获取合约存储值 |
+| `claw-node contract code <addr>` | 获取合约字节码 |
+| `claw-node contract call <addr> <method>` | 只读合约视图调用 |
 
 ### claw-miner 命令
 
@@ -612,6 +952,7 @@ claw-miner config set max_concurrent 8
 |------|------|
 | `CLAW_DATA_DIR` | 覆盖默认数据目录 |
 | `CLAW_RPC_URL` | 覆盖默认 RPC 端点 |
+| `CLAW_KEY_PASSWORD` | 加密/解密 key.json 的密码 |
 | `CLAW_LOG_LEVEL` | 设置日志详细程度（`error`、`warn`、`info`、`debug`、`trace`） |
 | `CLAW_LOG_FILE` | 将日志写入文件而非 stderr |
 

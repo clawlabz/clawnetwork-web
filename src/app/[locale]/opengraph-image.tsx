@@ -140,6 +140,7 @@ export default async function OGImage() {
             }}
           >
             <img
+              alt=""
               src={logoBase64}
               width={176}
               height={176}

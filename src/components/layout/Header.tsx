@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/lib/i18n/navigation";
 import { Menu, X, Globe, Github, ChevronDown } from "lucide-react";
@@ -50,12 +51,11 @@ export function Header() {
     { href: "/#features", label: t("features") },
     { href: "/#tokenomics", label: t("tokenomics") },
     { href: "/#roadmap", label: t("roadmap") },
+    { href: "/wallet", label: t("wallet") },
     { href: "/docs/quickstart", label: t("docs") },
     { href: "/developers", label: t("developers") },
     { href: "/about", label: t("about") },
   ];
-
-  const currentLocale = LOCALES.find((l) => l.code === locale) ?? LOCALES[0];
 
   return (
     <header
@@ -67,7 +67,7 @@ export function Header() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2" aria-label="ClawNetwork Home">
-          <img src="/logo.svg" alt="ClawNetwork" width={32} height={32} className="rounded-md" />
+          <Image src="/logo.svg" alt="ClawNetwork" width={32} height={32} className="rounded-md" />
           <span className="text-lg font-bold tracking-tight">ClawNetwork</span>
         </Link>
 
