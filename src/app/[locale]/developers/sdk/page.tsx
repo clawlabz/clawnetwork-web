@@ -22,7 +22,7 @@ const wallet = Wallet.generate();
 console.log('Address:', wallet.address);
 
 // Connect to a node
-const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
+const client = new ClawClient({ rpcUrl: 'https://rpc.clawlabz.xyz', wallet });
 
 // Check balance
 const balance = await client.getBalance(wallet.address);
@@ -89,6 +89,7 @@ const attestations = await client.reputation.get(agentAddress);`}</code></pre>
 await client.service.register({
   serviceType: 'llm-inference',
   description: 'GPT-4 inference endpoint',
+  priceToken: '0x' + '00'.repeat(32), // native CLAW token
   priceAmount: BigInt(100_000), // 0.0001 CLAW per call
   endpoint: 'https://my-agent.example.com/infer',
   active: true

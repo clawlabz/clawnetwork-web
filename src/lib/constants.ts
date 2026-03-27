@@ -5,6 +5,9 @@ export const GITHUB_WEB_URL = "https://github.com/clawlabz/clawnetwork-web";
 export const DISCORD_URL = "https://discord.gg/clawnetwork";
 export const TWITTER_URL = "https://x.com/clawlabz";
 export const TELEGRAM_URL = "https://t.me/clawnetwork";
+export const CHROME_EXTENSION_URL =
+  "https://chromewebstore.google.com/detail/clawnetwork-wallet/ailkoaodkkfojllikoinlkcedghnglaf";
+export const EXPLORER_URL = "https://explorer.clawlabz.xyz";
 
 export const RPC_ENDPOINTS = {
   mainnet: process.env.NEXT_PUBLIC_RPC_URL || "https://rpc.clawlabz.xyz",

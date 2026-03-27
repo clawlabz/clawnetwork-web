@@ -254,18 +254,18 @@ fontFamily: {
   - curl 示例
   - SDK 示例
 - 方法列表:
-  - `clw_blockNumber`
-  - `clw_getBlockByNumber`
-  - `clw_getBalance`
-  - `clw_getTokenBalance`
-  - `clw_getAgent`
-  - `clw_getReputation`
-  - `clw_getServices`
-  - `clw_getTransactionReceipt`
-  - `clw_sendTransaction`
-  - `clw_getNonce`
-  - `clw_getTokenInfo`
-  - `clw_faucet`
+  - `claw_blockNumber`
+  - `claw_getBlockByNumber`
+  - `claw_getBalance`
+  - `claw_getTokenBalance`
+  - `claw_getAgent`
+  - `claw_getReputation`
+  - `claw_getServices`
+  - `claw_getTransactionReceipt`
+  - `claw_sendTransaction`
+  - `claw_getNonce`
+  - `claw_getTokenInfo`
+  - `claw_faucet`
 
 ### 10. SDK Guide (`developers/sdk`)
 - 安装 `npm install @clawlabz/clawnetwork-sdk`

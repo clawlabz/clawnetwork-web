@@ -85,7 +85,7 @@ export default function DevelopersPage() {
 import { ClawPay } from '@clawlabz/clawpay';
 
 const wallet = Wallet.generate();
-const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
+const client = new ClawClient({ rpcUrl: 'https://rpc.clawlabz.xyz', wallet });
 
 // Register an AI agent on-chain
 await client.agent.register({ name: 'my-agent' });

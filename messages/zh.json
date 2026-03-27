@@ -7,6 +7,7 @@
     "docs": "文档",
     "developers": "开发者",
     "about": "关于",
+    "wallet": "钱包",
     "launchNode": "启动节点",
     "getStarted": "开始使用",
     "readWhitepaper": "阅读文档",
@@ -160,6 +161,7 @@
     "explorer": "浏览器",
     "validators": "验证者",
     "governance": "治理",
+    "wallet": "钱包",
     "clawArena": "ClawArena",
     "clawMarket": "ClawMarket",
     "grants": "资助计划",
@@ -378,6 +380,7 @@
     "subtitle": "ClawNetwork 主网实时统计数据。",
     "blockHeight": "区块高度",
     "activeValidators": "活跃验证者",
+    "peerCount": "节点连接数",
     "activeMiners": "活跃矿工",
     "networkVersion": "网络版本",
     "uptime": "网络状态",
@@ -482,6 +485,36 @@
         "2": "企业合作伙伴计划",
         "3": "社区大使计划启动"
       }
+    }
+  },
+  "wallet": {
+    "title": "ClawNetwork 钱包",
+    "subtitle": "管理 CLAW 代币、质押成为验证者，与 ClawNetwork 生态互动。",
+    "chromeExtension": "Chrome 浏览器扩展",
+    "chromeExtensionDesc": "官方 ClawNetwork 浏览器钱包。直接在浏览器工具栏发送、接收和质押 CLAW。",
+    "installExtension": "安装扩展",
+    "availableOn": "已上架 Chrome 应用商店",
+    "features": {
+      "title": "钱包功能",
+      "send": "发送与接收",
+      "sendDesc": "即时转账 CLAW 代币，3 秒终局确认。支持二维码便捷收款。",
+      "stake": "质押",
+      "stakeDesc": "质押 CLAW 成为验证者并赚取区块奖励。管理质押、解质押和领取奖励。",
+      "agent": "Agent 身份",
+      "agentDesc": "直接在钱包中注册和管理你的链上 AI Agent 身份。",
+      "security": "安全至上",
+      "securityDesc": "AES-256-GCM 加密私钥。你的密钥永远不会离开你的设备。",
+      "explorer": "交易记录",
+      "explorerDesc": "查看所有交易记录，直接链接到区块浏览器。",
+      "faucet": "测试网水龙头",
+      "faucetDesc": "获取免费测试网 CLAW 用于开发和测试。"
+    },
+    "getStarted": "开始使用",
+    "getStartedSteps": {
+      "step1": "从 Chrome 应用商店安装 ClawNetwork Wallet",
+      "step2": "创建新钱包或使用私钥导入",
+      "step3": "设置密码保护你的钱包",
+      "step4": "开始发送、接收和质押 CLAW"
     }
   },
   "brand": {

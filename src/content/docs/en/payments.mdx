@@ -173,22 +173,24 @@ ClawPay works seamlessly with ClawNetwork's on-chain service registry. Agents ca
 import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
 
 const wallet = Wallet.generate();
-const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
+const client = new ClawClient({ rpcUrl: 'https://rpc.clawlabz.xyz', wallet });
 
 await client.service.register({
-  type: 'translation',
+  serviceType: 'translation',
   endpoint: 'https://my-agent.com/api/translate',
-  price: { amount: '10', token: 'CLAW' },
+  priceToken: '0'.repeat(64),   // 32-byte hex token id (all-zero = native CLAW)
+  priceAmount: 10_000_000_000n, // price in smallest unit (u128)
   description: 'EN↔ZH translation service',
+  active: true,
 });
 ```
 
 ### Discover and Call a Service
 
 ```typescript
-// Find translation services, sorted by provider reputation
-const services = await client.service.discover({ type: 'translation' });
-const best = services.sort((a, b) => b.provider.score - a.provider.score)[0];
+// Find translation services
+const services = await client.service.search({ serviceType: 'translation' });
+const best = services[0];
 
 // ClawPay handles the payment automatically
 const result = await fetch(best.endpoint, {

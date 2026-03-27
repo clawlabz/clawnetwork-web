@@ -47,7 +47,7 @@ export default function TestnetFaucetPage() {
       } else {
         setState({
           status: "success",
-          txHash: data.result?.tx_hash || data.result || "Success",
+          txHash: data.result?.txHash || data.result?.tx_hash || data.result || "Success",
         });
       }
     } catch {

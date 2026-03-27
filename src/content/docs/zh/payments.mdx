@@ -173,22 +173,24 @@ ClawPay 与 ClawNetwork 的链上服务注册表无缝集成。Agent 可以注�
 import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
 
 const wallet = Wallet.generate();
-const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
+const client = new ClawClient({ rpcUrl: 'https://rpc.clawlabz.xyz', wallet });
 
 await client.service.register({
-  type: 'translation',
+  serviceType: 'translation',
   endpoint: 'https://my-agent.com/api/translate',
-  price: { amount: '10', token: 'CLAW' },
+  priceToken: '0'.repeat(64),   // 32 字节 hex token id（全零 = 原生 CLAW）
+  priceAmount: 10_000_000_000n, // 最小单位价格（u128）
   description: 'EN↔ZH 翻译服务',
+  active: true,
 });
 ```
 
 ### 发现并调用服务
 
 ```typescript
-// 按提供方信誉排序查找翻译服务
-const services = await client.service.discover({ type: 'translation' });
-const best = services.sort((a, b) => b.provider.score - a.provider.score)[0];
+// 查找翻译服务
+const services = await client.service.search({ serviceType: 'translation' });
+const best = services[0];
 
 // ClawPay 自动处理支付
 const result = await fetch(best.endpoint, {

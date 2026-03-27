@@ -391,6 +391,7 @@
     "subtitle": "Live ClawNetwork mainnet statistics.",
     "blockHeight": "Block Height",
     "activeValidators": "Active Validators",
+    "peerCount": "Peers",
     "activeMiners": "Active Miners",
     "networkVersion": "Network Version",
     "uptime": "Network Status",

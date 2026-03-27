@@ -213,21 +213,20 @@ cargo build --target wasm32-unknown-unknown --release
 Contract deployment uses `ContractDeploy` (TxType 6). The Wasm bytecode must be Borsh-encoded as part of a signed transaction. The easiest way is via the TypeScript SDK:
 
 ```typescript
-import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
 import { readFileSync } from 'fs';
-
-const wallet = Wallet.fromPrivateKey(process.env.PRIVATE_KEY!);
-const client = new ClawClient('https://rpc.clawlabz.xyz', wallet);
 
 const wasmBytes = readFileSync('./target/wasm32-unknown-unknown/release/my_contract.wasm');
 
-const result = await client.contract.deploy({
-  code: wasmBytes,
-  initMethod: 'init',   // calls init() on deploy; pass '' to skip
-  initArgs: [],         // Borsh-encoded constructor args
-});
-
-console.log('Contract address:', result.contractAddress);
+// Contract deployment uses TxType 6 (ContractDeploy).
+// The SDK does not yet expose a high-level contract module —
+// submit the Borsh-encoded transaction via JSON-RPC directly:
+//
+//   curl -X POST https://rpc.clawlabz.xyz \
+//     -H 'Content-Type: application/json' \
+//     -d '{ "jsonrpc":"2.0","id":1,"method":"claw_sendTransaction",
+//            "params":["<hex-encoded-borsh-signed-tx>"] }'
+//
+// A high-level `client.contract.deploy()` helper is planned for a future SDK release.
 ```
 
 Or via raw JSON-RPC if you handle Borsh encoding manually:

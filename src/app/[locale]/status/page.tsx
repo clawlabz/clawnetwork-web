@@ -2,10 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import { useState, useEffect, useCallback } from "react";
-import { Activity, Box, Users, Cpu, Tag, Wifi } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
+import { Box, Users, Cpu, Tag, Wifi, Shield } from "lucide-react";
 
 interface NetworkData {
   blockHeight: number;
+  peerCount: number;
   activeValidators: number;
   activeMiners: number;
   networkVersion: string;
@@ -14,6 +16,7 @@ interface NetworkData {
 
 const DEFAULTS: NetworkData = {
   blockHeight: 0,
+  peerCount: 0,
   activeValidators: 0,
   activeMiners: 0,
   networkVersion: "-",
@@ -38,7 +41,7 @@ function StatCard({
   value,
   sub,
 }: {
-  icon: typeof Activity;
+  icon: LucideIcon;
   label: string;
   value: string | number;
   sub?: string;
@@ -121,7 +124,7 @@ export default function StatusPage() {
         {/* Stats grid */}
         {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
@@ -133,9 +136,14 @@ export default function StatusPage() {
               value={data?.blockHeight?.toLocaleString() ?? "0"}
             />
             <StatCard
-              icon={Users}
+              icon={Shield}
               label={t("activeValidators")}
               value={data?.activeValidators ?? 0}
+            />
+            <StatCard
+              icon={Users}
+              label={t("peerCount")}
+              value={data?.peerCount ?? 0}
             />
             <StatCard
               icon={Cpu}

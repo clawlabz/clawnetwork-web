@@ -42,17 +42,19 @@ async function healthCheck() {
 
 export async function GET() {
   try {
-    const [blockHeight, miningStats, health] = await Promise.all([
+    const [blockHeight, miningStats, health, validators] = await Promise.all([
       rpcCall("claw_blockNumber"),
       rpcCall("claw_getMiningStats"),
       healthCheck(),
+      rpcCall("claw_getValidators"),
     ]);
 
     const live = blockHeight !== null;
 
     return NextResponse.json({
       blockHeight: blockHeight ?? 0,
-      activeValidators: health?.validator_count ?? (health?.peer_count != null ? health.peer_count + 1 : 0),
+      peerCount: health?.peer_count ?? 0,
+      activeValidators: Array.isArray(validators) ? validators.length : 0,
       activeMiners: miningStats?.active_miners ?? 0,
       networkVersion: health?.version ?? miningStats?.version ?? "-",
       live,
@@ -60,6 +62,7 @@ export async function GET() {
   } catch {
     return NextResponse.json({
       blockHeight: 0,
+      peerCount: 0,
       activeValidators: 0,
       activeMiners: 0,
       networkVersion: "-",

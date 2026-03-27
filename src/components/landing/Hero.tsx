@@ -62,7 +62,7 @@ export function Hero() {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-text-secondary max-w-[700px] mx-auto mb-10 leading-relaxed">
+        <p className="text-lg md:text-xl text-gray-300 max-w-[700px] mx-auto mb-10 leading-relaxed">
           {t("subtitle")}
         </p>
 
