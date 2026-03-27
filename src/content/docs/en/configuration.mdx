@@ -56,6 +56,7 @@ Display node status information.
 |----------|---------|-------------|
 | `RUST_LOG` | `claw=info` | Log level filter |
 | `CLAW_RPC_URL` | `http://localhost:9710` | RPC endpoint (for SDK/MCP) |
+| `CLAW_RPC_CORS_ORIGINS` | `localhost only` | Comma-separated allowed CORS origins (use `*` for public RPC) |
 
 ## Network Configuration
 
@@ -101,6 +102,49 @@ claw-node start
 | 9711 | TCP | P2P networking (libp2p) |
 
 Ensure both ports are open in your firewall for full node operation.
+
+## CORS Configuration
+
+By default, the node only allows requests from localhost origins (`http://localhost:*`, `http://127.0.0.1:*`). This is safe for local development but must be configured when exposing a public RPC endpoint.
+
+Set the `CLAW_RPC_CORS_ORIGINS` environment variable to control which origins can access your node's RPC API.
+
+### Allow All Origins (Public RPC)
+
+```bash
+CLAW_RPC_CORS_ORIGINS=* claw-node start --network mainnet
+```
+
+Use this when running a public RPC endpoint that any dApp or explorer should be able to query.
+
+### Allow Specific Origins
+
+```bash
+CLAW_RPC_CORS_ORIGINS=https://myapp.com,https://explorer.example.com claw-node start --network mainnet
+```
+
+Comma-separated list of allowed origins. Only requests from these origins will be accepted.
+
+### systemd Example
+
+To set CORS origins for a systemd-managed node, add an `Environment` directive:
+
+```ini
+[Service]
+ExecStart=/usr/local/bin/claw-node start --network mainnet
+Environment="CLAW_RPC_CORS_ORIGINS=*"
+```
+
+### Docker Example
+
+```bash
+docker run -d \
+  -e CLAW_RPC_CORS_ORIGINS=* \
+  -p 9710:9710 -p 9711:9711 \
+  ghcr.io/clawlabz/claw-node:latest start --network mainnet
+```
+
+> **Note:** This is consistent with industry practice — similar to Geth's `--http.corsdomain` and Substrate's `--rpc-cors` flags.
 
 ## RPC Limits
 

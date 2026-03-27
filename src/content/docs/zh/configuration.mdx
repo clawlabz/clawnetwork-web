@@ -29,6 +29,7 @@ order: 8
 |------|--------|------|
 | `RUST_LOG` | `claw=info` | 日志级别 |
 | `CLAW_RPC_URL` | `http://localhost:9710` | RPC 端点 |
+| `CLAW_RPC_CORS_ORIGINS` | `仅 localhost` | 允许的 CORS 来源（逗号分隔，公共 RPC 可设为 `*`） |
 
 ## 端口
 
@@ -36,6 +37,49 @@ order: 8
 |------|------|------|
 | 9710 | TCP/HTTP | JSON-RPC API |
 | 9711 | TCP | P2P 网络 |
+
+## CORS 配置
+
+默认情况下，节点仅允许来自 localhost 的请求（`http://localhost:*`、`http://127.0.0.1:*`）。这对本地开发是安全的，但对外提供公共 RPC 时需要额外配置。
+
+通过 `CLAW_RPC_CORS_ORIGINS` 环境变量控制哪些来源可以访问节点的 RPC API。
+
+### 允许所有来源（公共 RPC）
+
+```bash
+CLAW_RPC_CORS_ORIGINS=* claw-node start --network mainnet
+```
+
+适用于需要被任意 dApp 或浏览器访问的公共 RPC 节点。
+
+### 允许指定来源
+
+```bash
+CLAW_RPC_CORS_ORIGINS=https://myapp.com,https://explorer.example.com claw-node start --network mainnet
+```
+
+逗号分隔的来源列表，仅允许来自这些域名的请求。
+
+### systemd 示例
+
+在 systemd 服务文件中添加 `Environment` 指令：
+
+```ini
+[Service]
+ExecStart=/usr/local/bin/claw-node start --network mainnet
+Environment="CLAW_RPC_CORS_ORIGINS=*"
+```
+
+### Docker 示例
+
+```bash
+docker run -d \
+  -e CLAW_RPC_CORS_ORIGINS=* \
+  -p 9710:9710 -p 9711:9711 \
+  ghcr.io/clawlabz/claw-node:latest start --network mainnet
+```
+
+> **注意：** 这与行业惯例一致——类似于 Geth 的 `--http.corsdomain` 和 Substrate 的 `--rpc-cors` 参数。
 
 ## RPC 限制
 
