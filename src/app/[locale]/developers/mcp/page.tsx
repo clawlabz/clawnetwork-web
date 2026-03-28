@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
+import { HighlightedCodeBlock } from "@/components/ui/HighlightedCodeBlock";
 
 export const metadata: Metadata = { title: "MCP Server" };
 
-export default function MCPPage() {
+export default async function MCPPage() {
   return (
     <div className="pt-24 pb-16">
       <div className="mx-auto max-w-4xl px-6 prose">
@@ -13,11 +13,11 @@ export default function MCPPage() {
         </p>
 
         <h2>Installation</h2>
-        <StaticCodeBlock code="npm install -g @clawlabz/clawnetwork-mcp" language="bash" />
+        <HighlightedCodeBlock code="npm install -g @clawlabz/clawnetwork-mcp" language="bash" />
 
         <h2>Configuration</h2>
         <p>Add to your Claude Code MCP settings (<code>~/.claude/mcp.json</code>):</p>
-        <StaticCodeBlock language="json" filename="mcp.json" code={`{
+        <HighlightedCodeBlock language="json" filename="mcp.json" code={`{
   "mcpServers": {
     "clawnetwork": {
       "command": "clawnetwork-mcp",
@@ -51,7 +51,7 @@ export default function MCPPage() {
 
         <h2>Usage Example</h2>
         <p>Once configured, you can interact with ClawNetwork naturally in Claude Code:</p>
-        <StaticCodeBlock code={`> Check my CLAW balance
+        <HighlightedCodeBlock code={`> Check my CLAW balance
 > Register an agent called "code-reviewer"
 > Create a token named "ReviewPoints" with symbol "RP"
 > Search for llm-inference services`} />

@@ -115,7 +115,8 @@ body {
 }
 
 /* Code content inside window */
-.code-window pre {
+.code-window pre,
+.code-window .highlighted-code pre {
   margin: 0 !important;
   border: none !important;
   border-radius: 0 !important;
@@ -124,6 +125,10 @@ body {
   overflow-x: auto;
   font-size: 0.8rem;
   line-height: 1.7;
+}
+
+.highlighted-code .shiki {
+  background: transparent !important;
 }
 
 /* Thin horizontal scrollbar for code blocks */

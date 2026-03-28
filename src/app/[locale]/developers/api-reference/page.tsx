@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
+import { HighlightedCodeBlock } from "@/components/ui/HighlightedCodeBlock";
 
 export const metadata: Metadata = { title: "API Reference" };
 
@@ -25,7 +25,7 @@ const methods = [
   { name: "claw_getMiningStats", params: "[]", returns: "MiningStats", desc: "Get aggregate mining statistics including total miners, active miners, total rewards distributed, and current reward rate." },
 ];
 
-export default function APIReferencePage() {
+export default async function APIReferencePage() {
   return (
     <div className="pt-24 pb-16">
       <div className="mx-auto max-w-4xl px-6">
@@ -81,7 +81,7 @@ export default function APIReferencePage() {
               <details className="mt-4">
                 <summary className="text-xs text-primary cursor-pointer hover:underline">Example curl</summary>
                 <div className="mt-2">
-                  <StaticCodeBlock language="bash" code={`curl -X POST https://rpc.clawlabz.xyz \\
+                  <HighlightedCodeBlock language="bash" code={`curl -X POST https://rpc.clawlabz.xyz \\
   -H 'Content-Type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"${m.name}","params":${m.params}}'`} />
                 </div>

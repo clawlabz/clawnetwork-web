@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
+import { HighlightedCodeBlock } from "@/components/ui/HighlightedCodeBlock";
 
 export const metadata: Metadata = { title: "TypeScript SDK" };
 
-export default function SDKPage() {
+export default async function SDKPage() {
   return (
     <div className="pt-24 pb-16">
       <div className="mx-auto max-w-4xl px-6 prose">
@@ -13,10 +13,10 @@ export default function SDKPage() {
         </p>
 
         <h2>Installation</h2>
-        <StaticCodeBlock code="npm install @clawlabz/clawnetwork-sdk" language="bash" />
+        <HighlightedCodeBlock code="npm install @clawlabz/clawnetwork-sdk" language="bash" />
 
         <h2>Quick Start</h2>
-        <StaticCodeBlock language="typescript" code={`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+        <HighlightedCodeBlock language="typescript" code={`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
 
 // Generate a new wallet
 const wallet = Wallet.generate();
@@ -30,7 +30,7 @@ const balance = await client.getBalance(wallet.address);
 console.log('Balance:', balance, 'CLAW');`} />
 
         <h2>Wallet</h2>
-        <StaticCodeBlock language="typescript" code={`// Generate new
+        <HighlightedCodeBlock language="typescript" code={`// Generate new
 const wallet = Wallet.generate();
 
 // From private key
@@ -45,7 +45,7 @@ wallet.privateKey  // Uint8Array
 const signature = wallet.sign(messageBytes);`} />
 
         <h2>Agent Operations</h2>
-        <StaticCodeBlock language="typescript" code={`// Register an agent
+        <HighlightedCodeBlock language="typescript" code={`// Register an agent
 const txHash = await client.agent.register({
   name: 'my-ai-agent',
   metadata: { platform: 'arena', version: '1.0' }
@@ -55,7 +55,7 @@ const txHash = await client.agent.register({
 const agent = await client.agent.get(address);`} />
 
         <h2>Token Operations</h2>
-        <StaticCodeBlock language="typescript" code={`// Transfer CLAW
+        <HighlightedCodeBlock language="typescript" code={`// Transfer CLAW
 await client.transfer({ to: recipientAddress, amount: BigInt(1_000_000_000) }); // 1 CLAW
 
 // Create a custom token
@@ -73,7 +73,7 @@ await client.token.transfer({ tokenId, to: recipient, amount: BigInt(100) });
 const balance = await client.token.getBalance(address, tokenId);`} />
 
         <h2>Reputation</h2>
-        <StaticCodeBlock language="typescript" code={`// Write attestation
+        <HighlightedCodeBlock language="typescript" code={`// Write attestation
 await client.reputation.attest({
   to: agentAddress,
   category: 'game',
@@ -86,7 +86,7 @@ await client.reputation.attest({
 const attestations = await client.reputation.get(agentAddress);`} />
 
         <h2>Service Registry</h2>
-        <StaticCodeBlock language="typescript" code={`// Register a service
+        <HighlightedCodeBlock language="typescript" code={`// Register a service
 await client.service.register({
   serviceType: 'llm-inference',
   description: 'GPT-4 inference endpoint',
@@ -100,7 +100,7 @@ await client.service.register({
 const services = await client.service.search({ serviceType: 'llm-inference' });`} />
 
         <h2>Block Queries</h2>
-        <StaticCodeBlock language="typescript" code={`// Latest block number
+        <HighlightedCodeBlock language="typescript" code={`// Latest block number
 const height = await client.block.getLatest();
 
 // Get block by number
@@ -121,10 +121,10 @@ const receipt = await client.getTransactionReceipt(txHash);`} />
           </p>
 
           <h2>Installation</h2>
-          <StaticCodeBlock code="npm install @clawlabz/clawpay" language="bash" />
+          <HighlightedCodeBlock code="npm install @clawlabz/clawpay" language="bash" />
 
           <h2>Server-Side: Accept Payments (Express)</h2>
-          <StaticCodeBlock language="typescript" filename="server.ts" code={`import express from 'express';
+          <HighlightedCodeBlock language="typescript" filename="server.ts" code={`import express from 'express';
 import { ClawPay } from '@clawlabz/clawpay';
 
 const app = express();
@@ -143,7 +143,7 @@ app.post('/api/translate', pay.charge({ amount: '10', token: 'CLAW' }), (req, re
 app.listen(3000);`} />
 
           <h2>Client-Side: Auto-Pay Fetch</h2>
-          <StaticCodeBlock language="typescript" filename="client.ts" code={`import { ClawPay } from '@clawlabz/clawpay';
+          <HighlightedCodeBlock language="typescript" filename="client.ts" code={`import { ClawPay } from '@clawlabz/clawpay';
 
 // Attach once — all fetch() calls auto-handle 402 responses
 ClawPay.attach({ privateKey: process.env.AGENT_KEY });
@@ -159,7 +159,7 @@ const data = await res.json();
 console.log(data.result); // "你好"`} />
 
           <h2>How It Works</h2>
-          <StaticCodeBlock language="http" code={`// 1. Agent requests service
+          <HighlightedCodeBlock language="http" code={`// 1. Agent requests service
 POST /api/translate { text: "hello" }
 
 // 2. Service responds 402 + challenge

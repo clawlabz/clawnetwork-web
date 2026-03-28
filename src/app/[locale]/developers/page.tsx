@@ -1,12 +1,83 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
 import { Rocket, BookOpen, Package, CreditCard, Code2, ArrowRight } from "lucide-react";
-import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
+import { HighlightedCodeBlock } from "@/components/ui/HighlightedCodeBlock";
+import { CopyButton } from "@/components/ui/CopyButton";
+import { codeToHtml } from "shiki";
+import type { Metadata } from "next";
 
-export default function DevelopersPage() {
-  const t = useTranslations("developers");
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "developers" });
+  return { title: t("title") };
+}
+
+const HERO_CODE = `import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+import { ClawPay } from '@clawlabz/clawpay';
+
+const wallet = Wallet.generate();
+const client = new ClawClient({ rpcUrl: 'https://rpc.clawlabz.xyz', wallet });
+
+// Register an AI agent on-chain
+await client.agent.register({ name: 'my-agent' });
+
+// Accept payments — 3 lines
+const pay = ClawPay.create({ privateKey: AGENT_KEY });
+app.post('/api/work', pay.charge({ amount: '10' }), handler);
+
+// Pay another agent — 2 lines
+ClawPay.attach({ privateKey: AGENT_KEY });
+const res = await fetch('https://other-agent.com/api/work');`;
+
+const CONTRACT_CODE = `#![no_std]
+
+extern "C" {
+    fn caller(out_ptr: u32);
+    fn agent_is_registered(addr_ptr: u32) -> i32;
+    fn agent_get_score(addr_ptr: u32) -> i64;
+    fn abort(ptr: u32, len: u32);
+}
+
+const MIN_SCORE: i64 = 50;
+
+#[no_mangle]
+pub extern "C" fn vip_action() {
+    let mut sender = [0u8; 32];
+    unsafe { caller(sender.as_ptr() as u32) };
+
+    // Gate: registered AI agent only
+    if unsafe { agent_is_registered(
+        sender.as_ptr() as u32
+    ) } != 1 {
+        let msg = b"not a registered agent";
+        unsafe { abort(
+            msg.as_ptr() as u32,
+            msg.len() as u32,
+        ) };
+    }
+
+    // Gate: minimum reputation score
+    if unsafe { agent_get_score(
+        sender.as_ptr() as u32
+    ) } < MIN_SCORE {
+        let msg = b"reputation score too low";
+        unsafe { abort(
+            msg.as_ptr() as u32,
+            msg.len() as u32,
+        ) };
+    }
+
+    // ... privileged logic here
+}`;
+
+export default async function DevelopersPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "developers" });
+
+  const contractHtml = await codeToHtml(CONTRACT_CODE, {
+    lang: "rust",
+    theme: "github-dark-default",
+  });
 
   const cards = [
     {
@@ -73,22 +144,7 @@ export default function DevelopersPage() {
           </div>
 
           {/* Code snippet */}
-          <StaticCodeBlock language="typescript" filename="main.ts — claw-sdk" code={`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
-import { ClawPay } from '@clawlabz/clawpay';
-
-const wallet = Wallet.generate();
-const client = new ClawClient({ rpcUrl: 'https://rpc.clawlabz.xyz', wallet });
-
-// Register an AI agent on-chain
-await client.agent.register({ name: 'my-agent' });
-
-// Accept payments — 3 lines
-const pay = ClawPay.create({ privateKey: AGENT_KEY });
-app.post('/api/work', pay.charge({ amount: '10' }), handler);
-
-// Pay another agent — 2 lines
-ClawPay.attach({ privateKey: AGENT_KEY });
-const res = await fetch('https://other-agent.com/api/work');`} />
+          <HighlightedCodeBlock language="typescript" filename="main.ts — claw-sdk" code={HERO_CODE} />
         </div>
       </section>
 
@@ -161,48 +217,21 @@ const res = await fetch('https://other-agent.com/api/work');`} />
                 </Link>
               </div>
             </div>
-            {/* Right: code snippet */}
-            <div className="border-t lg:border-t-0 lg:border-l border-border-dark bg-bg-dark/30 overflow-hidden [&_.code-window]:mb-0 [&_.code-window]:rounded-none [&_.code-window]:border-0">
-              <StaticCodeBlock language="rust" filename="contract.rs" code={`#![no_std]
-
-extern "C" {
-    fn caller(out_ptr: u32);
-    fn agent_is_registered(addr_ptr: u32) -> i32;
-    fn agent_get_score(addr_ptr: u32) -> i64;
-    fn abort(ptr: u32, len: u32);
-}
-
-const MIN_SCORE: i64 = 50;
-
-#[no_mangle]
-pub extern "C" fn vip_action() {
-    let mut sender = [0u8; 32];
-    unsafe { caller(sender.as_ptr() as u32) };
-
-    // Gate: registered AI agent only
-    if unsafe { agent_is_registered(
-        sender.as_ptr() as u32
-    ) } != 1 {
-        let msg = b"not a registered agent";
-        unsafe { abort(
-            msg.as_ptr() as u32,
-            msg.len() as u32,
-        ) };
-    }
-
-    // Gate: minimum reputation score
-    if unsafe { agent_get_score(
-        sender.as_ptr() as u32
-    ) } < MIN_SCORE {
-        let msg = b"reputation score too low";
-        unsafe { abort(
-            msg.as_ptr() as u32,
-            msg.len() as u32,
-        ) };
-    }
-
-    // ... privileged logic here
-}`} />
+            {/* Right: code snippet — flush, no code-window wrapper */}
+            <div className="border-t lg:border-t-0 lg:border-l border-border-dark bg-[#1a1a1a] flex flex-col">
+              <div className="code-titlebar">
+                <div className="code-dots">
+                  <span className="code-dot code-dot-red" />
+                  <span className="code-dot code-dot-yellow" />
+                  <span className="code-dot code-dot-green" />
+                </div>
+                <span className="code-lang">contract.rs</span>
+                <CopyButton text={CONTRACT_CODE} />
+              </div>
+              <div
+                className="highlighted-code flex-1 overflow-auto"
+                dangerouslySetInnerHTML={{ __html: contractHtml }}
+              />
             </div>
           </div>
         </div>
