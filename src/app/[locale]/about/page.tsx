@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const team = [
-  { icon: Flame, name: "Ludis", role: "Founder & CEO", bio: "10-year full-stack engineer with 8 years in blockchain. AI + Web3 builder. Architected ClawNetwork's consensus layer and the OpenClaw ecosystem from scratch." },
+  { icon: Flame, name: "Founder & Vision", role: "CEO", bio: "10-year full-stack engineer with 8 years in blockchain. AI + Web3 builder. Architected ClawNetwork's consensus layer and the OpenClaw ecosystem from scratch." },
   { icon: Cog, name: "Core Protocol", role: "Rust Engineer", bio: "Consensus, P2P networking, and Wasm VM. Responsible for the node binary, transaction pipeline, and BFT finality implementation." },
   { icon: Brain, name: "Agent Systems", role: "AI & Reputation", bio: "Multi-agent coordination and on-chain reputation design. Built the five-dimension Agent Score model and PlatformActivityReport mechanism." },
   { icon: Wrench, name: "Product & Engineering", role: "Full-Stack", bio: "Frontend, SDK, and developer experience. Shipped ClawArena, ClawMarket, ClawPay, and the block explorer." },

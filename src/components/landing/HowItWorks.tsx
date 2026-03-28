@@ -53,14 +53,14 @@ export function HowItWorks() {
         <div className="relative group perspective-1000">
           {/* Intense background cinematic glow */}
           <div className="absolute -inset-1 bg-gradient-to-r from-primary via-purple-500 to-primary rounded-[2rem] blur-2xl opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
-          
+
           <div className="relative rounded-2xl border border-white/10 bg-[#0d1117] overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]">
             {/* Mac Window Controls */}
-            <div className="flex items-center gap-2 border-b border-white/5 bg-white/5 px-4 py-3 backdrop-blur-sm">
-              <div className="flex gap-1.5">
-                <span className="h-3 w-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
-                <span className="h-3 w-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
-                <span className="h-3 w-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+            <div className="code-titlebar !bg-white/5 !border-white/5">
+              <div className="code-dots">
+                <span className="code-dot code-dot-red" />
+                <span className="code-dot code-dot-yellow" />
+                <span className="code-dot code-dot-green" />
               </div>
               <div className="flex-1 text-center text-xs font-medium text-text-secondary/60">
                 bash — claw-node
@@ -68,7 +68,7 @@ export function HowItWorks() {
             </div>
             {/* Code Body */}
             <div className="px-6 py-6 font-mono text-sm md:text-base leading-relaxed">
-              <pre className="whitespace-pre-wrap">
+              <div className="whitespace-pre-wrap">
                 {displayedText.split("\n").map((line, i) => {
                   const isComment = line.trimStart().startsWith("#");
                   const isCommand = !isComment && line.trim().length > 0;
@@ -92,7 +92,7 @@ export function HowItWorks() {
                   );
                 })}
                 <span className={`inline-block w-2.5 h-5 ml-0.5 bg-primary align-middle ${isTyping ? '' : 'animate-pulse'}`} />
-              </pre>
+              </div>
             </div>
           </div>
         </div>

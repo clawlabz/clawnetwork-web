@@ -126,6 +126,18 @@ body {
   line-height: 1.7;
 }
 
+/* Thin horizontal scrollbar for code blocks */
+pre::-webkit-scrollbar {
+  height: 2px;
+}
+pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+pre::-webkit-scrollbar-thumb {
+  background: var(--color-border-dark);
+  border-radius: 1px;
+}
+
 /* Standalone pre (not in code-window) */
 pre:not(.code-window pre) {
   border-radius: 10px;

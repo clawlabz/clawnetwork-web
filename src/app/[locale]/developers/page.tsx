@@ -162,7 +162,7 @@ const res = await fetch('https://other-agent.com/api/work');`} />
               </div>
             </div>
             {/* Right: code snippet */}
-            <div className="border-t lg:border-t-0 lg:border-l border-border-dark bg-bg-dark/30 overflow-hidden">
+            <div className="border-t lg:border-t-0 lg:border-l border-border-dark bg-bg-dark/30 overflow-hidden [&_.code-window]:mb-0 [&_.code-window]:rounded-none [&_.code-window]:border-0">
               <StaticCodeBlock language="rust" filename="contract.rs" code={`#![no_std]
 
 extern "C" {
