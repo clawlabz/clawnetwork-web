@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Rocket, BookOpen, Package, CreditCard, Code2, ArrowRight } from "lucide-react";
+import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
 
 export default function DevelopersPage() {
   const t = useTranslations("developers");
@@ -72,16 +73,7 @@ export default function DevelopersPage() {
           </div>
 
           {/* Code snippet */}
-          <div className="rounded-xl border border-border-dark bg-surface-dark overflow-hidden">
-            <div className="flex items-center gap-2 border-b border-border-dark px-4 py-3">
-              <span className="h-3 w-3 rounded-full bg-red-500/60" />
-              <span className="h-3 w-3 rounded-full bg-yellow-500/60" />
-              <span className="h-3 w-3 rounded-full bg-green-500/60" />
-              <span className="ml-auto text-xs text-text-secondary">main.ts — claw-sdk</span>
-            </div>
-            <pre className="p-4 text-sm leading-relaxed">
-              <code className="text-text-secondary">
-{`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+          <StaticCodeBlock language="typescript" filename="main.ts — claw-sdk" code={`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
 import { ClawPay } from '@clawlabz/clawpay';
 
 const wallet = Wallet.generate();
@@ -96,10 +88,7 @@ app.post('/api/work', pay.charge({ amount: '10' }), handler);
 
 // Pay another agent — 2 lines
 ClawPay.attach({ privateKey: AGENT_KEY });
-const res = await fetch('https://other-agent.com/api/work');`}
-              </code>
-            </pre>
-          </div>
+const res = await fetch('https://other-agent.com/api/work');`} />
         </div>
       </section>
 
@@ -174,15 +163,7 @@ const res = await fetch('https://other-agent.com/api/work');`}
             </div>
             {/* Right: code snippet */}
             <div className="border-t lg:border-t-0 lg:border-l border-border-dark bg-bg-dark/30 overflow-hidden">
-              <div className="flex items-center gap-2 border-b border-border-dark px-4 py-3">
-                <span className="h-3 w-3 rounded-full bg-red-500/60" />
-                <span className="h-3 w-3 rounded-full bg-yellow-500/60" />
-                <span className="h-3 w-3 rounded-full bg-green-500/60" />
-                <span className="ml-auto text-xs text-text-secondary">contract.rs</span>
-              </div>
-              <pre className="p-6 text-xs leading-relaxed overflow-x-auto">
-                <code className="text-text-secondary">
-{`#![no_std]
+              <StaticCodeBlock language="rust" filename="contract.rs" code={`#![no_std]
 
 extern "C" {
     fn caller(out_ptr: u32);
@@ -221,9 +202,7 @@ pub extern "C" fn vip_action() {
     }
 
     // ... privileged logic here
-}`}
-                </code>
-              </pre>
+}`} />
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
 
 export const metadata: Metadata = { title: "API Reference" };
 
@@ -79,11 +80,11 @@ export default function APIReferencePage() {
 
               <details className="mt-4">
                 <summary className="text-xs text-primary cursor-pointer hover:underline">Example curl</summary>
-                <pre className="mt-2 bg-bg-dark p-3 rounded text-xs overflow-x-auto">
-                  <code>{`curl -X POST https://rpc.clawlabz.xyz \\
+                <div className="mt-2">
+                  <StaticCodeBlock language="bash" code={`curl -X POST https://rpc.clawlabz.xyz \\
   -H 'Content-Type: application/json' \\
-  -d '{"jsonrpc":"2.0","id":1,"method":"${m.name}","params":${m.params}}'`}</code>
-                </pre>
+  -d '{"jsonrpc":"2.0","id":1,"method":"${m.name}","params":${m.params}}'`} />
+                </div>
               </details>
             </div>
           ))}

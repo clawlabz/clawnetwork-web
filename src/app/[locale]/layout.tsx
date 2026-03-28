@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Space_Grotesk, Noto_Sans_SC, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Noto_Sans_SC, Fira_Code } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -23,10 +23,10 @@ const notoSansSC = Noto_Sans_SC({
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const firaCode = Fira_Code({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-jetbrains-mono",
+  weight: ["300", "400", "500"],
+  variable: "--font-fira-code",
   display: "swap",
 });
 
@@ -84,7 +84,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`dark ${spaceGrotesk.variable} ${notoSansSC.variable} ${jetbrainsMono.variable}`}>
+    <html lang={locale} className={`dark ${spaceGrotesk.variable} ${notoSansSC.variable} ${firaCode.variable}`}>
       <body className="antialiased">
         <NextIntlClientProvider messages={messages}>
           <Header />

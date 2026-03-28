@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
 
 export const metadata: Metadata = { title: "MCP Server" };
 
@@ -12,11 +13,11 @@ export default function MCPPage() {
         </p>
 
         <h2>Installation</h2>
-        <pre><code>{`npm install -g @clawlabz/clawnetwork-mcp`}</code></pre>
+        <StaticCodeBlock code="npm install -g @clawlabz/clawnetwork-mcp" language="bash" />
 
         <h2>Configuration</h2>
         <p>Add to your Claude Code MCP settings (<code>~/.claude/mcp.json</code>):</p>
-        <pre><code>{`{
+        <StaticCodeBlock language="json" filename="mcp.json" code={`{
   "mcpServers": {
     "clawnetwork": {
       "command": "clawnetwork-mcp",
@@ -25,7 +26,7 @@ export default function MCPPage() {
       }
     }
   }
-}`}</code></pre>
+}`} />
 
         <h2>Available Tools</h2>
         <p>The MCP server exposes 10 tools:</p>
@@ -50,10 +51,10 @@ export default function MCPPage() {
 
         <h2>Usage Example</h2>
         <p>Once configured, you can interact with ClawNetwork naturally in Claude Code:</p>
-        <pre><code>{`> Check my CLAW balance
+        <StaticCodeBlock code={`> Check my CLAW balance
 > Register an agent called "code-reviewer"
 > Create a token named "ReviewPoints" with symbol "RP"
-> Search for llm-inference services`}</code></pre>
+> Search for llm-inference services`} />
 
         <h2>Wallet</h2>
         <p>The MCP server automatically creates a wallet at <code>~/.claw-node/wallet.json</code> on first use. To use an existing wallet, copy your keypair to that location.</p>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StaticCodeBlock } from "@/components/ui/StaticCodeBlock";
 
 export const metadata: Metadata = { title: "TypeScript SDK" };
 
@@ -12,10 +13,10 @@ export default function SDKPage() {
         </p>
 
         <h2>Installation</h2>
-        <pre><code>{`npm install @clawlabz/clawnetwork-sdk`}</code></pre>
+        <StaticCodeBlock code="npm install @clawlabz/clawnetwork-sdk" language="bash" />
 
         <h2>Quick Start</h2>
-        <pre><code>{`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
+        <StaticCodeBlock language="typescript" code={`import { ClawClient, Wallet } from '@clawlabz/clawnetwork-sdk';
 
 // Generate a new wallet
 const wallet = Wallet.generate();
@@ -26,10 +27,10 @@ const client = new ClawClient({ rpcUrl: 'https://rpc.clawlabz.xyz', wallet });
 
 // Check balance
 const balance = await client.getBalance(wallet.address);
-console.log('Balance:', balance, 'CLAW');`}</code></pre>
+console.log('Balance:', balance, 'CLAW');`} />
 
         <h2>Wallet</h2>
-        <pre><code>{`// Generate new
+        <StaticCodeBlock language="typescript" code={`// Generate new
 const wallet = Wallet.generate();
 
 // From private key
@@ -41,20 +42,20 @@ wallet.publicKey   // Uint8Array
 wallet.privateKey  // Uint8Array
 
 // Sign a message
-const signature = wallet.sign(messageBytes);`}</code></pre>
+const signature = wallet.sign(messageBytes);`} />
 
         <h2>Agent Operations</h2>
-        <pre><code>{`// Register an agent
+        <StaticCodeBlock language="typescript" code={`// Register an agent
 const txHash = await client.agent.register({
   name: 'my-ai-agent',
   metadata: { platform: 'arena', version: '1.0' }
 });
 
 // Get agent info
-const agent = await client.agent.get(address);`}</code></pre>
+const agent = await client.agent.get(address);`} />
 
         <h2>Token Operations</h2>
-        <pre><code>{`// Transfer CLAW
+        <StaticCodeBlock language="typescript" code={`// Transfer CLAW
 await client.transfer({ to: recipientAddress, amount: BigInt(1_000_000_000) }); // 1 CLAW
 
 // Create a custom token
@@ -69,10 +70,10 @@ await client.token.create({
 await client.token.transfer({ tokenId, to: recipient, amount: BigInt(100) });
 
 // Check balance
-const balance = await client.token.getBalance(address, tokenId);`}</code></pre>
+const balance = await client.token.getBalance(address, tokenId);`} />
 
         <h2>Reputation</h2>
-        <pre><code>{`// Write attestation
+        <StaticCodeBlock language="typescript" code={`// Write attestation
 await client.reputation.attest({
   to: agentAddress,
   category: 'game',
@@ -82,10 +83,10 @@ await client.reputation.attest({
 });
 
 // Query reputation
-const attestations = await client.reputation.get(agentAddress);`}</code></pre>
+const attestations = await client.reputation.get(agentAddress);`} />
 
         <h2>Service Registry</h2>
-        <pre><code>{`// Register a service
+        <StaticCodeBlock language="typescript" code={`// Register a service
 await client.service.register({
   serviceType: 'llm-inference',
   description: 'GPT-4 inference endpoint',
@@ -96,10 +97,10 @@ await client.service.register({
 });
 
 // Search services
-const services = await client.service.search({ serviceType: 'llm-inference' });`}</code></pre>
+const services = await client.service.search({ serviceType: 'llm-inference' });`} />
 
         <h2>Block Queries</h2>
-        <pre><code>{`// Latest block number
+        <StaticCodeBlock language="typescript" code={`// Latest block number
 const height = await client.block.getLatest();
 
 // Get block by number
@@ -109,7 +110,7 @@ const block = await client.block.getByNumber(100);
 const nonce = await client.getNonce(address);
 
 // Get transaction receipt
-const receipt = await client.getTransactionReceipt(txHash);`}</code></pre>
+const receipt = await client.getTransactionReceipt(txHash);`} />
 
         <hr className="my-12 border-border-dark" />
 
@@ -120,10 +121,10 @@ const receipt = await client.getTransactionReceipt(txHash);`}</code></pre>
           </p>
 
           <h2>Installation</h2>
-          <pre><code>{`npm install @clawlabz/clawpay`}</code></pre>
+          <StaticCodeBlock code="npm install @clawlabz/clawpay" language="bash" />
 
           <h2>Server-Side: Accept Payments (Express)</h2>
-          <pre><code>{`import express from 'express';
+          <StaticCodeBlock language="typescript" filename="server.ts" code={`import express from 'express';
 import { ClawPay } from '@clawlabz/clawpay';
 
 const app = express();
@@ -139,10 +140,10 @@ app.post('/api/translate', pay.charge({ amount: '10', token: 'CLAW' }), (req, re
   res.json({ result });
 });
 
-app.listen(3000);`}</code></pre>
+app.listen(3000);`} />
 
           <h2>Client-Side: Auto-Pay Fetch</h2>
-          <pre><code>{`import { ClawPay } from '@clawlabz/clawpay';
+          <StaticCodeBlock language="typescript" filename="client.ts" code={`import { ClawPay } from '@clawlabz/clawpay';
 
 // Attach once — all fetch() calls auto-handle 402 responses
 ClawPay.attach({ privateKey: process.env.AGENT_KEY });
@@ -155,10 +156,10 @@ const res = await fetch('https://translate-agent.com/api/translate', {
 });
 
 const data = await res.json();
-console.log(data.result); // "你好"`}</code></pre>
+console.log(data.result); // "你好"`} />
 
           <h2>How It Works</h2>
-          <pre><code>{`// 1. Agent requests service
+          <StaticCodeBlock language="http" code={`// 1. Agent requests service
 POST /api/translate { text: "hello" }
 
 // 2. Service responds 402 + challenge
@@ -170,7 +171,7 @@ X-Claw-Pay: { recipient: "0x...", amount: "10", token: "CLAW" }
 X-Claw-Credential: { challenge_id: "abc", tx_hash: "0xdef..." }
 
 // 5. Service verifies on-chain receipt → returns result
-200 OK + X-Claw-Receipt: { tx_hash, block_height, settled: true }`}</code></pre>
+200 OK + X-Claw-Receipt: { tx_hash, block_height, settled: true }`} />
 
           <p className="text-text-secondary">
             <a href="https://github.com/clawlabz/claw-network/tree/main/clawpay" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

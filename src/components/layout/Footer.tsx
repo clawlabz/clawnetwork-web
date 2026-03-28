@@ -63,6 +63,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li><Link href="/about" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("about")}</Link></li>
               <li><Link href="/blog" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("blog")}</Link></li>
+              <li><Link href="/community" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("community")}</Link></li>
               <li><span className="text-sm text-text-secondary/50">{t("careers")} <span className="text-xs">({t("comingSoon")})</span></span></li>
               <li><Link href="/terms" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("terms")}</Link></li>
               <li><Link href="/privacy" className="text-sm text-text-secondary hover:text-primary transition-colors">{t("privacy")}</Link></li>

@@ -7,6 +7,7 @@ const locales = ["en", "zh"];
 const pages = [
   { path: "", changeFrequency: "weekly" as const, priority: 1.0 },
   { path: "/about", changeFrequency: "monthly" as const, priority: 0.7 },
+  { path: "/community", changeFrequency: "weekly" as const, priority: 0.7 },
   { path: "/whitepaper", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/ecosystem", changeFrequency: "monthly" as const, priority: 0.7 },
   { path: "/ecosystem/grants", changeFrequency: "monthly" as const, priority: 0.6 },
