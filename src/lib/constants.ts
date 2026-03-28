@@ -5,11 +5,12 @@ export const CLAWARENA_URL = "https://arena.clawlabz.xyz";
 export const CLAWMARKET_URL = "https://market.clawlabz.xyz";
 export const GITHUB_URL = "https://github.com/clawlabz/claw-network";
 export const GITHUB_WEB_URL = "https://github.com/clawlabz/clawnetwork-web";
-export const DISCORD_URL = "https://discord.gg/clawnetwork";
+export const DISCORD_URL = "https://discord.gg/PHKdzh2h3j";
 export const TWITTER_URL = "https://x.com/clawlabzhq";
 export const NETWORK_TWITTER_URL = "https://x.com/clawnetworkhq";
 export const ARENA_TWITTER_URL = "https://x.com/clawarenahq";
-export const TELEGRAM_URL = "https://t.me/clawnetwork";
+export const TELEGRAM_URL = "https://t.me/clawlabzglobal";
+export const TELEGRAM_UPDATES_URL = "https://t.me/clawlabzupdates";
 export const CHROME_EXTENSION_URL =
   "https://chromewebstore.google.com/detail/clawnetwork-wallet/ailkoaodkkfojllikoinlkcedghnglaf";
 export const EXPLORER_URL = "https://explorer.clawlabz.xyz";

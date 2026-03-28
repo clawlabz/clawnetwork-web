@@ -20,6 +20,7 @@ import {
   NETWORK_TWITTER_URL,
   SITE_URL,
   TELEGRAM_URL,
+  TELEGRAM_UPDATES_URL,
   ARENA_TWITTER_URL,
   TWITTER_URL,
   WALLET_URL,
@@ -43,7 +44,7 @@ const content = {
       "These are the official websites and product surfaces currently operated under the Claw ecosystem.",
     communityTitle: "Community & Social",
     communityBody:
-      "These are the current official social and community entry points. Future official product-specific channels will be added here first.",
+      "These are the current official social and community entry points for the Claw ecosystem. Use Discord for live discussion, Telegram Global for chat, and Telegram Updates for announcement-only broadcasts.",
     securityTitle: "Security Reminders",
     securityBody:
       "Crypto and AI communities attract impersonation and fake support. Use these rules every time.",
@@ -52,7 +53,7 @@ const content = {
       "When in doubt, use this short verification flow before trusting any account, invitation, or token link.",
     futureTitle: "Future Channels",
     futureBody:
-      "As dedicated product accounts for ClawNetwork, ClawArena, and ClawMarket go live, they will be listed here first before being promoted elsewhere.",
+      "ClawLabz, ClawNetwork, and ClawArena official X accounts are now live. As ClawMarket and future product-specific channels launch, they will be added here first before being promoted elsewhere.",
     siteType: "Website",
     toolType: "Tool",
     socialType: "Social",
@@ -123,16 +124,22 @@ const content = {
         description: "Official X account for ClawArena battles, rankings, tournaments, and highlights.",
       },
       {
-        name: "Discord",
+        name: "Discord / ClawLabz",
         type: "Community",
         href: DISCORD_URL,
         description: "Official live community for ClawNetwork and the broader Claw ecosystem.",
       },
       {
-        name: "Telegram",
+        name: "Telegram / ClawLabz Global",
         type: "Community",
         href: TELEGRAM_URL,
-        description: "Official Telegram entry point currently used for the ecosystem community.",
+        description: "Official Telegram group for community chat, support, and ecosystem discussion.",
+      },
+      {
+        name: "Telegram / ClawLabz Updates",
+        type: "Community",
+        href: TELEGRAM_UPDATES_URL,
+        description: "Official Telegram channel for announcements, launches, and ecosystem updates.",
       },
       {
         name: "GitHub",
@@ -166,14 +173,14 @@ const content = {
     productsBody: "以下是当前由 Claw 生态正式运营的官网与产品入口。",
     communityTitle: "社区与社媒",
     communityBody:
-      "以下是当前官方社媒与社区入口。未来新增的产品专属账号，也会优先先更新到这一页。",
+      "以下是当前 Claw 生态官方社媒与社区入口。实时讨论以 Discord 为主，Telegram Global 用于群聊互动，Telegram Updates 用于仅公告广播。",
     securityTitle: "安全提醒",
     securityBody: "Crypto 与 AI 社区很容易出现冒充和假客服。每次都按下面规则核验。",
     stepsTitle: "如何核验",
     stepsBody: "在相信任何账号、邀请链接或代币链接前，先走完这套简单核验流程。",
     futureTitle: "后续官方渠道",
     futureBody:
-      "随着 ClawNetwork、ClawArena、ClawMarket 的独立官方账号上线，它们会先出现在本页，然后再在其他渠道公开推广。",
+      "ClawLabz、ClawNetwork、ClawArena 的官方 X 账号现已上线。后续当 ClawMarket 及更多产品专属渠道开放时，也会先更新到本页，再在其他渠道推广。",
     siteType: "官网",
     toolType: "工具",
     socialType: "社媒",
@@ -244,16 +251,22 @@ const content = {
         description: "ClawArena 对战、排行、赛事与精彩片段的官方 X 账号。",
       },
       {
-        name: "Discord",
+        name: "Discord / ClawLabz",
         type: "社区",
         href: DISCORD_URL,
         description: "ClawNetwork 与 Claw 生态当前统一的官方社区入口。",
       },
       {
-        name: "Telegram",
+        name: "Telegram / ClawLabz Global",
         type: "社区",
         href: TELEGRAM_URL,
-        description: "当前生态统一使用的官方 Telegram 入口。",
+        description: "官方 Telegram 大群，用于社区聊天、答疑与生态讨论。",
+      },
+      {
+        name: "Telegram / ClawLabz Updates",
+        type: "社区",
+        href: TELEGRAM_UPDATES_URL,
+        description: "官方 Telegram 公告频道，用于发布上线、更新与重要通知。",
       },
       {
         name: "GitHub",

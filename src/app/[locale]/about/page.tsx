@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Flame, Cog, Brain, Wrench } from "lucide-react";
+import { DISCORD_URL } from "@/lib/constants";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -50,7 +51,7 @@ export default function AboutPage() {
         <div className="rounded-xl border border-border-dark bg-surface-dark/30 p-8 text-center">
           <h2 className="text-2xl font-bold mb-3">{t("joinUs")}</h2>
           <p className="text-text-secondary mb-6">{t("joinUsDesc")}</p>
-          <a href="https://discord.gg/clawnetwork" target="_blank" rel="noopener noreferrer" className="inline-flex rounded-lg bg-primary px-6 py-3 text-sm font-bold text-bg-dark transition-all hover:brightness-110">
+          <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" className="inline-flex rounded-lg bg-primary px-6 py-3 text-sm font-bold text-bg-dark transition-all hover:brightness-110">
             {t("joinDiscord")}
           </a>
         </div>

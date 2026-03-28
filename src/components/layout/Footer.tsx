@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import Image from "next/image";
 import { Github, Twitter } from "lucide-react";
-import { GITHUB_URL, TWITTER_URL, DISCORD_URL, TELEGRAM_URL, EXPLORER_URL } from "@/lib/constants";
+import { GITHUB_URL, NETWORK_TWITTER_URL, DISCORD_URL, TELEGRAM_URL, EXPLORER_URL } from "@/lib/constants";
 
 export function Footer() {
   const t = useTranslations("footer");
@@ -25,7 +25,7 @@ export function Footer() {
               <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-dark text-text-secondary transition-colors hover:border-primary hover:text-primary">
                 <Github className="h-4 w-4" />
               </a>
-              <a href={TWITTER_URL} target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-dark text-text-secondary transition-colors hover:border-primary hover:text-primary">
+              <a href={NETWORK_TWITTER_URL} target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-dark text-text-secondary transition-colors hover:border-primary hover:text-primary">
                 <Twitter className="h-4 w-4" />
               </a>
               <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-dark text-text-secondary transition-colors hover:border-primary hover:text-primary">
