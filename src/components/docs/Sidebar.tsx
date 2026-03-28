@@ -23,6 +23,7 @@ export function DocsSidebar({ docs }: { docs: DocMeta[] }) {
               <li key={doc.slug}>
                 <Link
                   href={href}
+                  onClick={() => window.scrollTo({ top: 0 })}
                   className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
                     isActive
                       ? "bg-primary/10 text-primary font-medium"

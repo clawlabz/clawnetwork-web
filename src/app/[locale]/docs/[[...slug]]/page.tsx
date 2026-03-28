@@ -29,7 +29,7 @@ export default async function DocPage({ params }: Props) {
 
   return (
     <article className="prose max-w-3xl">
-      <h1>{doc.title}</h1>
+      <h1 className="!mt-0">{doc.title}</h1>
       {doc.description && (
         <p className="text-lg text-text-secondary mt-2 mb-8">{doc.description}</p>
       )}
