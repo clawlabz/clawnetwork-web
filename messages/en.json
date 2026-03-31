@@ -8,6 +8,7 @@
     "developers": "Developers",
     "about": "About",
     "wallet": "Wallet",
+    "nodes": "Nodes",
     "launchNode": "Launch Node",
     "getStarted": "Get Started",
     "readWhitepaper": "Read Docs",
@@ -528,6 +529,10 @@
       "step3": "Secure your wallet with a password",
       "step4": "Start sending, receiving, and staking CLAW"
     }
+  },
+  "nodes": {
+    "metaTitle": "Node Rewards — ClawNetwork",
+    "metaDescription": "Run a ClawNetwork node and earn CLAW tokens. Estimate your daily mining rewards by reputation tier with our interactive calculator."
   },
   "brand": {
     "title": "Brand Kit",

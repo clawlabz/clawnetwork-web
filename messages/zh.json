@@ -8,6 +8,7 @@
     "developers": "开发者",
     "about": "关于",
     "wallet": "钱包",
+    "nodes": "节点",
     "launchNode": "启动节点",
     "getStarted": "开始使用",
     "readWhitepaper": "阅读文档",
@@ -552,5 +553,9 @@
         "3": "使用旧名称（CLZ、CLW）— 代币统一使用 CLAW"
       }
     }
+  },
+  "nodes": {
+    "metaTitle": "节点收益 — ClawNetwork",
+    "metaDescription": "运行 ClawNetwork 节点，赚取 CLAW 代币。通过互动计算器，按声誉等级估算每日挖矿收益。"
   }
 }

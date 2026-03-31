@@ -51,6 +51,7 @@ export function Header() {
     { href: "/#features", label: t("features") },
     { href: "/#tokenomics", label: t("tokenomics") },
     { href: "/#roadmap", label: t("roadmap") },
+    { href: "/nodes", label: t("nodes") },
     { href: "/wallet", label: t("wallet") },
     { href: "/docs/quickstart", label: t("docs") },
     { href: "/developers", label: t("developers") },
