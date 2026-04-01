@@ -8,13 +8,14 @@ import {
   Shield,
   History,
   Droplets,
+  Plug,
   Chrome,
   ExternalLink,
 } from "lucide-react";
 import { CHROME_EXTENSION_URL } from "@/lib/constants";
 
-const FEATURE_ICONS = [ArrowUpDown, Landmark, Bot, Shield, History, Droplets] as const;
-const FEATURE_KEYS = ["send", "stake", "agent", "security", "explorer", "faucet"] as const;
+const FEATURE_ICONS = [ArrowUpDown, Landmark, Bot, Shield, History, Droplets, Plug] as const;
+const FEATURE_KEYS = ["send", "stake", "agent", "security", "explorer", "faucet", "api"] as const;
 
 export default function WalletPage() {
   const t = useTranslations("wallet");
@@ -97,6 +98,79 @@ export default function WalletPage() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Developer API Showcase */}
+      <section className="relative z-10 mx-auto max-w-7xl px-6 mb-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 tracking-tight">
+          {t("devSection.title")}
+        </h2>
+        <p className="text-lg text-text-secondary text-center mb-12">
+          {t("devSection.subtitle")}
+        </p>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {/* Code example - DApp Provider */}
+          <div className="rounded-2xl border border-white/10 bg-surface-dark/60 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="h-3 w-3 rounded-full bg-red-400" />
+              <div className="h-3 w-3 rounded-full bg-yellow-400" />
+              <div className="h-3 w-3 rounded-full bg-green-400" />
+              <span className="ml-2 text-xs text-text-secondary font-mono">DApp Provider</span>
+            </div>
+            <pre className="text-sm font-mono text-text-secondary leading-relaxed overflow-x-auto">
+              <code>{`// Transfer CLAW — one line
+await clawNetwork.request({
+  method: 'claw_transfer',
+  params: ['<address>', '100']
+})
+
+// Stake tokens
+await clawNetwork.request({
+  method: 'claw_stake',
+  params: ['500']
+})
+
+// Register AI Agent identity
+await clawNetwork.request({
+  method: 'claw_registerAgent',
+  params: ['my-agent']
+})`}</code>
+            </pre>
+          </div>
+
+          {/* Code example - REST API */}
+          <div className="rounded-2xl border border-white/10 bg-surface-dark/60 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="h-3 w-3 rounded-full bg-red-400" />
+              <div className="h-3 w-3 rounded-full bg-yellow-400" />
+              <div className="h-3 w-3 rounded-full bg-green-400" />
+              <span className="ml-2 text-xs text-text-secondary font-mono">REST API (Node Dashboard)</span>
+            </div>
+            <pre className="text-sm font-mono text-text-secondary leading-relaxed overflow-x-auto">
+              <code>{`# Transfer via REST
+curl -X POST localhost:19877/api/transfer \\
+  -d '{"to": "<address>", "amount": "100"}'
+
+# Check balance
+curl localhost:19877/api/wallet/balance
+
+# Register agent
+curl -X POST localhost:19877/api/agent/register \\
+  -d '{"name": "my-agent"}'`}</code>
+            </pre>
+          </div>
+        </div>
+
+        <div className="text-center mt-8">
+          <a
+            href="/docs/agent-api"
+            className="inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 px-6 py-3 text-sm font-semibold text-primary transition-all hover:bg-primary/10 hover:border-primary/50"
+          >
+            {t("devSection.cta")}
+            <ExternalLink className="h-4 w-4" />
+          </a>
         </div>
       </section>
 

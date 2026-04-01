@@ -1,0 +1,190 @@
+---
+title: Agent API Reference
+description: Complete API reference for AI agents to interact with ClawNetwork wallets and nodes.
+order: 9
+---
+
+## Overview
+
+ClawNetwork provides three API surfaces for AI agents and DApps to interact with the blockchain — no UI required.
+
+| API Surface | Provider | Use Case |
+|------------|----------|----------|
+| **DApp Provider** | Browser Extension (`window.clawNetwork`) | Browser-based agents and DApps |
+| **REST API** | Node Dashboard (`localhost:19877`) | Terminal agents, scripts, automation |
+| **Gateway Methods** | OpenClaw Plugin | OpenClaw ecosystem agents |
+
+All three surfaces cover the same operations: transfer, stake, register agent, manage services. Choose based on your runtime environment.
+
+---
+
+## DApp Provider API
+
+The ClawNetwork browser extension injects `window.clawNetwork` into every page (like MetaMask's `window.ethereum`).
+
+### Connection
+
+```javascript
+// Request wallet connection (opens approval popup)
+const accounts = await clawNetwork.request({
+  method: 'claw_requestAccounts'
+})
+// accounts = ['b68807c3...'] (64-char hex address)
+```
+
+### Read-Only Methods (No Approval)
+
+| Method | Params | Returns |
+|--------|--------|---------|
+| `claw_accounts` | — | `string[]` connected addresses |
+| `claw_getBalance(address)` | address: string | balance (raw units) |
+| `claw_getNonce(address)` | address: string | nonce number |
+| `claw_blockNumber` | — | current block height |
+| `claw_getAgent(address)` | address: string | agent info |
+| `wallet_getNetwork` | — | network ID string |
+
+### Transaction Methods (User Approval Required)
+
+Each method opens a confirmation popup in the extension. The user must approve before the transaction is signed and broadcast.
+
+| Method | Params | Description |
+|--------|--------|-------------|
+| `claw_transfer(to, amount)` | to: address, amount: string | Transfer CLAW tokens |
+| `claw_stake(amount, validator?)` | amount: string, validator?: address | Stake CLAW |
+| `claw_unstake(amount)` | amount: string | Unstake CLAW |
+| `claw_claimStake()` | — | Claim staking rewards |
+| `claw_registerAgent(name)` | name: string | Register on-chain agent identity |
+| `claw_registerService(type, endpoint)` | type: string, endpoint: URL | Register a service |
+| `claw_sendTransaction(txData)` | TxRequestPayload | Raw transaction (advanced) |
+| `claw_signMessage(message)` | hex string | Sign arbitrary message |
+| `claw_importAccountKey(key, name?)` | key: hex, name?: string | Import private key |
+
+### Example: Complete Agent Flow
+
+```javascript
+// 1. Connect
+await clawNetwork.request({ method: 'claw_requestAccounts' })
+
+// 2. Register agent identity
+await clawNetwork.request({
+  method: 'claw_registerAgent',
+  params: ['my-trading-bot']
+})
+
+// 3. Transfer tokens
+const result = await clawNetwork.request({
+  method: 'claw_transfer',
+  params: ['<recipient-address>', '50']
+})
+console.log('TX Hash:', result.txHash)
+
+// 4. Stake tokens
+await clawNetwork.request({
+  method: 'claw_stake',
+  params: ['1000']
+})
+
+// 5. Listen for events
+clawNetwork.on('accountsChanged', (accounts) => {
+  console.log('Active account:', accounts[0])
+})
+```
+
+---
+
+## REST API (Node Dashboard)
+
+When running a ClawNetwork node via the OpenClaw plugin, a REST API is available at `http://127.0.0.1:19877`.
+
+### Read Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/status` | GET | Node status, block height, peers, uptime |
+| `/api/wallet/balance?address=<addr>` | GET | CLAW balance (formatted) |
+| `/api/wallet/export` | GET | Wallet address + private key (localhost only) |
+| `/api/logs` | GET | Recent node logs (last 80 lines) |
+| `/api/node/config` | GET | Current node configuration |
+| `/api/service/search?type=<type>` | GET | Search registered services |
+
+### Write Endpoints
+
+| Endpoint | Method | Body | Description |
+|----------|--------|------|-------------|
+| `/api/transfer` | POST | `{to, amount}` | Transfer CLAW |
+| `/api/stake` | POST | `{amount, action?}` | Stake/unstake/claim (`action`: deposit/withdraw/claim) |
+| `/api/agent/register` | POST | `{name}` | Register agent identity |
+| `/api/service/register` | POST | `{serviceType, endpoint}` | Register service |
+| `/api/action/start` | POST | — | Start node |
+| `/api/action/stop` | POST | — | Stop node |
+| `/api/action/faucet` | POST | — | Request testnet CLAW |
+
+### Example: curl
+
+```bash
+# Check balance
+curl http://localhost:19877/api/wallet/balance
+
+# Transfer 100 CLAW
+curl -X POST http://localhost:19877/api/transfer \
+  -H 'Content-Type: application/json' \
+  -d '{"to": "<address>", "amount": "100"}'
+
+# Register agent
+curl -X POST http://localhost:19877/api/agent/register \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "my-agent"}'
+
+# Stake 500 CLAW
+curl -X POST http://localhost:19877/api/stake \
+  -H 'Content-Type: application/json' \
+  -d '{"amount": "500"}'
+```
+
+---
+
+## Direct Extension Messaging (externally_connectable)
+
+For localhost applications (like the Node Dashboard or terminal agents), the extension supports direct `chrome.runtime.sendMessage` — bypassing the page context entirely.
+
+```javascript
+// From any localhost page — no window.clawNetwork needed
+chrome.runtime.sendMessage(
+  '<extension-id>',
+  { method: 'claw_getBalance', params: ['<address>'] },
+  (response) => console.log(response)
+)
+```
+
+This channel is restricted to `http://127.0.0.1` and `http://localhost` origins only.
+
+---
+
+## Gateway Methods (OpenClaw Plugin)
+
+For AI agents running inside the OpenClaw ecosystem, the plugin exposes Gateway methods:
+
+| Method | Params | Description |
+|--------|--------|-------------|
+| `clawnetwork.status` | — | Node health + block height |
+| `clawnetwork.balance` | `{address?}` | CLAW balance |
+| `clawnetwork.transfer` | `{to, amount}` | Transfer CLAW |
+| `clawnetwork.agent-register` | `{name?}` | Register agent |
+| `clawnetwork.faucet` | — | Testnet faucet |
+| `clawnetwork.start` | — | Start node |
+| `clawnetwork.stop` | — | Stop node |
+| `clawnetwork.service-register` | `{serviceType, endpoint}` | Register service |
+| `clawnetwork.service-search` | `{serviceType?}` | Search services |
+
+---
+
+## Comparison: Traditional vs ClawNetwork
+
+| Operation | MetaMask (Ethereum) | ClawNetwork |
+|-----------|-------------------|-------------|
+| Transfer tokens | Build TX → estimate gas → sign → send (4 steps) | `claw_transfer(to, amount)` (1 step) |
+| Stake | Find validator contract → encode ABI → approve → send | `claw_stake(amount)` (1 step) |
+| Register identity | Deploy contract → call register → pay gas | `claw_registerAgent(name)` (1 step, gas-free) |
+| Agent automation | Not supported natively | Full REST + Provider + Gateway APIs |
+
+ClawNetwork is designed from the ground up for AI agents. Every on-chain operation is a single, high-level API call with built-in user approval when needed.

@@ -70,7 +70,9 @@
     "discovery": {
       "title": "Service Discovery",
       "desc": "OpenClaws publish services on-chain with type, endpoint, and pricing. Any AI agent can discover and invoke them trustlessly."
-    }
+    },
+    "agentApi": "Agent-Native API",
+    "agentApiDesc": "Every wallet and node operation is a single API call. AI agents operate without touching the UI — transfer, stake, and register through code."
   },
   "howItWorks": {
     "title": "How It Works",
@@ -269,6 +271,8 @@
     "clawPaySdkDesc": "HTTP 402 payment protocol for AI agents. 3 lines to charge, 2 lines to pay.",
     "smartContracts": "Smart Contracts",
     "smartContractsDesc": "Wasm contracts in Rust with native AI agent identity and reputation host functions. 0.001 CLAW flat fee.",
+    "agentApi": "Agent Wallet API",
+    "agentApiDesc": "Transfer, stake, and manage agent identities through DApp Provider, REST API, or direct extension messaging. Every operation is a single API call.",
     "learnMore": "Learn More",
     "browseDocs": "Browse Docs",
     "viewSDKs": "View SDKs",
@@ -520,7 +524,15 @@
       "explorer": "Transaction History",
       "explorerDesc": "View all your transactions with direct links to the block explorer.",
       "faucet": "Testnet Faucet",
-      "faucetDesc": "Get free testnet CLAW for development and testing."
+      "faucetDesc": "Get free testnet CLAW for development and testing.",
+      "api": "Agent-Native API",
+      "apiDesc": "Every wallet operation is a single API call. AI agents can transfer, stake, and register on-chain identities without touching the UI. Supports DApp Provider, REST API, and direct extension messaging."
+    },
+    "devSection": {
+      "title": "Built for AI Agents",
+      "subtitle": "One line of code. Full wallet control.",
+      "cta": "View Full API Docs",
+      "ctaLink": "/docs/agent-api"
     },
     "getStarted": "Get Started",
     "getStartedSteps": {

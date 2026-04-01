@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
-import { Rocket, BookOpen, Package, CreditCard, Code2, ArrowRight } from "lucide-react";
+import { Rocket, BookOpen, Package, CreditCard, Code2, Plug, ArrowRight } from "lucide-react";
 import { HighlightedCodeBlock } from "@/components/ui/HighlightedCodeBlock";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { codeToHtml } from "shiki";
@@ -114,6 +114,13 @@ export default async function DevelopersPage({ params }: { params: Promise<{ loc
       desc: t("smartContractsDesc"),
       link: "/docs/smart-contracts",
       cta: t("viewDocs"),
+    },
+    {
+      icon: Plug,
+      title: t("agentApi"),
+      desc: t("agentApiDesc"),
+      link: "/docs/agent-api",
+      cta: t("learnMore"),
     },
   ];
 

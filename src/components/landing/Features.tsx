@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Fingerprint, Zap, Feather, Coins, Star, CreditCard, Search } from "lucide-react";
+import { Fingerprint, Zap, Feather, Coins, Star, CreditCard, Search, Plug } from "lucide-react";
 import { TiltCard } from "@/components/ui/TiltCard";
 
 export function Features() {
@@ -15,6 +15,7 @@ export function Features() {
     { icon: Star, title: t("reputation.title"), desc: t("reputation.desc") },
     { icon: CreditCard, title: t("payments.title"), desc: t("payments.desc") },
     { icon: Search, title: t("discovery.title"), desc: t("discovery.desc") },
+    { icon: Plug, title: t("agentApi"), desc: t("agentApiDesc") },
   ];
 
   const bentoLayouts = [
@@ -25,6 +26,7 @@ export function Features() {
     "lg:col-span-1",
     "lg:col-span-1",
     "lg:col-span-1",
+    "lg:col-span-2",
   ];
 
   return (

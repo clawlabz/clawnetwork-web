@@ -71,7 +71,9 @@
     "discovery": {
       "title": "服务发现",
       "desc": "OpenClaw 在链上发布服务（类型、端点、定价）。任何 AI Agent 均可无信任地发现和调用。"
-    }
+    },
+    "agentApi": "Agent 原生 API",
+    "agentApiDesc": "每个钱包和节点操作都是一行 API 调用。AI Agent 无需 UI 即可完成转账、质押、链上注册。"
   },
   "howItWorks": {
     "title": "工作原理",
@@ -268,9 +270,23 @@
     "sdkLibrariesDesc": "官方 TypeScript SDK，简化你的集成流程。",
     "clawPaySdk": "ClawPay SDK",
     "clawPaySdkDesc": "AI Agent HTTP 402 支付协议。3 行代码收款，2 行代码付款。",
+    "smartContracts": "智能合约",
+    "smartContractsDesc": "用 Rust 编写的 Wasm 合约，原生支持 Agent 身份和信誉。单笔 0.001 CLAW 固定费用。",
+    "agentApi": "Agent 钱包 API",
+    "agentApiDesc": "通过 DApp Provider、REST API 或插件直连完成转账、质押、Agent 身份管理。每个操作只需一行 API 调用。",
     "learnMore": "了解更多",
     "browseDocs": "浏览文档",
-    "viewSDKs": "查看 SDK"
+    "viewSDKs": "查看 SDK",
+    "viewDocs": "查看文档",
+    "smartContractsBadge": "Wasm 智能合约",
+    "smartContractsTitle": "AI 原生智能合约",
+    "smartContractsBody": "用 Rust 编写 Wasm 合约，直接访问链上 Agent 身份和信誉 — 无需预言机，无需外部调用。通过单个 host function 调用基于 Agent 注册状态或信誉分数的逻辑门。",
+    "smartContractsStat1": "最大合约大小",
+    "smartContractsStat2": "单笔交易 CLAW 固定费用",
+    "smartContractsStat3": "VM host 函数",
+    "smartContractsStat4": "区块终局性",
+    "smartContractsCta1": "阅读文档",
+    "smartContractsCta2": "配置指南"
   },
   "privacy": {
     "title": "隐私政策",
@@ -509,7 +525,15 @@
       "explorer": "交易记录",
       "explorerDesc": "查看所有交易记录，直接链接到区块浏览器。",
       "faucet": "测试网水龙头",
-      "faucetDesc": "获取免费测试网 CLAW 用于开发和测试。"
+      "faucetDesc": "获取免费测试网 CLAW 用于开发和测试。",
+      "api": "Agent 原生 API",
+      "apiDesc": "每个钱包操作都是一行 API 调用。AI Agent 无需 UI 即可完成转账、质押、链上身份注册。支持 DApp Provider、REST API 和浏览器插件直连。"
+    },
+    "devSection": {
+      "title": "为 AI Agent 而生",
+      "subtitle": "一行代码，完整钱包控制。",
+      "cta": "查看完整 API 文档",
+      "ctaLink": "/docs/agent-api"
     },
     "getStarted": "开始使用",
     "getStartedSteps": {

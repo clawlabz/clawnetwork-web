@@ -1,0 +1,190 @@
+---
+title: Agent API 参考
+description: AI 智能体与 ClawNetwork 钱包和节点交互的完整 API 参考。
+order: 9
+---
+
+## 概览
+
+ClawNetwork 提供三个 API 接口供 AI 智能体和 DApp 与区块链交互 — 无需 UI。
+
+| API 接口 | 提供者 | 适用场景 |
+|---------|-------|--------|
+| **DApp Provider** | 浏览器插件 (`window.clawNetwork`) | 基于浏览器的智能体和 DApp |
+| **REST API** | 节点面板 (`localhost:19877`) | 终端智能体、脚本、自动化 |
+| **Gateway 方法** | OpenClaw 插件 | OpenClaw 生态智能体 |
+
+三个接口都覆盖相同的操作：转账、质押、注册智能体、服务管理。根据你的运行环境选择。
+
+---
+
+## DApp Provider API
+
+ClawNetwork 浏览器插件向每个页面注入 `window.clawNetwork`（类似 MetaMask 的 `window.ethereum`）。
+
+### 连接
+
+```javascript
+// 请求钱包连接（打开审批弹窗）
+const accounts = await clawNetwork.request({
+  method: 'claw_requestAccounts'
+})
+// accounts = ['b68807c3...'] (64 字符十六进制地址)
+```
+
+### 只读方法（无需审批）
+
+| 方法 | 参数 | 返回值 |
+|-----|-----|-------|
+| `claw_accounts` | — | `string[]` 已连接地址列表 |
+| `claw_getBalance(address)` | address: string | 余额（原始单位） |
+| `claw_getNonce(address)` | address: string | Nonce 数值 |
+| `claw_blockNumber` | — | 当前区块高度 |
+| `claw_getAgent(address)` | address: string | 智能体信息 |
+| `wallet_getNetwork` | — | 网络 ID 字符串 |
+
+### 交易方法（需用户审批）
+
+每个方法都会在插件中打开确认弹窗。用户必须批准后，交易才会被签名和广播。
+
+| 方法 | 参数 | 说明 |
+|-----|-----|------|
+| `claw_transfer(to, amount)` | to: address, amount: string | 转账 CLAW 代币 |
+| `claw_stake(amount, validator?)` | amount: string, validator?: address | 质押 CLAW |
+| `claw_unstake(amount)` | amount: string | 取消质押 |
+| `claw_claimStake()` | — | 领取质押奖励 |
+| `claw_registerAgent(name)` | name: string | 注册链上智能体身份 |
+| `claw_registerService(type, endpoint)` | type: string, endpoint: URL | 注册服务 |
+| `claw_sendTransaction(txData)` | TxRequestPayload | 原始交易（高级） |
+| `claw_signMessage(message)` | hex string | 签名任意消息 |
+| `claw_importAccountKey(key, name?)` | key: hex, name?: string | 导入私钥 |
+
+### 示例：完整智能体流程
+
+```javascript
+// 1. 连接
+await clawNetwork.request({ method: 'claw_requestAccounts' })
+
+// 2. 注册智能体身份
+await clawNetwork.request({
+  method: 'claw_registerAgent',
+  params: ['my-trading-bot']
+})
+
+// 3. 转账代币
+const result = await clawNetwork.request({
+  method: 'claw_transfer',
+  params: ['<recipient-address>', '50']
+})
+console.log('TX Hash:', result.txHash)
+
+// 4. 质押代币
+await clawNetwork.request({
+  method: 'claw_stake',
+  params: ['1000']
+})
+
+// 5. 监听事件
+clawNetwork.on('accountsChanged', (accounts) => {
+  console.log('Active account:', accounts[0])
+})
+```
+
+---
+
+## REST API（节点面板）
+
+通过 OpenClaw 插件运行 ClawNetwork 节点时，REST API 可用于 `http://127.0.0.1:19877`。
+
+### 读取端点
+
+| 端点 | 方法 | 说明 |
+|-----|-----|------|
+| `/api/status` | GET | 节点状态、区块高度、对等节点、运行时间 |
+| `/api/wallet/balance?address=<addr>` | GET | CLAW 余额（已格式化） |
+| `/api/wallet/export` | GET | 钱包地址 + 私钥（仅 localhost） |
+| `/api/logs` | GET | 最近节点日志（最后 80 行） |
+| `/api/node/config` | GET | 当前节点配置 |
+| `/api/service/search?type=<type>` | GET | 搜索已注册服务 |
+
+### 写入端点
+
+| 端点 | 方法 | 请求体 | 说明 |
+|-----|-----|-------|------|
+| `/api/transfer` | POST | `{to, amount}` | 转账 CLAW |
+| `/api/stake` | POST | `{amount, action?}` | 质押/取消质押/领取（`action`：deposit/withdraw/claim） |
+| `/api/agent/register` | POST | `{name}` | 注册智能体身份 |
+| `/api/service/register` | POST | `{serviceType, endpoint}` | 注册服务 |
+| `/api/action/start` | POST | — | 启动节点 |
+| `/api/action/stop` | POST | — | 停止节点 |
+| `/api/action/faucet` | POST | — | 请求测试网 CLAW |
+
+### 示例：curl
+
+```bash
+# 检查余额
+curl http://localhost:19877/api/wallet/balance
+
+# 转账 100 CLAW
+curl -X POST http://localhost:19877/api/transfer \
+  -H 'Content-Type: application/json' \
+  -d '{"to": "<address>", "amount": "100"}'
+
+# 注册智能体
+curl -X POST http://localhost:19877/api/agent/register \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "my-agent"}'
+
+# 质押 500 CLAW
+curl -X POST http://localhost:19877/api/stake \
+  -H 'Content-Type: application/json' \
+  -d '{"amount": "500"}'
+```
+
+---
+
+## 浏览器插件直连通道（externally_connectable）
+
+对于 localhost 应用（如节点面板或终端智能体），插件支持直接 `chrome.runtime.sendMessage` — 绕过页面上下文。
+
+```javascript
+// 从任何 localhost 页面 — 无需 window.clawNetwork
+chrome.runtime.sendMessage(
+  '<extension-id>',
+  { method: 'claw_getBalance', params: ['<address>'] },
+  (response) => console.log(response)
+)
+```
+
+此通道仅限于 `http://127.0.0.1` 和 `http://localhost` origins。
+
+---
+
+## Gateway 方法（OpenClaw 插件）
+
+对于在 OpenClaw 生态内运行的 AI 智能体，插件暴露 Gateway 方法：
+
+| 方法 | 参数 | 说明 |
+|-----|-----|------|
+| `clawnetwork.status` | — | 节点健康状态 + 区块高度 |
+| `clawnetwork.balance` | `{address?}` | CLAW 余额 |
+| `clawnetwork.transfer` | `{to, amount}` | 转账 CLAW |
+| `clawnetwork.agent-register` | `{name?}` | 注册智能体 |
+| `clawnetwork.faucet` | — | 测试网水龙头 |
+| `clawnetwork.start` | — | 启动节点 |
+| `clawnetwork.stop` | — | 停止节点 |
+| `clawnetwork.service-register` | `{serviceType, endpoint}` | 注册服务 |
+| `clawnetwork.service-search` | `{serviceType?}` | 搜索服务 |
+
+---
+
+## 对比：传统钱包 vs ClawNetwork
+
+| 操作 | MetaMask（以太坊） | ClawNetwork |
+|-----|------------------|------------|
+| 转账代币 | 构建 TX → 预估 Gas → 签名 → 发送（4 步） | `claw_transfer(to, amount)`（1 步） |
+| 质押 | 查找验证者合约 → 编码 ABI → 批准 → 发送 | `claw_stake(amount)`（1 步） |
+| 注册身份 | 部署合约 → 调用注册 → 支付 Gas | `claw_registerAgent(name)`（1 步，无 Gas） |
+| 智能体自动化 | 不原生支持 | 完整 REST + Provider + Gateway API |
+
+ClawNetwork 从底层为 AI 智能体而设计。每个链上操作都是一个简单的高级 API 调用，并内置必要的用户审批。
