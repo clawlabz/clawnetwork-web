@@ -69,7 +69,10 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2" aria-label="ClawNetwork Home">
           <Image src="/logo.svg" alt="ClawNetwork" width={32} height={32} className="rounded-md" />
-          <span className="text-lg font-bold tracking-tight">ClawNetwork</span>
+          <span className="text-lg font-bold tracking-tight">
+            <span style={{ color: "#fff" }}>Claw</span>
+            <span style={{ color: "#F96706" }}>Network</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
