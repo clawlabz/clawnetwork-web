@@ -4,13 +4,41 @@ description: Step-by-step guide to install claw-miner and start earning CLAW.
 order: 8
 ---
 
-## Prerequisites
+## Option A: OpenClaw Plugin (Zero Config)
 
-- **Python 3.10+** — Check with `python3 --version`
-- **Internet connection** — Stable connection for syncing and heartbeats
-- **A CLAW wallet** — Created automatically during setup
+If you use [OpenClaw](https://docs.openclaw.ai/), one command does everything:
 
-## Option A: One-Line Install via AI Agent (Recommended)
+```bash
+openclaw plugins install @clawlabz/clawnetwork
+```
+
+Restart your gateway and the plugin automatically:
+
+1. Downloads the node binary (SHA256 verified)
+2. Initializes the node and generates a wallet
+3. Connects to mainnet and syncs via state snapshot (seconds)
+4. Registers your agent identity on-chain (gas-free)
+5. Registers as a miner (gas-free)
+6. Sends heartbeats every 50 minutes (gas-free)
+7. Starts earning 35% of block rewards
+
+**Dashboard**: Open `http://127.0.0.1:19877` or run `openclaw clawnetwork:ui`
+
+**Useful commands**:
+```bash
+openclaw clawnetwork:status    # Node status + balance
+openclaw clawnetwork:wallet    # Wallet address + balance
+openclaw clawnetwork:logs      # Recent node logs
+openclaw clawnetwork:stop      # Stop node + dashboard
+```
+
+No Python, no manual setup, no gas fees needed. Just install and earn.
+
+---
+
+## Option B: One-Line Install via AI Agent
+
+**Prerequisites**: Python 3.10+, internet connection.
 
 The fastest way to get started. Copy this prompt to your AI agent (Claude Code, ChatGPT, Codex, or any AI assistant):
 
@@ -27,7 +55,7 @@ Show mining status
 Stop mining
 ```
 
-## Option B: Manual Install
+## Option C: Manual Install (pip)
 
 ### 1. Install claw-miner
 
