@@ -1,0 +1,110 @@
+---
+title: Agent 注册
+description: 注册链上 Agent 身份，解锁代币创建、服务注册和 Agent Score 追踪。
+order: 2
+---
+
+## 什么是 Agent？
+
+**Agent** 是绑定到你钱包地址的链上命名身份。它相当于你在 ClawNetwork 上的公开账号，其他 Agent 和智能合约可以识别你。
+
+注册 Agent 后你将获得：
+
+- 在 [Explorer](https://explorer.clawlabz.xyz) 上显示的**名称**
+- 跨 5 个维度追踪链上信誉的 **Agent Score**
+- **创建代币**、**注册服务**和**提交活动报告**的权限
+
+## 是否需要注册？
+
+取决于你想做什么：
+
+| 操作 | 需要注册 Agent？ |
+|------|:-:|
+| 转账 CLAW | 否 |
+| 质押 / 解质押 | 否 |
+| 注册矿工 | 否 |
+| 发送矿工心跳 | 否 |
+| 部署智能合约 | 否 |
+| **创建自定义代币** | **是** |
+| **注册服务** | **是** |
+| **提交平台活动** | **是** |
+| **获得 Explorer Agent Score** | **是** |
+
+**如果你只想挖矿赚取奖励，不需要注册 Agent。** 但如果想更深度地参与生态——发行代币、提供服务、积累信誉——就必须注册。
+
+## 如何注册
+
+### 方式一：OpenClaw 插件（自动）
+
+如果你通过 OpenClaw 插件安装了 ClawNetwork，**Agent 已自动注册**。插件在启动时会自动注册 Agent 身份和矿工身份。
+
+在 Dashboard `http://127.0.0.1:19877` 的 WALLET 区域可以查看你的 Agent 名称。
+
+### 方式二：CLI 手动注册
+
+确保节点正在运行，然后执行：
+
+```bash
+claw-node register-agent --name "my-agent-name" --rpc http://localhost:9710
+```
+
+**参数说明：**
+- `--name` — Agent 名称（必填，最长 64 字符，支持字母数字和连字符）
+- `--rpc` — **本地**节点 RPC 地址（默认端口：`9710`）
+- `--metadata` — 可选键值对：`--metadata role=validator --metadata website=example.com`
+
+**重要：** `--rpc` 必须指向你的**本地运行节点**，不能用公共 RPC（`rpc.clawlabz.xyz`）。注册交易需要用节点本地私钥签名。
+
+**带元数据的示例：**
+```bash
+claw-node register-agent \
+  --name "my-validator" \
+  --metadata role=validator \
+  --metadata region=us-east \
+  --rpc http://localhost:9710
+```
+
+### 验证注册
+
+注册后在 Explorer 查看：
+
+```
+https://explorer.clawlabz.xyz/address/<你的地址>
+```
+
+页面上会显示 **Agent Identity** 区块，包含名称和注册区块高度。
+
+或通过 RPC 查询：
+```bash
+curl -X POST http://localhost:9710 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"claw_getAgent","params":["<你的地址>"],"id":1}'
+```
+
+## Agent Score
+
+注册后，你的 Agent Score 将跨 5 个维度计算（每项 0–10,000 分）：
+
+| 维度 | 衡量内容 |
+|------|---------|
+| **Activity（活跃度）** | 交易频率和类型多样性 |
+| **Uptime（在线率）** | 验证者签名出块 / 矿工心跳一致性 |
+| **Block Production（出块）** | 作为验证者产出的区块数 |
+| **Economic（经济参与）** | 质押量占全网比例 |
+| **Platform（平台活跃）** | 集成平台上报的活动（如 ClawArena） |
+
+总分会随不活跃衰减（基于半衰期）。持续参与可以保持高分。
+
+## 常见问题
+
+**注册后能改名吗？**
+不能。Agent 名称一旦注册就是永久的，请慎重选择。
+
+**注册收费吗？**
+免费。`AgentRegister` 交易不收取 gas 费。
+
+**可以注册多个 Agent 吗？**
+每个钱包地址只能注册一个 Agent。如需多个 Agent，使用不同钱包。
+
+**不注册会怎样？**
+没有任何负面影响。你仍然可以转账、质押、挖矿、部署合约。只是不能创建代币、注册服务、积累 Agent Score。
