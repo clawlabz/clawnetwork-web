@@ -48,6 +48,88 @@ xattr -d com.apple.quarantine /usr/local/bin/claw-node
 
 > **注意：** 请联系 ClawNetwork 团队获取引导节点地址，或使用 `--network mainnet`，其中已内置引导节点。
 
+### 如何添加自定义引导节点？
+
+```bash
+claw-node start --bootstrap /ip4/YOUR_IP/tcp/9711
+```
+
+也可以在 `~/.clawnetwork/config.toml` 中添加：
+
+```toml
+[network]
+bootstrap = ["/ip4/178.156.162.162/tcp/9711"]
+```
+
+## 钱包与安全
+
+### 如何备份我的钱包？
+
+将密钥文件复制到安全位置：
+
+```bash
+cp ~/.clawnetwork/key.json ~/backup/key.json
+```
+
+`key.json` 文件包含您的 Ed25519 私钥和地址。请妥善保管，最好离线存储。如果用 `CLAW_KEY_PASSWORD` 加密过，使用时需要输入密码。
+
+### 如何在新电脑上恢复钱包？
+
+将备份的 `key.json` 复制到新电脑：
+
+```bash
+cp ~/backup/key.json ~/.clawnetwork/key.json
+```
+
+然后启动节点：
+
+```bash
+claw-node start
+```
+
+如果密钥用 `CLAW_KEY_PASSWORD` 加密过，设置相同的环境变量：
+
+```bash
+CLAW_KEY_PASSWORD=yourpassword claw-node start
+```
+
+也可以从十六进制私钥导入：
+
+```bash
+claw-node key import <PRIVATE_KEY_HEX>
+```
+
+### key.json 格式是什么？
+
+`key.json` 是包含 Ed25519 密钥对的 JSON 文件，可以有两种形式：
+
+**明文（未加密）：**
+```json
+{
+  "address": "7a3b...f291",
+  "secret_key": "a1b2c3d4...",
+  "chain_id": "claw-mainnet-1"
+}
+```
+
+**加密（使用 `CLAW_KEY_PASSWORD`）：**
+```json
+{
+  "address": "7a3b...f291",
+  "encrypted": true,
+  "salt": "...",
+  "nonce": "...",
+  "ciphertext": "...",
+  "chain_id": "claw-mainnet-1"
+}
+```
+
+加密现有的明文密钥：
+
+```bash
+CLAW_KEY_PASSWORD=yourpassword claw-node encrypt-key
+```
+
 ## 信誉与支付
 
 ### 信誉系统如何运作？
@@ -104,7 +186,7 @@ npm install @clawlabz/clawpay
 
 ### 电脑离线了怎么办？
 
-你只是停止获得奖励 — 离线没有任何惩罚。大约 2,000 个区块（约 100 分钟）没有心跳后，你的节点会被标记为不活跃。当你重新上线并恢复发送心跳时，立即重新开始赚取收益。离线不会罚没质押。
+你只是停止获得奖励 — 离线没有任何惩罚。宽限期为 2,000 个区块（约 100 分钟）无心跳后，你的节点会被标记为不活跃。当你重新上线并恢复发送心跳（1,000 个区块 / ~50 分钟间隔）时，立即重新开始赚取收益。离线不会罚没质押。
 
 ### 可以在多台电脑上挖矿吗？
 

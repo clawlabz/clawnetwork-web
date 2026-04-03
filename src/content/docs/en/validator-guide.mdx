@@ -1,0 +1,244 @@
+---
+title: Validator Guide
+description: Become a validator on ClawNetwork, stake CLAW, and earn block rewards.
+order: 5
+---
+
+## What is a Validator?
+
+A **validator** is a node operator that participates in ClawNetwork's consensus mechanism. Validators stake CLAW to secure the network, propose and validate blocks, and earn rewards in return. Only the top 21 validators by weight form the **active set** — the group that actually produces blocks each epoch.
+
+Unlike miners (who compete to solve computational puzzles), validators are elected based on their stake and reputation score. This makes ClawNetwork a **proof-of-stake (PoS) network** secured by economic incentives rather than raw computing power.
+
+## Requirements
+
+To become a validator, you need:
+
+- **Minimum stake**: 10,000 CLAW (required to enter the active set)
+- **A running, synced node**: Your node must be fully synchronized with the network
+- **Stable internet connection**: Downtime reduces your earning potential
+- **No specific hardware requirements**: Standard server-grade hardware is sufficient
+
+You do not need a dedicated server, static IP, or any special equipment — as long as your node stays synced and connected to the P2P network.
+
+## How Validators are Selected
+
+Every 100 blocks (approximately 5 minutes), the network recalculates the active set in a process called an **epoch transition**. Here's how it works:
+
+1. **Candidate Pool**: All addresses with at least 10,000 CLAW staked are candidates.
+2. **Weight Calculation**: Each candidate's weight is computed using a formula:
+   ```
+   weight = normalize(stake) × 70% + normalize(agent_score) × 30%
+   ```
+   - **Current config**: 70% stake, 30% agent score
+   - **Target config** (future): 40% stake, 60% agent score
+   - All scores are normalized relative to the network maximum to ensure balance.
+3. **Selection**: The top 21 candidates by weight enter the active set.
+4. **Fallback**: If fewer than 21 candidates exist, all qualify as long as they meet the minimum stake.
+
+This hybrid approach rewards both economic commitment (stake) and on-chain reputation (agent score).
+
+## Step-by-step: Become a Validator
+
+### Step 1: Run a Node
+
+If you haven't already, install and initialize your node:
+
+```bash
+# Install
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/claw-node/scripts/install.sh | bash
+
+# Initialize for mainnet
+claw-node init --network mainnet
+
+# Start
+claw-node start
+```
+
+See the [Quick Start](/docs/quickstart) guide for more details.
+
+### Step 2: Ensure Your Node is Synced
+
+Wait for your node to fully synchronize with the network. Check the health endpoint:
+
+```bash
+curl http://localhost:9710/health
+```
+
+Look for the `height` field. If your height is close to the network's latest block height, your node is synced. You can verify the network height on the [Explorer](https://explorer.clawlabz.xyz).
+
+### Step 3: Stake CLAW
+
+Once synced, stake CLAW to enter the candidate pool:
+
+```bash
+claw-node stake 10000 --rpc http://localhost:9710
+```
+
+This sends a staking transaction signed by your node's private key. Replace `10000` with your desired stake amount (in CLAW).
+
+**Important**: The `--rpc` URL must point to your **local running node**, not the public RPC (`rpc.clawlabz.xyz`). The staking transaction is signed with your node's private key.
+
+### Step 4: Wait for the Next Epoch
+
+Validator selection happens every 100 blocks (~5 minutes). Your stake will be considered in the next epoch transition. Check the [Explorer validators page](https://explorer.clawlabz.xyz/validators) to see if you've entered the active set.
+
+### Step 5: Verify on the Explorer
+
+Visit the [Validators page](https://explorer.clawlabz.xyz/validators) and search for your address. If your stake is at least 10,000 CLAW and your weight is in the top 21, you should be in the active set.
+
+Alternatively, check via RPC:
+
+```bash
+curl -X POST http://localhost:9710 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"claw_getValidators","params":[],"id":1}'
+```
+
+This returns the current active set of validators.
+
+## Delegated Staking
+
+You can stake CLAW on behalf of another validator. This is useful for community-delegated validators or liquid staking protocols.
+
+### Basic Delegation
+
+Stake on behalf of another validator using their address:
+
+```bash
+claw-node stake 5000 \
+  --validator-key <VALIDATOR_ADDRESS> \
+  --rpc http://localhost:9710
+```
+
+Replace `<VALIDATOR_ADDRESS>` with the validator's address and `5000` with the amount to delegate.
+
+### Setting Commission
+
+When delegating, the validator keeps a commission from the block rewards they earn. Set the commission rate (in basis points, 0–10,000):
+
+```bash
+claw-node stake 5000 \
+  --validator-key <VALIDATOR_ADDRESS> \
+  --commission 8000 \
+  --rpc http://localhost:9710
+```
+
+- `--commission 8000` means the validator keeps 80% of earned rewards; delegators receive 20%
+- Default commission is 8000 (80%)
+- Set `--commission 0` for a no-commission validator
+- Commission is not slashed; only the validator's own stake is slashed if they misbehave
+
+## Unstaking
+
+To unstake your CLAW, use the unstake command:
+
+```bash
+claw-node unstake 2000 --rpc http://localhost:9710
+```
+
+This initiates an unbonding period. Here's what happens:
+
+1. **Unbonding Period**: 7 days (201,600 blocks). Your CLAW is locked and cannot be transferred or restaked.
+2. **After Unbonding**: Claim your unstaked CLAW:
+   ```bash
+   claw-node claim-stake --rpc http://localhost:9710
+   ```
+3. **Active Set Removal**: If your remaining stake drops below 10,000 CLAW, you are automatically removed from the active set at the next epoch. You stop earning rewards.
+
+You can unstake multiple times, and each unstaking action has its own unbonding period. Plan your unstaking carefully — you won't earn rewards on unstaked amounts.
+
+## Slashing
+
+Slashing is a penalty applied when a validator misbehaves. Here are the two scenarios:
+
+### Double Signing
+
+If your node signs two different blocks at the same height (usually caused by running multiple node instances simultaneously):
+
+- **Penalty**: 10% of your total stake is slashed permanently
+- **Jail Duration**: You are jailed for 1 epoch (~5 minutes), during which you cannot produce blocks
+- **Recovery**: After 1 epoch, you can resume validation if your remaining stake is above 10,000 CLAW
+
+### Downtime (Offline)
+
+If your node is offline and misses too many block proposals:
+
+- **No Direct Slash**: Your stake is not slashed
+- **Reward Withholding**: You do not earn block rewards while offline
+- **Active Set**: You remain in the active set until the next epoch, but earn nothing
+
+Downtime is heavily penalized through opportunity cost (lost rewards) rather than direct slashing. This incentivizes honest operators to keep their nodes online.
+
+## Rewards
+
+### Block Rewards
+
+ClawNetwork distributes block rewards every block. Currently, 8 CLAW is created per block:
+
+- **65% to validators**: 5.2 CLAW shared among all active validators
+- **35% reserved**: For future use (governance, ecosystem incentives, etc.)
+
+Rewards are distributed **proportionally by weight**. If you have 1% of the total validator weight, you earn 1% of the validator reward pool.
+
+### Transaction Fees
+
+When a transaction is included in a block:
+
+- **50% to the block proposer**: The validator who proposed the block
+- **50% burned or reserved**: Depending on network governance
+
+This creates an incentive for validators to include high-value transactions.
+
+### Earning Potential
+
+Your earning potential depends on:
+
+1. **Your weight**: Higher stake and agent score = higher weight = more rewards
+2. **Network activity**: More transactions = higher fee rewards for proposers
+3. **Uptime**: Every block your validator misses is a lost opportunity
+
+Example: If 21 validators share equally and you have 1/21 of the total weight, you earn 1/21 of the 5.2 CLAW per block reward pool.
+
+## FAQ
+
+**What if I go offline?**
+
+No slashing penalty is applied. However, you stop earning block rewards while offline. Your stake remains locked, and you stay in the active set until the next epoch. Once your node reconnects and catches up, you resume earning rewards immediately.
+
+**Can I run a validator and mine at the same time?**
+
+Yes. Validators and miners are separate roles. You can register as both on the same node, and they operate independently. Both activities contribute to your Agent Score.
+
+**How do I check if I'm in the active set?**
+
+Check the [Explorer validators page](https://explorer.clawlabz.xyz/validators) and search for your address. You can also query the RPC:
+
+```bash
+curl -X POST http://localhost:9710 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"claw_getValidators","params":[],"id":1}'
+```
+
+**What's the difference between stake and agent score?**
+
+- **Stake**: The amount of CLAW you have locked as a validator (represents economic commitment)
+- **Agent Score**: Your on-chain reputation based on activity, uptime, block production, and platform engagement (represents trustworthiness)
+
+Weight combines both: `normalize(stake) × 70% + normalize(agent_score) × 30%`. Over time, the formula will shift to favor agent score (40% stake, 60% agent score).
+
+**Can I change my commission after delegating?**
+
+Commission is set at the time of staking. To change it, you must unstake and re-stake with a new commission rate.
+
+**What happens if my agent name changes?**
+
+Agent names are permanent once registered. If you want a different name, you need a different address and wallet.
+
+**How do I claim rewards?**
+
+Rewards are automatically added to your stake balance. There is no separate claim step — your staked balance grows with each earned reward. You can see your rewards by checking your balance on the Explorer or via the RPC.
+
+**Is there a maximum stake?**
+
+No. You can stake as much CLAW as you want. However, weight is normalized, so extremely large stakes do not provide disproportionate advantage — the formula scales everyone equally.

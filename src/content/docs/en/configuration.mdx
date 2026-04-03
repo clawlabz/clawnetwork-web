@@ -36,6 +36,8 @@ claw-node start [OPTIONS]
 | `--single` | `false` | Single-node mode (no P2P) |
 | `--data-dir` | `~/.clawnetwork` | Data directory path |
 | `--log-format` | `text` | Log format: `text` or `json` |
+| `--allow-genesis` | (network preset) | Allow creating a new genesis when no chain data exists. Default: `true` for devnet, `false` for mainnet/testnet |
+| `--skip-version-check` | `false` | Skip version check at startup (development/emergency use only) |
 
 ### `claw-node key`
 
@@ -49,6 +51,66 @@ claw-node key show       # Display current address
 ### `claw-node status`
 
 Display node status information.
+
+## config.toml Reference
+
+The node configuration file is stored at `~/.clawnetwork/config.toml`. It is created automatically by `claw-node init` with sensible defaults. CLI flags override config.toml values.
+
+### Structure
+
+```toml
+# ClawNetwork node configuration
+# CLI arguments override these values.
+
+[node]
+network = "mainnet"  # Network to join: "devnet", "testnet", or "mainnet"
+
+[network]
+rpc_port = 9710      # JSON-RPC HTTP server port
+p2p_port = 9711      # P2P networking port
+# bootstrap = ["/ip4/1.2.3.4/tcp/9711"]  # Additional bootstrap peers (multiaddr format)
+# single = false     # Force single-node mode (no P2P)
+
+[log]
+format = "text"      # Log format: "text" or "json"
+# filter = "claw=info"  # Log level filter (e.g. "claw=debug,other=info")
+```
+
+### Field Reference
+
+| Section | Field | Type | Default | Description |
+|---------|-------|------|---------|-------------|
+| `node` | `network` | string | `"devnet"` | Network preset: `"devnet"`, `"testnet"`, or `"mainnet"`. Cannot be changed after chain is initialized. |
+| `network` | `rpc_port` | integer | `9710` | Port to bind the JSON-RPC HTTP server on. |
+| `network` | `p2p_port` | integer | `9711` | Port to bind the P2P networking socket on. |
+| `network` | `bootstrap` | array of strings | (built-in) | Additional bootstrap peers in multiaddr format (e.g., `/ip4/1.2.3.4/tcp/9711`). Built-in peers are used automatically. Only uncomment to add custom peers. |
+| `network` | `single` | boolean | `false` | If `true`, forces single-node mode (no P2P). Mainnet/testnet bootstrap peers are still disabled. |
+| `log` | `format` | string | `"text"` | Log output format: `"text"` (human-readable) or `"json"` (structured). |
+| `log` | `filter` | string | (not set) | Log level filter directive. Examples: `"claw=info"`, `"claw=debug,other=warn"`. See [tracing-subscriber](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html) for syntax. |
+
+### Bootstrap Peers
+
+#### Mainnet Bootstrap
+
+```toml
+[network]
+bootstrap = ["/ip4/178.156.162.162/tcp/9711"]
+```
+
+#### Custom Peers
+
+To add a custom bootstrap peer, uncomment or add to the `bootstrap` array:
+
+```toml
+[network]
+bootstrap = ["/ip4/YOUR_IP/tcp/9711"]
+```
+
+Alternatively, use the CLI flag (which takes precedence):
+
+```bash
+claw-node start --bootstrap /ip4/YOUR_IP/tcp/9711 --bootstrap /ip4/OTHER_IP/tcp/9711
+```
 
 ## Environment Variables
 

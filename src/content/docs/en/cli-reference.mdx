@@ -19,7 +19,7 @@ These flags apply to all `claw-node` subcommands:
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--data-dir` | `~/.clawnetwork` | Data directory path |
+| `--dir` | `~/.clawnetwork` | Data directory path |
 | `--log-format` | `text` | Log output format: `text` or `json` |
 
 ---
@@ -75,6 +75,8 @@ claw-node start [OPTIONS]
 | `--bootstrap` | (built-in) | Additional bootstrap peer addresses (multiaddr) |
 | `--single` | `false` | Force single-node mode (no P2P) |
 | `--sync-mode` | `full` | Sync mode: `full`, `fast`, or `light` |
+| `--allow-genesis` | (network preset) | Allow creating a new genesis when no chain data exists. Default: `true` for devnet, `false` for mainnet/testnet |
+| `--skip-version-check` | `false` | Skip version check at startup (development/emergency use only) |
 
 **Examples:**
 
@@ -252,8 +254,8 @@ claw-node stake <AMOUNT> [OPTIONS]
 **Examples:**
 
 ```bash
-# Self-stake 100,000 CLAW
-claw-node stake 100000 --rpc https://rpc.clawlabz.xyz
+# Self-stake 10,000 CLAW
+claw-node stake 10000 --rpc https://rpc.clawlabz.xyz
 
 # Delegate to a validator with 80% commission
 claw-node stake 50000 --validator-key 3f2a...b817 --commission 8000
@@ -263,7 +265,7 @@ Minimum staking amounts:
 
 | Network | Minimum Stake |
 |---------|--------------|
-| Mainnet | 100,000 CLAW |
+| Mainnet | 10,000 CLAW |
 | Testnet | 100 CLAW |
 
 ---
@@ -478,6 +480,51 @@ claw-node call-contract 3f2a...b817 transfer --args 00ff --value 10
 
 ---
 
+### `claw-node register-miner`
+
+Register as a miner on-chain for the mining pool.
+
+```bash
+claw-node register-miner [OPTIONS]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--name` | Miner display name (required) |
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+**Example:**
+
+```bash
+claw-node register-miner --name "MyMiner" --rpc https://rpc.clawlabz.xyz
+```
+
+This is a gas-free transaction.
+
+---
+
+### `claw-node miner-heartbeat`
+
+Send a heartbeat signal to indicate the miner is still active.
+
+```bash
+claw-node miner-heartbeat [OPTIONS]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--rpc` | RPC endpoint (default: `http://localhost:9710`) |
+
+**Example:**
+
+```bash
+claw-node miner-heartbeat --rpc https://rpc.clawlabz.xyz
+```
+
+This is a gas-free transaction. Should be sent every approximately 1000 blocks (~50 minutes). The grace period before being marked inactive is 2000 blocks (~100 minutes).
+
+---
+
 ### `claw-node register-service`
 
 Register a service on-chain.
@@ -559,7 +606,7 @@ claw-miner init [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--dir` | `~/.clawminer` | Miner data directory |
 | `--rpc` | `https://rpc.clawlabz.xyz` | Node RPC endpoint to connect to |
 
 **Example:**
@@ -593,21 +640,24 @@ claw-miner start [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--tier` | `1` | Mining tier: `1` (online), `2` (LLM sharing), `3` (GPU compute) |
+| `--tier` | `0` | Mining tier: `0` (Light), `1` (Standard), `2` (Full), `3` (Archive) |
 | `--rpc` | (from config) | Node RPC endpoint |
-| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--dir` | `~/.clawminer` | Miner data directory |
 | `--log-level` | `info` | Log verbosity |
 
 **Examples:**
 
 ```bash
-# Start Tier 1 mining (just stay online)
+# Start Tier 0 mining (Light)
 claw-miner start
 
-# Start Tier 2 mining (LLM sharing)
+# Start Tier 1 mining (Standard)
+claw-miner start --tier 1
+
+# Start Tier 2 mining (Full)
 claw-miner start --tier 2
 
-# Start Tier 3 mining (GPU compute)
+# Start Tier 3 mining (Archive)
 claw-miner start --tier 3
 ```
 
@@ -625,7 +675,7 @@ claw-miner stop [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
@@ -648,7 +698,7 @@ claw-miner status [OPTIONS]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--rpc` | (from config) | Node RPC endpoint |
-| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
@@ -678,7 +728,7 @@ claw-miner balance [OPTIONS]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--rpc` | (from config) | Node RPC endpoint |
-| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
@@ -694,6 +744,7 @@ claw-miner balance
 
 ---
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner model list`
 
 List all available AI models that can be deployed locally for Tier 3 mining.
@@ -721,7 +772,9 @@ claw-miner model list
 ```
 
 ---
+-->
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner model start`
 
 Download (if needed) and start serving a local AI model for Tier 3 mining.
@@ -752,7 +805,9 @@ claw-miner model start deepseek-r1-7b --gpu 1
 The model is downloaded to `~/.clawminer/models/` on first use and cached for subsequent starts.
 
 ---
+-->
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner model stop`
 
 Stop a running local model.
@@ -768,7 +823,9 @@ claw-miner model stop llama-3.1-8b
 ```
 
 ---
+-->
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner llm add`
 
 Add an external LLM API subscription for Tier 2 mining. The network will route inference requests through your API key.
@@ -800,7 +857,9 @@ claw-miner llm add openai --api-key sk-xxx --model gpt-4o-mini
 Your API key is stored locally and never sent to the network. Only inference requests and responses flow through the system.
 
 ---
+-->
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner llm remove`
 
 Remove a previously added LLM provider.
@@ -816,7 +875,9 @@ claw-miner llm remove deepseek
 ```
 
 ---
+-->
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner llm list`
 
 List all configured LLM providers.
@@ -837,7 +898,9 @@ claw-miner llm list
 ```
 
 ---
+-->
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner config show`
 
 Display the current miner configuration.
@@ -848,7 +911,7 @@ claw-miner config show [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--data-dir` | `~/.clawminer` | Miner data directory |
+| `--dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
@@ -865,7 +928,9 @@ claw-miner config show
 ```
 
 ---
+-->
 
+<!-- TODO: Tier 2/3 功能待开发
 ### `claw-miner config set`
 
 Update a configuration value.
@@ -877,7 +942,7 @@ claw-miner config set <KEY> <VALUE>
 | Key | Values | Description |
 |-----|--------|-------------|
 | `rpc_endpoint` | URL | Node RPC endpoint |
-| `mining_tier` | `1`, `2`, `3` | Mining tier |
+| `mining_tier` | `0`, `1`, `2`, `3` | Mining tier |
 | `auto_compound` | `true`, `false` | Auto-restake rewards |
 | `max_concurrent` | Number | Max concurrent inference requests |
 | `log_level` | `error`, `warn`, `info`, `debug` | Log verbosity |
@@ -890,6 +955,7 @@ claw-miner config set max_concurrent 8
 ```
 
 ---
+-->
 
 ## Quick Reference
 
@@ -912,6 +978,8 @@ claw-miner config set max_concurrent 8
 | `claw-node claim-stake` | Claim matured unbonded stake |
 | `claw-node change-delegation <validator> <owner>` | Transfer validator stake ownership |
 | `claw-node register-agent` | Register an AI Agent on-chain |
+| `claw-node register-miner` | Register as a miner on-chain |
+| `claw-node miner-heartbeat` | Send miner heartbeat signal |
 | `claw-node create-token` | Create a custom token |
 | `claw-node transfer-token <id> <to> <amount>` | Transfer custom tokens |
 | `claw-node approve-token <id> <spender> <amount>` | Approve token spender |
@@ -933,14 +1001,6 @@ claw-miner config set max_concurrent 8
 | `claw-miner stop` | Stop mining gracefully |
 | `claw-miner status` | Show mining status and rewards |
 | `claw-miner balance` | Show CLAW balance |
-| `claw-miner model list` | List available local models |
-| `claw-miner model start <model>` | Deploy a local AI model |
-| `claw-miner model stop <model>` | Stop a local AI model |
-| `claw-miner llm add <provider>` | Add LLM provider for sharing |
-| `claw-miner llm remove <provider>` | Remove LLM provider |
-| `claw-miner llm list` | List configured LLM providers |
-| `claw-miner config show` | Show current configuration |
-| `claw-miner config set <key> <val>` | Update configuration |
 
 ---
 

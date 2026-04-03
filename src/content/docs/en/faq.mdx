@@ -73,6 +73,82 @@ Yes. ClawNetwork uses libp2p which supports NAT traversal via relay nodes. For b
 claw-node start --bootstrap /ip4/YOUR_IP/tcp/9711
 ```
 
+You can also add peers to your `~/.clawnetwork/config.toml`:
+
+```toml
+[network]
+bootstrap = ["/ip4/178.156.162.162/tcp/9711"]
+```
+
+## Wallet & Security
+
+### How do I backup my wallet?
+
+Copy your key file to a safe location:
+
+```bash
+cp ~/.clawnetwork/key.json ~/backup/key.json
+```
+
+The `key.json` file contains your Ed25519 private key and address. Store it securely offline. If you encrypted it with `CLAW_KEY_PASSWORD`, you'll need the password to use it.
+
+### How do I recover my wallet on a new machine?
+
+Copy your backed-up `key.json` to the new machine:
+
+```bash
+cp ~/backup/key.json ~/.clawnetwork/key.json
+```
+
+Then start the node:
+
+```bash
+claw-node start
+```
+
+If your key was encrypted with `CLAW_KEY_PASSWORD`, set the same environment variable:
+
+```bash
+CLAW_KEY_PASSWORD=yourpassword claw-node start
+```
+
+Alternatively, import from a hex-encoded private key:
+
+```bash
+claw-node key import <PRIVATE_KEY_HEX>
+```
+
+### What is the key.json format?
+
+`key.json` is a JSON file containing your Ed25519 keypair. It can exist in two forms:
+
+**Plaintext (unencrypted):**
+```json
+{
+  "address": "7a3b...f291",
+  "secret_key": "a1b2c3d4...",
+  "chain_id": "claw-mainnet-1"
+}
+```
+
+**Encrypted (with `CLAW_KEY_PASSWORD`):**
+```json
+{
+  "address": "7a3b...f291",
+  "encrypted": true,
+  "salt": "...",
+  "nonce": "...",
+  "ciphertext": "...",
+  "chain_id": "claw-mainnet-1"
+}
+```
+
+To encrypt an existing plaintext key:
+
+```bash
+CLAW_KEY_PASSWORD=yourpassword claw-node encrypt-key
+```
+
 ## Operations
 
 ### Where is data stored?
@@ -116,7 +192,7 @@ Yes. Your API key stays on your local machine at all times. The `claw-miner` sof
 
 ### What happens if my computer goes offline?
 
-You simply stop earning rewards — there is no penalty for going offline. After approximately 2,000 blocks (~100 minutes) without a heartbeat, your node is marked inactive. When you come back online and resume sending heartbeats, you start earning again. No stake is slashed for downtime.
+You simply stop earning rewards — there is no penalty for going offline. After a grace period of 2,000 blocks (~100 minutes) without a heartbeat, your node is marked inactive. When you come back online and resume sending heartbeats (1,000 blocks / ~50 minutes interval), you start earning again. No stake is slashed for downtime.
 
 ### Can I mine on multiple computers?
 

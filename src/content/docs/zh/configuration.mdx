@@ -17,11 +17,73 @@ order: 8
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--network, -n` | `devnet` | 网络 |
+| `--network, -n` | `devnet` | 网络：`devnet`、`testnet`、`mainnet` |
 | `--rpc-port` | `9710` | RPC 端口 |
 | `--p2p-port` | `9711` | P2P 端口 |
-| `--bootstrap` | (内置) | 额外引导节点地址 |
+| `--bootstrap` | (内置) | 额外引导节点地址（multiaddr 格式） |
 | `--single` | `false` | 单节点模式 |
+| `--allow-genesis` | (网络预设) | 当没有链数据时允许创建新的创世块。默认值：devnet 为 `true`，mainnet/testnet 为 `false` |
+| `--skip-version-check` | `false` | 跳过启动时的版本检查（仅用于开发/紧急情况） |
+
+## config.toml 参考
+
+节点配置文件位于 `~/.clawnetwork/config.toml`。由 `claw-node init` 自动创建并预置合理的默认值。CLI 参数会覆盖配置文件中的值。
+
+### 结构
+
+```toml
+# ClawNetwork 节点配置
+# CLI 参数会覆盖这些值。
+
+[node]
+network = "mainnet"  # 加入的网络："devnet"、"testnet" 或 "mainnet"
+
+[network]
+rpc_port = 9710      # JSON-RPC HTTP 服务器端口
+p2p_port = 9711      # P2P 网络端口
+# bootstrap = ["/ip4/1.2.3.4/tcp/9711"]  # 额外的引导节点（multiaddr 格式）
+# single = false     # 强制单节点模式（无 P2P）
+
+[log]
+format = "text"      # 日志格式："text" 或 "json"
+# filter = "claw=info"  # 日志级别过滤（如 "claw=debug,other=info"）
+```
+
+### 字段参考
+
+| 区间 | 字段 | 类型 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `node` | `network` | 字符串 | `"devnet"` | 网络预设：`"devnet"`、`"testnet"` 或 `"mainnet"`。链初始化后无法更改。 |
+| `network` | `rpc_port` | 整数 | `9710` | JSON-RPC HTTP 服务器绑定的端口。 |
+| `network` | `p2p_port` | 整数 | `9711` | P2P 网络套接字绑定的端口。 |
+| `network` | `bootstrap` | 字符串数组 | (内置) | 额外的引导节点，采用 multiaddr 格式（如 `/ip4/1.2.3.4/tcp/9711`）。内置引导节点会自动使用。仅在需要添加自定义引导节点时取消注释。 |
+| `network` | `single` | 布尔值 | `false` | 如为 `true`，强制单节点模式（无 P2P）。主网/测试网引导节点仍会被禁用。 |
+| `log` | `format` | 字符串 | `"text"` | 日志输出格式：`"text"`（人类可读）或 `"json"`（结构化）。 |
+| `log` | `filter` | 字符串 | (未设置) | 日志级别过滤指令。示例：`"claw=info"`、`"claw=debug,other=warn"`。详见 [tracing-subscriber](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html) 语法文档。 |
+
+### 引导节点
+
+#### 主网引导节点
+
+```toml
+[network]
+bootstrap = ["/ip4/178.156.162.162/tcp/9711"]
+```
+
+#### 自定义引导节点
+
+在 `bootstrap` 数组中添加自定义引导节点：
+
+```toml
+[network]
+bootstrap = ["/ip4/YOUR_IP/tcp/9711"]
+```
+
+或使用 CLI 参数（优先级更高）：
+
+```bash
+claw-node start --bootstrap /ip4/YOUR_IP/tcp/9711 --bootstrap /ip4/OTHER_IP/tcp/9711
+```
 
 ## 环境变量
 
