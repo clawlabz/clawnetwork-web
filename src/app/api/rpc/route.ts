@@ -40,13 +40,32 @@ async function healthCheck() {
   }
 }
 
+async function versionCheck() {
+  const VERSION_TIMEOUT = 3000;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), VERSION_TIMEOUT);
+  try {
+    const res = await fetch(`${RPC_URL}/version`, {
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function GET() {
   try {
-    const [blockHeight, miningStats, health, validators] = await Promise.all([
+    const [blockHeight, miningStats, health, validators, version] = await Promise.all([
       rpcCall("claw_blockNumber"),
       rpcCall("claw_getMiningStats"),
       healthCheck(),
       rpcCall("claw_getValidators"),
+      versionCheck(),
     ]);
 
     const live = blockHeight !== null;
@@ -58,6 +77,9 @@ export async function GET() {
       activeMiners: miningStats?.active_miners ?? 0,
       networkVersion: health?.version ?? miningStats?.version ?? "-",
       live,
+      upgradeLevel: version?.upgrade_level ?? null,
+      latestVersion: version?.latest_version ?? null,
+      announcement: version?.announcement ?? null,
     });
   } catch {
     return NextResponse.json({
@@ -67,6 +89,9 @@ export async function GET() {
       activeMiners: 0,
       networkVersion: "-",
       live: false,
+      upgradeLevel: null,
+      latestVersion: null,
+      announcement: null,
     });
   }
 }

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState, useEffect, useCallback } from "react";
 import { type LucideIcon } from "lucide-react";
-import { Box, Users, Cpu, Tag, Wifi, Shield } from "lucide-react";
+import { Box, Users, Cpu, Tag, Wifi, Shield, AlertTriangle } from "lucide-react";
 
 interface NetworkData {
   blockHeight: number;
@@ -12,6 +12,9 @@ interface NetworkData {
   activeMiners: number;
   networkVersion: string;
   live: boolean;
+  upgradeLevel?: "up_to_date" | "recommended" | "required" | "critical" | null;
+  latestVersion?: string | null;
+  announcement?: string | null;
 }
 
 const DEFAULTS: NetworkData = {
@@ -120,6 +123,28 @@ export default function StatusPage() {
             {loading ? t("loading") : data?.live ? t("online") : t("offline")}
           </span>
         </div>
+
+        {/* Version banners */}
+        {data?.upgradeLevel === "critical" && (
+          <div className="mb-6 rounded-xl border border-red-500/50 bg-red-500/10 px-5 py-4 text-sm text-red-300 flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5 text-red-400" />
+            <div>
+              <p className="font-semibold">Critical Node Update Required</p>
+              <p className="text-red-200/80 text-xs mt-1">The network node requires an immediate upgrade{data.latestVersion ? ` to v${data.latestVersion}` : ""}.</p>
+            </div>
+          </div>
+        )}
+        {data?.upgradeLevel === "required" && (
+          <div className="mb-6 rounded-xl border border-orange-500/30 bg-orange-500/5 px-5 py-4 text-sm text-orange-300 flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5 text-orange-400" />
+            <p>Update available: v{data.latestVersion}</p>
+          </div>
+        )}
+        {data?.announcement && (
+          <div className="mb-6 rounded-xl border border-blue-500/30 bg-blue-500/5 px-5 py-4 text-sm text-blue-300">
+            {data.announcement}
+          </div>
+        )}
 
         {/* Stats grid */}
         {loading ? (
