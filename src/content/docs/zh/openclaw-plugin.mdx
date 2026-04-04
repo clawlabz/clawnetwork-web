@@ -12,17 +12,21 @@ order: 3
 
 ### 一键安装（推荐）
 
-一行命令 — 从 npm 下载插件，自动安装并配置 Gateway：
+一行命令 — 从 npm 下载插件，自动安装并配置 Gateway。
+
+**Linux / macOS / WSL:**
 
 ```bash
 curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
 ```
 
-然后重启 Gateway：
+**Windows (PowerShell):**
 
-```bash
-openclaw gateway restart
+```powershell
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.ps1 | iex
 ```
+
+然后重启 Gateway：`openclaw gateway restart`
 
 ### OpenClaw CLI
 
@@ -43,7 +47,13 @@ openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe
 重新运行安装脚本即可 — 脚本会检测现有安装并覆盖更新：
 
 ```bash
+# Linux / macOS / WSL
 curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.ps1 | iex
 ```
 
 或通过 OpenClaw CLI（卸载重装）：
@@ -60,7 +70,13 @@ openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe
 ## 卸载
 
 ```bash
+# Linux / macOS / WSL
 curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/uninstall.sh | bash
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/uninstall.ps1 | iex
 ```
 
 或通过 OpenClaw CLI：

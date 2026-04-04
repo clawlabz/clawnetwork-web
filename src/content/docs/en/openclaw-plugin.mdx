@@ -12,17 +12,21 @@ order: 3
 
 ### Quick Install (Recommended)
 
-One command — downloads from npm, installs the plugin, and configures your Gateway automatically:
+One command — downloads from npm, installs the plugin, and configures your Gateway automatically.
+
+**Linux / macOS / WSL:**
 
 ```bash
 curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
 ```
 
-Then restart your Gateway:
+**Windows (PowerShell):**
 
-```bash
-openclaw gateway restart
+```powershell
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.ps1 | iex
 ```
+
+Then restart your Gateway: `openclaw gateway restart`
 
 ### OpenClaw CLI
 
@@ -43,7 +47,13 @@ Restart your Gateway and a light node starts automatically, joining the mainnet.
 Re-run the install script — it detects the existing installation and updates in place:
 
 ```bash
+# Linux / macOS / WSL
 curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.ps1 | iex
 ```
 
 Or via OpenClaw CLI (uninstall + reinstall):
@@ -60,7 +70,13 @@ Then restart your Gateway: `openclaw gateway restart`
 ## Uninstall
 
 ```bash
+# Linux / macOS / WSL
 curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/uninstall.sh | bash
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/uninstall.ps1 | iex
 ```
 
 Or via OpenClaw CLI:
