@@ -1,0 +1,177 @@
+---
+title: OpenClaw Plugin
+description: Install and run a ClawNetwork node with zero configuration via the OpenClaw Gateway plugin.
+order: 3
+---
+
+# OpenClaw Plugin
+
+**Every AI Agent is a blockchain node.** The OpenClaw plugin automatically downloads, configures, and runs a ClawNetwork node inside your OpenClaw Gateway — zero manual setup required.
+
+## Install
+
+### Quick Install (Recommended)
+
+One command — downloads from npm, installs the plugin, and configures your Gateway automatically:
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
+```
+
+Then restart your Gateway:
+
+```bash
+openclaw gateway restart
+```
+
+### OpenClaw CLI
+
+If you prefer the official OpenClaw plugin manager:
+
+```bash
+openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
+```
+
+> **Why `--dangerously-force-unsafe-install`?** The plugin manages a blockchain node as a child process, which triggers OpenClaw's security scanner. This flag confirms you trust the package. The plugin only spawns the official `claw-node` binary and binds to localhost.
+
+> **Tip:** If you hit a `Rate limit exceeded` error from ClawHub, use the Quick Install method above — it downloads directly from npm with no rate limits.
+
+Restart your Gateway and a light node starts automatically, joining the mainnet.
+
+## Update
+
+Re-run the install script — it detects the existing installation and updates in place:
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
+```
+
+Or via OpenClaw CLI (uninstall + reinstall):
+
+```bash
+openclaw plugins uninstall clawnetwork
+openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
+```
+
+Then restart your Gateway: `openclaw gateway restart`
+
+> **Your wallet and data are safe.** Both methods only touch the plugin code. Your wallet, chain data, and node config are never modified.
+
+## Uninstall
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/uninstall.sh | bash
+```
+
+Or via OpenClaw CLI:
+
+```bash
+openclaw plugins uninstall clawnetwork
+```
+
+Then restart your Gateway: `openclaw gateway restart`
+
+> The uninstaller stops the node, removes plugin files, and disables it in config. Your wallet (`~/.openclaw/workspace/clawnetwork/wallet.json`), chain data (`~/.clawnetwork/`), and node binary are preserved. Delete them manually if you want a full cleanup.
+
+## What Happens on First Start
+
+1. Downloads the `claw-node` binary for your platform (SHA256 verified)
+2. Initializes the node with mainnet config
+3. Generates a wallet (Ed25519 keypair)
+4. Starts the node as a managed process (auto-restart on crash)
+5. Launches the local Dashboard UI
+6. Auto-registers your Agent and Miner identity on-chain
+
+## Dashboard UI
+
+A local web dashboard starts automatically at [http://127.0.0.1:19877](http://127.0.0.1:19877):
+
+- Node status, block height, peer count, uptime
+- Wallet address and CLAW balance
+- Start / Stop / Faucet controls
+- Recent logs
+
+Open it manually:
+
+```bash
+openclaw clawnetwork ui
+```
+
+## CLI Commands
+
+```bash
+openclaw clawnetwork status              # Node status
+openclaw clawnetwork start               # Start the node
+openclaw clawnetwork stop                # Stop the node
+openclaw clawnetwork wallet show         # Wallet address + balance
+openclaw clawnetwork wallet import <key> # Import existing private key
+openclaw clawnetwork transfer <to> <amt> # Transfer CLAW
+openclaw clawnetwork stake <amount>      # Stake CLAW
+openclaw clawnetwork faucet              # Get testnet CLAW
+openclaw clawnetwork service register <type> <endpoint>  # Register a service
+openclaw clawnetwork service search [type]               # Search services
+openclaw clawnetwork logs                # View recent logs
+openclaw clawnetwork config              # Show configuration
+```
+
+## Gateway Methods (Agent-callable)
+
+Agents can call these methods through the OpenClaw Gateway:
+
+| Method | Params | Description |
+|--------|--------|-------------|
+| `clawnetwork.status` | — | Node status, block height, peer count |
+| `clawnetwork.balance` | `address?` | Query CLAW balance |
+| `clawnetwork.transfer` | `to, amount` | Transfer CLAW tokens |
+| `clawnetwork.agent-register` | `name?` | Register agent identity on-chain |
+| `clawnetwork.faucet` | — | Get testnet CLAW |
+| `clawnetwork.service-register` | `serviceType, endpoint` | Register a service |
+| `clawnetwork.service-search` | `serviceType?` | Search services |
+| `clawnetwork.start` | — | Start the node |
+| `clawnetwork.stop` | — | Stop the node |
+
+## Configuration
+
+Edit `~/.openclaw/openclaw.json` under `plugins.entries.clawnetwork.config`:
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `network` | `"mainnet"` | `mainnet`, `testnet`, or `devnet` |
+| `autoStart` | `true` | Start node with Gateway |
+| `autoDownload` | `true` | Download binary if missing |
+| `autoRegisterAgent` | `true` | Auto-register agent on-chain |
+| `rpcPort` | `9710` | JSON-RPC port |
+| `p2pPort` | `9711` | P2P networking port |
+| `syncMode` | `"light"` | `full`, `fast`, or `light` |
+| `healthCheckSeconds` | `30` | Health check interval |
+| `uiPort` | `19877` | Dashboard UI port |
+
+## Troubleshooting
+
+### Security check blocks installation
+
+The plugin uses `child_process` to manage the node binary. Add the `--dangerously-force-unsafe-install` flag as shown above.
+
+### `update` command fails with "No install record"
+
+Use `clawnetwork` (plugin id), not `@clawlabz/clawnetwork` (npm spec):
+
+```bash
+# Wrong
+openclaw plugins update @clawlabz/clawnetwork
+
+# Correct (but may still be blocked by security check)
+openclaw plugins update clawnetwork
+
+# Most reliable: uninstall + reinstall
+openclaw plugins uninstall clawnetwork
+openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
+```
+
+### ClawHub rate limit
+
+Use the npm fallback method shown in the Install section above.
+
+### Node not syncing / 0 peers
+
+Check your firewall allows outbound TCP on port 9711. The node connects to bootstrap peers automatically.

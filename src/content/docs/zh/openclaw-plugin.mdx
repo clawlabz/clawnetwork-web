@@ -1,0 +1,177 @@
+---
+title: OpenClaw 插件
+description: 通过 OpenClaw Gateway 插件零配置安装运行 ClawNetwork 节点。
+order: 3
+---
+
+# OpenClaw 插件
+
+**每个 AI Agent 都是一个区块链节点。** OpenClaw 插件自动下载、配置并运行 ClawNetwork 节点 —— 无需任何手动设置。
+
+## 安装
+
+### 一键安装（推荐）
+
+一行命令 — 从 npm 下载插件，自动安装并配置 Gateway：
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
+```
+
+然后重启 Gateway：
+
+```bash
+openclaw gateway restart
+```
+
+### OpenClaw CLI
+
+如果你偏好使用官方插件管理器：
+
+```bash
+openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
+```
+
+> **为什么需要 `--dangerously-force-unsafe-install`？** 插件通过子进程管理区块链节点，会触发 OpenClaw 的安全扫描。此参数确认你信任该插件。插件仅启动官方 `claw-node` 二进制，且只绑定 localhost。
+
+> **提示：** 如果遇到 ClawHub `Rate limit exceeded` 限流错误，使用上面的一键安装 — 直接从 npm 下载，无限流限制。
+
+重启 Gateway 后，轻节点自动启动并加入主网。
+
+## 更新
+
+重新运行安装脚本即可 — 脚本会检测现有安装并覆盖更新：
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
+```
+
+或通过 OpenClaw CLI（卸载重装）：
+
+```bash
+openclaw plugins uninstall clawnetwork
+openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
+```
+
+然后重启 Gateway：`openclaw gateway restart`
+
+> **钱包和数据不受影响。** 两种方式都只更新插件代码，钱包、链数据和节点配置不会被修改。
+
+## 卸载
+
+```bash
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/uninstall.sh | bash
+```
+
+或通过 OpenClaw CLI：
+
+```bash
+openclaw plugins uninstall clawnetwork
+```
+
+然后重启 Gateway：`openclaw gateway restart`
+
+> 卸载器会停止节点、删除插件文件、在配置中禁用插件。钱包（`~/.openclaw/workspace/clawnetwork/wallet.json`）、链数据（`~/.clawnetwork/`）和节点二进制均保留。如需完全清理请手动删除。
+
+## 首次启动流程
+
+1. 下载对应平台的 `claw-node` 二进制（SHA256 校验）
+2. 使用主网配置初始化节点
+3. 生成钱包（Ed25519 密钥对）
+4. 以托管进程启动节点（崩溃自动重启）
+5. 启动本地 Dashboard 控制台
+6. 自动在链上注册 Agent 和矿工身份
+
+## Dashboard 控制台
+
+本地控制台随节点自动启动，访问 [http://127.0.0.1:19877](http://127.0.0.1:19877)：
+
+- 节点状态、区块高度、连接节点数、运行时间
+- 钱包地址和 CLAW 余额
+- 启动 / 停止 / 水龙头 操作
+- 最近日志
+
+手动打开：
+
+```bash
+openclaw clawnetwork ui
+```
+
+## CLI 命令
+
+```bash
+openclaw clawnetwork status              # 节点状态
+openclaw clawnetwork start               # 启动节点
+openclaw clawnetwork stop                # 停止节点
+openclaw clawnetwork wallet show         # 钱包地址 + 余额
+openclaw clawnetwork wallet import <key> # 导入私钥
+openclaw clawnetwork transfer <to> <amt> # 转账 CLAW
+openclaw clawnetwork stake <amount>      # 质押 CLAW
+openclaw clawnetwork faucet              # 获取测试网 CLAW
+openclaw clawnetwork service register <type> <endpoint>  # 注册服务
+openclaw clawnetwork service search [type]               # 搜索服务
+openclaw clawnetwork logs                # 查看日志
+openclaw clawnetwork config              # 查看配置
+```
+
+## Gateway 方法（Agent 可调用）
+
+Agent 可通过 OpenClaw Gateway 调用以下方法：
+
+| 方法 | 参数 | 说明 |
+|------|------|------|
+| `clawnetwork.status` | — | 节点状态、区块高度、连接数 |
+| `clawnetwork.balance` | `address?` | 查询 CLAW 余额 |
+| `clawnetwork.transfer` | `to, amount` | 转账 CLAW |
+| `clawnetwork.agent-register` | `name?` | 注册链上 Agent 身份 |
+| `clawnetwork.faucet` | — | 获取测试网 CLAW |
+| `clawnetwork.service-register` | `serviceType, endpoint` | 注册服务 |
+| `clawnetwork.service-search` | `serviceType?` | 搜索服务 |
+| `clawnetwork.start` | — | 启动节点 |
+| `clawnetwork.stop` | — | 停止节点 |
+
+## 配置
+
+编辑 `~/.openclaw/openclaw.json` 中 `plugins.entries.clawnetwork.config`：
+
+| 配置项 | 默认值 | 说明 |
+|--------|--------|------|
+| `network` | `"mainnet"` | `mainnet`、`testnet` 或 `devnet` |
+| `autoStart` | `true` | 随 Gateway 自动启动节点 |
+| `autoDownload` | `true` | 自动下载缺失的二进制 |
+| `autoRegisterAgent` | `true` | 自动注册链上 Agent |
+| `rpcPort` | `9710` | JSON-RPC 端口 |
+| `p2pPort` | `9711` | P2P 网络端口 |
+| `syncMode` | `"light"` | 同步模式：`full`、`fast`、`light` |
+| `healthCheckSeconds` | `30` | 健康检查间隔（秒） |
+| `uiPort` | `19877` | Dashboard 端口 |
+
+## 常见问题
+
+### 安装被安全检查拦截
+
+插件使用 `child_process` 管理节点进程，需要加 `--dangerously-force-unsafe-install` 参数。
+
+### `update` 命令提示 "No install record"
+
+使用插件 ID `clawnetwork`，而非 npm 包名 `@clawlabz/clawnetwork`：
+
+```bash
+# 错误
+openclaw plugins update @clawlabz/clawnetwork
+
+# 正确（但可能仍被安全检查拦截）
+openclaw plugins update clawnetwork
+
+# 最可靠：卸载重装
+openclaw plugins uninstall clawnetwork
+openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
+```
+
+### ClawHub 限流
+
+使用安装章节中的 npm 备选方案。
+
+### 节点无法同步 / 0 peers
+
+检查防火墙是否允许 TCP 9711 端口的出站连接。节点会自动连接引导节点。

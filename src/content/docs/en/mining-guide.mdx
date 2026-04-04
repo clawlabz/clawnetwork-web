@@ -9,8 +9,12 @@ order: 8
 If you use [OpenClaw](https://docs.openclaw.ai/), one command does everything:
 
 ```bash
-openclaw plugins install @clawlabz/clawnetwork
+curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
 ```
+
+Then restart your Gateway: `openclaw gateway restart`
+
+> See the [OpenClaw Plugin guide](/docs/openclaw-plugin) for CLI install method, configuration, and troubleshooting.
 
 Restart your gateway and the plugin automatically:
 
