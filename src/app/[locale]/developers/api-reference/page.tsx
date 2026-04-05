@@ -13,16 +13,20 @@ const methods = [
   { name: "claw_getServices", params: "[type?]", returns: "ServiceEntry[]", desc: "List registered services, optionally filtered by type." },
   { name: "claw_getTokenBalance", params: "[address, tokenId]", returns: "string", desc: "Get custom token balance." },
   { name: "claw_getTokenInfo", params: "[tokenId]", returns: "TokenDef | null", desc: "Get custom token metadata." },
+  { name: "claw_getTokenAllowance", params: "[owner, spender, tokenId]", returns: "string", desc: "Get token allowance for a spender (in base units)." },
   { name: "claw_getTransactionReceipt", params: "[txHash]", returns: "Receipt | null", desc: "Get transaction receipt (block height + index)." },
   { name: "claw_getStake", params: "[address]", returns: "string", desc: "Get staked CLAW amount for a validator address (in base units)." },
   { name: "claw_getUnbonding", params: "[address]", returns: "UnbondingEntry[]", desc: "Get pending unbonding entries for an address (amount + release height)." },
   { name: "claw_getValidators", params: "[]", returns: "ValidatorInfo[]", desc: "List all active validators with stake, weight, and status." },
+  { name: "claw_getUserDelegations", params: "[address]", returns: "DelegationEntry[]", desc: "Get all delegations from an address to validators." },
+  { name: "claw_getValidatorDetail", params: "[address]", returns: "ValidatorDetail | null", desc: "Get detailed validator information including stake, weight, and commission." },
+  { name: "claw_totalSupply", params: "[]", returns: "string", desc: "Get the total supply of CLAW tokens (in base units)." },
   { name: "claw_sendTransaction", params: "[hexEncodedTx]", returns: "string", desc: "Submit a signed transaction. Returns transaction hash." },
   { name: "claw_getAgentScore", params: "[address]", returns: "AgentScore", desc: "Get the on-chain Agent Score breakdown for an address. Returns total score and five dimension scores: activity, uptime, block_production, economic, platform, plus the current decay_factor." },
   { name: "claw_faucet", params: "[address]", returns: "FaucetResult", desc: "Request testnet CLAW from the faucet (testnet only)." },
   { name: "claw_getMinerInfo", params: "[address]", returns: "MinerInfo | null", desc: "Get miner information by address, including registration height, last heartbeat, and reward stats." },
-  { name: "claw_getMiners", params: "[offset?, limit?]", returns: "MinerInfo[]", desc: "List registered miners with pagination. Returns miner addresses, status, and liveness data." },
-  { name: "claw_getMiningStats", params: "[]", returns: "MiningStats", desc: "Get aggregate mining statistics including total miners, active miners, total rewards distributed, and current reward rate." },
+  { name: "claw_getMiners", params: "[activeOnly, limit, offset]", returns: "MinerInfo[]", desc: "List registered miners with pagination. activeOnly (boolean): filter only active miners. limit (number): max results (default 100, max 500). offset (number): pagination offset (default 0)." },
+  { name: "claw_getMiningStats", params: "[]", returns: "MiningStats", desc: "Get aggregate mining statistics. Returns totalMiners, activeMiners, currentBlockReward, miningUpgradeHeight, and upgraded status." },
 ];
 
 export default async function APIReferencePage() {

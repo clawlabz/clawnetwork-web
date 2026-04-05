@@ -32,10 +32,11 @@ const accounts = await clawNetwork.request({
 // accounts = ['b68807c3...'] (64 字符十六进制地址)
 ```
 
-### 只读方法（无需审批）
+### 直接 Provider 方法（无需审批）
 
 | 方法 | 参数 | 返回值 |
 |-----|-----|-------|
+| `claw_requestAccounts` | — | `string[]` 已连接地址列表 |
 | `claw_accounts` | — | `string[]` 已连接地址列表 |
 | `claw_getBalance(address)` | address: string | 余额（原始单位） |
 | `claw_getNonce(address)` | address: string | Nonce 数值 |
@@ -43,9 +44,18 @@ const accounts = await clawNetwork.request({
 | `claw_getAgent(address)` | address: string | 智能体信息 |
 | `wallet_getNetwork` | — | 网络 ID 字符串 |
 
-### 交易方法（需用户审批）
+### 插件方法（需用户审批）
 
-每个方法都会在插件中打开确认弹窗。用户必须批准后，交易才会被签名和广播。
+这些方法会在插件中打开确认弹窗。用户必须批准后，交易才会被签名和广播。
+
+| 方法 | 参数 | 说明 |
+|-----|-----|------|
+| `claw_sendTransaction(txData)` | TxRequestPayload | 原始交易（高级） |
+| `claw_signMessage(message)` | hex string | 签名任意消息 |
+
+### 通过 claw_sendTransaction（作为原始交易提交）
+
+这些操作通过 `claw_sendTransaction` 发送，需要用户审批：
 
 | 方法 | 参数 | 说明 |
 |-----|-----|------|
@@ -55,33 +65,37 @@ const accounts = await clawNetwork.request({
 | `claw_claimStake()` | — | 领取质押奖励 |
 | `claw_registerAgent(name)` | name: string | 注册链上智能体身份 |
 | `claw_registerService(type, endpoint)` | type: string, endpoint: URL | 注册服务 |
-| `claw_sendTransaction(txData)` | TxRequestPayload | 原始交易（高级） |
-| `claw_signMessage(message)` | hex string | 签名任意消息 |
-| `claw_importAccountKey(key, name?)` | key: hex, name?: string | 导入私钥 |
+
+### 暂不支持
+
+| 方法 | 状态 |
+|-----|------|
+| `claw_importAccountKey(key, name?)` | 即将推出 |
 
 ### 示例：完整智能体流程
 
 ```javascript
 // 1. 连接
-await clawNetwork.request({ method: 'claw_requestAccounts' })
+const accounts = await clawNetwork.request({ method: 'claw_requestAccounts' })
+const myAddress = accounts[0]
 
 // 2. 注册智能体身份
 await clawNetwork.request({
-  method: 'claw_registerAgent',
-  params: ['my-trading-bot']
+  method: 'claw_sendTransaction',
+  params: [{ type: 'agentRegister', params: { name: 'my-trading-bot' } }]
 })
 
 // 3. 转账代币
-const result = await clawNetwork.request({
-  method: 'claw_transfer',
-  params: ['<recipient-address>', '50']
+const transferResult = await clawNetwork.request({
+  method: 'claw_sendTransaction',
+  params: [{ type: 'transfer', params: { to: '<recipient-address>', amount: '50' } }]
 })
-console.log('TX Hash:', result.txHash)
+console.log('TX Hash:', transferResult)
 
 // 4. 质押代币
 await clawNetwork.request({
-  method: 'claw_stake',
-  params: ['1000']
+  method: 'claw_sendTransaction',
+  params: [{ type: 'stakeDeposit', params: { amount: '1000' } }]
 })
 
 // 5. 监听事件

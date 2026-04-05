@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { Calculator, ExternalLink, Zap, Users, TrendingDown, Shield, ChevronRight } from "lucide-react";
 import { EXPLORER_URL } from "@/lib/constants";
 
@@ -318,13 +319,13 @@ export function NodesPageClient() {
               Open Rewards Calculator
               <ExternalLink className="h-4 w-4" />
             </a>
-            <a
+            <Link
               href="/docs/quickstart"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-border-dark px-6 py-3 text-sm font-medium text-text-secondary hover:border-primary/40 hover:text-text-primary transition-colors"
             >
               How to Run a Node
               <ChevronRight className="h-4 w-4" />
-            </a>
+            </Link>
           </div>
         </div>
 

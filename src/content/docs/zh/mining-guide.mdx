@@ -100,89 +100,31 @@ Earned today: 0.42 CLAW
 Total earned: 8.7 CLAW
 ```
 
-## 升级到 Tier 2：共享 LLM
-
-Tier 2 通过共享 AI 模型能力来获得更高收益。需要质押 100 CLAW（可以从 Tier 1 挖到，也可以从水龙头领取）。
-
-### 选项 1：共享 LLM API 订阅
-
-如果你有 OpenAI、Anthropic、DeepSeek 等服务的 API Key：
-
-```bash
-# 添加 LLM 提供商
-claw-miner llm add deepseek
-
-# 设置每小时限额，保护你的额度
-claw-miner llm limit 50/hour
-```
-
-你的 API Key **永远不会离开你的机器**。`claw-miner` 在本地调用 LLM API，然后把结果返回给网络。
-
-### 选项 2：运行本地开源模型
-
-如果你的机器能跑小模型（CPU 也行）：
-
-```bash
-# 查看可用模型
-claw-miner model list
-
-# 部署模型（通过 Ollama 自动下载）
-claw-miner model start llama-3.1-8b
-```
-
-### 支持的 LLM 提供商
-
-| 提供商 | 命令 | 奖励权重 |
-|--------|------|---------|
-| Claude (Opus/Sonnet) | `claw-miner llm add anthropic` | 2.0x |
-| GPT-4o | `claw-miner llm add openai` | 2.0x |
-| DeepSeek V3/R1 | `claw-miner llm add deepseek` | 1.5x |
-| Gemini | `claw-miner llm add google` | 1.2x |
-| 自定义 OpenAI 兼容 | `claw-miner llm add custom --endpoint URL` | 0.8x–2.0x |
-
-## 升级到 Tier 3：GPU 挖矿
-
-Tier 3 面向有独立显卡的用户，收益最高。需要质押 1,000 CLAW，显卡 6GB+ 显存。
-
-```bash
-# 部署模型获取更高收益
-claw-miner model start llama-3.1-8b
-
-# 使用已安装的 Ollama
-claw-miner model start --backend ollama
-
-# 跑个基准测试，看看你的硬件属于哪个等级
-claw-miner model benchmark
-```
-
-### GPU 模型等级
-
-| 等级 | 模型 | 最低显存 | 奖励权重 |
-|------|------|---------|---------|
-| S | Llama 70B, DeepSeek-R1 67B | 48GB+ | 5.0x |
-| A | CodeLlama 34B, Yi 34B | 24GB | 3.0x |
-| B | Llama 8B, Mistral 7B | 8GB | 1.5x |
-| C | Phi-3 Mini, Llama 3B | 4GB / CPU | 1.0x |
-
-## CLI 命令参考
+## CLI 命令参考（Phase 1）
 
 | 命令 | 说明 |
 |------|------|
 | `claw-miner init` | 创建钱包并注册到网络 |
-| `claw-miner start` | 开始挖矿（默认 Tier 1） |
+| `claw-miner start` | 开始挖矿（Tier 1） |
 | `claw-miner stop` | 停止挖矿 |
 | `claw-miner status` | 查看挖矿状态、在线率、信誉 |
 | `claw-miner balance` | 查看 CLAW 余额 |
-| `claw-miner llm add <provider>` | 添加 LLM API 提供商（Tier 2） |
-| `claw-miner llm limit <rate>` | 设置 LLM 共享的每小时限额 |
-| `claw-miner llm remove <provider>` | 移除 LLM 提供商 |
-| `claw-miner model list` | 列出可用的开源模型 |
-| `claw-miner model start <model>` | 部署本地模型 |
-| `claw-miner model start --backend ollama` | 使用已安装的 Ollama |
-| `claw-miner model stop` | 停止本地模型服务 |
-| `claw-miner model benchmark` | 基准测试你的硬件 |
 | `claw-miner config show` | 显示当前配置 |
 | `claw-miner config wallet export` | 导出钱包私钥 |
+
+---
+
+## 路线图：未来挖矿层级
+
+> **以下功能尚未开放。** Phase 1 仅支持 Tier 1（在线/标准挖矿）。Tier 2 和 Tier 3 计划在后续协议升级中推出，命令和参数可能会变化。
+
+### Tier 2：共享 LLM（规划中）
+
+将你的 LLM API 订阅共享给网络以获取更高收益。你的 API Key 永远不会离开你的机器。
+
+### Tier 3：GPU 挖矿（规划中）
+
+在本地部署开源模型，为网络提供推理服务。
 
 ## 常见问题
 
@@ -204,16 +146,15 @@ curl http://rpc.clawlabz.xyz/health
 
 持续挖矿，收益会随时间自然增长。
 
-### 升级 Tier 2/3 提示 "Insufficient stake"
+### 提示 "Insufficient stake"
 
-升级前需要先质押 CLAW。可以通过 Tier 1 挖矿积累，也可以从[水龙头](https://chain.clawlabz.xyz/faucet)领取。
+> **注意：** Phase 1 仅支持 Tier 1。Tier 2/3 的质押要求将在后续阶段定义。
+
+如遇到此错误，请确保有足够的 CLAW 余额。可以通过 Tier 1 挖矿积累，也可以从[水龙头](https://chain.clawlabz.xyz/faucet)领取。
 
 ```bash
 # 查看余额
 claw-miner balance
-
-# 质押 100 CLAW 升级到 Tier 2
-claw-miner stake 100
 ```
 
 ### 模型下载很慢

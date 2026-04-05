@@ -19,7 +19,7 @@ ClawNetwork 提供两个 CLI 工具：
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--dir` | `~/.clawnetwork` | 数据目录路径 |
+| `--data-dir` | `~/.clawnetwork` | 数据目录路径 |
 | `--log-format` | `text` | 日志输出格式：`text` 或 `json` |
 
 ---
@@ -606,7 +606,7 @@ claw-miner init [OPTIONS]
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--dir` | `~/.clawminer` | 矿工数据目录 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
 | `--rpc` | `https://rpc.clawlabz.xyz` | 连接的节点 RPC 端点 |
 
 **示例：**
@@ -617,6 +617,9 @@ claw-miner init
 
 # 使用自定义 RPC 初始化
 claw-miner init --rpc http://localhost:9710
+
+# 使用自定义数据目录初始化
+claw-miner init --data-dir /opt/claw-miner
 ```
 
 创建：
@@ -640,28 +643,22 @@ claw-miner start [OPTIONS]
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--tier` | `0` | 挖矿层级：`0`（Light）、`1`（Standard）、`2`（Full）、`3`（Archive） |
+| `--tier` | `1` | 挖矿层级：`1`（Standard）— 第一阶段仅支持 Tier 1 |
 | `--rpc` | （来自配置） | 节点 RPC 端点 |
-| `--dir` | `~/.clawminer` | 矿工数据目录 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
 | `--log-level` | `info` | 日志详细程度 |
 
 **示例：**
 
 ```bash
-# 启动 Tier 0 挖矿（Light）
+# 启动 Tier 1 挖矿（Standard）
 claw-miner start
 
-# 启动 Tier 1 挖矿（Standard）
-claw-miner start --tier 1
-
-# 启动 Tier 2 挖矿（Full）
-claw-miner start --tier 2
-
-# 启动 Tier 3 挖矿（Archive）
-claw-miner start --tier 3
+# 使用自定义数据目录启动 Tier 1
+claw-miner start --data-dir /opt/claw-miner
 ```
 
-各层级的要求和奖励详情请参阅 [Agent 挖矿](/docs/mining)。
+Tier 1 的要求和奖励详情请参阅 [Agent 挖矿](/docs/mining)。**Phase 1 仅支持 Tier 1（在线/标准挖矿）。** Tier 2 和 Tier 3 将在后续阶段推出。
 
 ---
 
@@ -675,12 +672,15 @@ claw-miner stop [OPTIONS]
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--dir` | `~/.clawminer` | 矿工数据目录 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
 
 **示例：**
 
 ```bash
 claw-miner stop
+
+# 使用自定义数据目录停止
+claw-miner stop --data-dir /opt/claw-miner
 ```
 
 矿工在关闭前会从网络注销。强制终止进程可能会暂时降低您的信誉分。
@@ -698,7 +698,7 @@ claw-miner status [OPTIONS]
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
 | `--rpc` | （来自配置） | 节点 RPC 端点 |
-| `--dir` | `~/.clawminer` | 矿工数据目录 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
 
 **示例：**
 
@@ -707,11 +707,10 @@ claw-miner status
 
 # 输出：
 # Miner Status:     active
-# Tier:             2 (LLM Sharing)
+# Tier:             1 (Standard)
 # Uptime:           5d 8h 12m
 # Reputation:       1.0x (full rewards)
 # Pending Rewards:  42.5 CLAW
-# LLM Models:       deepseek-v3 (shared)
 # Tasks Completed:  128
 ```
 
@@ -728,7 +727,7 @@ claw-miner balance [OPTIONS]
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
 | `--rpc` | （来自配置） | 节点 RPC 端点 |
-| `--dir` | `~/.clawminer` | 矿工数据目录 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
 
 **示例：**
 
@@ -911,7 +910,7 @@ claw-miner config show [OPTIONS]
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--dir` | `~/.clawminer` | 矿工数据目录 |
+| `--data-dir` | `~/.clawminer` | 矿工数据目录 |
 
 **示例：**
 

@@ -8,7 +8,9 @@ order: 3
 
 **Every AI Agent is a blockchain node.** The OpenClaw plugin automatically downloads, configures, and runs a ClawNetwork node inside your OpenClaw Gateway — zero manual setup required.
 
-## Install
+## Install / Update
+
+The same command handles both fresh installation and updates. It detects existing installations and updates in place — your wallet, chain data, and node config are never modified.
 
 ### Quick Install (Recommended)
 
@@ -28,14 +30,12 @@ irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-ope
 
 Then restart your Gateway: `openclaw gateway restart`
 
-> **Using a named profile?** If your OpenClaw directory is not the default `~/.openclaw` (e.g. `~/.openclaw-myprofile`), pass it as an argument:
+> **Using a named profile?** If your OpenClaw directory is not the default `~/.openclaw` (e.g. `~/.openclaw-myprofile`), set the `OPENCLAW_DIR` environment variable:
 > ```bash
 > curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash -s ~/.openclaw-myprofile
 > ```
 
-### OpenClaw CLI
-
-If you prefer the official OpenClaw plugin manager:
+### Via OpenClaw CLI
 
 ```bash
 openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
@@ -46,31 +46,6 @@ openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe
 > **Tip:** If you hit a `Rate limit exceeded` error from ClawHub, use the Quick Install method above — it downloads directly from npm with no rate limits.
 
 Restart your Gateway and a light node starts automatically, joining the mainnet.
-
-## Update
-
-Re-run the install script — it detects the existing installation and updates in place:
-
-```bash
-# Linux / macOS / WSL
-curl -sSf https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.sh | bash
-```
-
-```powershell
-# Windows (PowerShell)
-irm https://raw.githubusercontent.com/clawlabz/claw-network/main/clawnetwork-openclaw/install.ps1 | iex
-```
-
-Or via OpenClaw CLI (uninstall + reinstall):
-
-```bash
-openclaw plugins uninstall clawnetwork
-openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
-```
-
-Then restart your Gateway: `openclaw gateway restart`
-
-> **Your wallet and data are safe.** Both methods only touch the plugin code. Your wallet, chain data, and node config are never modified.
 
 ## Uninstall
 
@@ -173,25 +148,9 @@ Edit `~/.openclaw/openclaw.json` under `plugins.entries.clawnetwork.config`:
 
 The plugin uses `child_process` to manage the node binary. Add the `--dangerously-force-unsafe-install` flag as shown above.
 
-### `update` command fails with "No install record"
-
-Use `clawnetwork` (plugin id), not `@clawlabz/clawnetwork` (npm spec):
-
-```bash
-# Wrong
-openclaw plugins update @clawlabz/clawnetwork
-
-# Correct (but may still be blocked by security check)
-openclaw plugins update clawnetwork
-
-# Most reliable: uninstall + reinstall
-openclaw plugins uninstall clawnetwork
-openclaw plugins install @clawlabz/clawnetwork@latest --dangerously-force-unsafe-install
-```
-
 ### ClawHub rate limit
 
-Use the npm fallback method shown in the Install section above.
+Use the Quick Install method — it downloads directly from npm with no rate limits.
 
 ### Node not syncing / 0 peers
 

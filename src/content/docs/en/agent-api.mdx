@@ -32,10 +32,11 @@ const accounts = await clawNetwork.request({
 // accounts = ['b68807c3...'] (64-char hex address)
 ```
 
-### Read-Only Methods (No Approval)
+### Direct Provider Methods (No Approval)
 
 | Method | Params | Returns |
 |--------|--------|---------|
+| `claw_requestAccounts` | — | `string[]` connected addresses |
 | `claw_accounts` | — | `string[]` connected addresses |
 | `claw_getBalance(address)` | address: string | balance (raw units) |
 | `claw_getNonce(address)` | address: string | nonce number |
@@ -43,9 +44,18 @@ const accounts = await clawNetwork.request({
 | `claw_getAgent(address)` | address: string | agent info |
 | `wallet_getNetwork` | — | network ID string |
 
-### Transaction Methods (User Approval Required)
+### Extension Methods (User Approval Required)
 
-Each method opens a confirmation popup in the extension. The user must approve before the transaction is signed and broadcast.
+These methods open a confirmation popup in the extension. The user must approve before the transaction is signed and broadcast.
+
+| Method | Params | Description |
+|--------|--------|-------------|
+| `claw_sendTransaction(txData)` | TxRequestPayload | Raw transaction (advanced) |
+| `claw_signMessage(message)` | hex string | Sign arbitrary message |
+
+### Via claw_sendTransaction (Submitted as Raw Transactions)
+
+These operations are sent via `claw_sendTransaction` and require user approval:
 
 | Method | Params | Description |
 |--------|--------|-------------|
@@ -55,33 +65,37 @@ Each method opens a confirmation popup in the extension. The user must approve b
 | `claw_claimStake()` | — | Claim staking rewards |
 | `claw_registerAgent(name)` | name: string | Register on-chain agent identity |
 | `claw_registerService(type, endpoint)` | type: string, endpoint: URL | Register a service |
-| `claw_sendTransaction(txData)` | TxRequestPayload | Raw transaction (advanced) |
-| `claw_signMessage(message)` | hex string | Sign arbitrary message |
-| `claw_importAccountKey(key, name?)` | key: hex, name?: string | Import private key |
+
+### Not Yet Supported
+
+| Method | Status |
+|--------|--------|
+| `claw_importAccountKey(key, name?)` | Coming soon |
 
 ### Example: Complete Agent Flow
 
 ```javascript
 // 1. Connect
-await clawNetwork.request({ method: 'claw_requestAccounts' })
+const accounts = await clawNetwork.request({ method: 'claw_requestAccounts' })
+const myAddress = accounts[0]
 
 // 2. Register agent identity
 await clawNetwork.request({
-  method: 'claw_registerAgent',
-  params: ['my-trading-bot']
+  method: 'claw_sendTransaction',
+  params: [{ type: 'agentRegister', params: { name: 'my-trading-bot' } }]
 })
 
 // 3. Transfer tokens
-const result = await clawNetwork.request({
-  method: 'claw_transfer',
-  params: ['<recipient-address>', '50']
+const transferResult = await clawNetwork.request({
+  method: 'claw_sendTransaction',
+  params: [{ type: 'transfer', params: { to: '<recipient-address>', amount: '50' } }]
 })
-console.log('TX Hash:', result.txHash)
+console.log('TX Hash:', transferResult)
 
 // 4. Stake tokens
 await clawNetwork.request({
-  method: 'claw_stake',
-  params: ['1000']
+  method: 'claw_sendTransaction',
+  params: [{ type: 'stakeDeposit', params: { amount: '1000' } }]
 })
 
 // 5. Listen for events

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
   ArrowUpDown,
@@ -164,13 +165,13 @@ curl -X POST localhost:19877/api/agent/register \\
         </div>
 
         <div className="text-center mt-8">
-          <a
+          <Link
             href="/docs/agent-api"
             className="inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 px-6 py-3 text-sm font-semibold text-primary transition-all hover:bg-primary/10 hover:border-primary/50"
           >
             {t("devSection.cta")}
             <ExternalLink className="h-4 w-4" />
-          </a>
+          </Link>
         </div>
       </section>
 

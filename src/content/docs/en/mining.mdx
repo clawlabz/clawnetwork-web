@@ -8,23 +8,21 @@ order: 7
 
 Agent Mining lets you earn CLAW tokens by contributing your computer's resources to the ClawNetwork. Whether you simply keep a node running, share access to AI models, or provide GPU compute power, the network rewards you for making it stronger. No specialized hardware required to get started — any computer will do.
 
-## Three Ways to Mine
+## Phase 1: Tier 1 Mining (Online)
 
-ClawNetwork offers three tiers of mining, each with different levels of commitment and reward:
+**Phase 1 only supports Tier 1 (Online/Standard Mining).** Tier 2 and Tier 3 mining are planned for future phases.
 
-| | Tier 1: Online | Tier 2: LLM Sharing | Tier 3: GPU Compute |
-|---|---|---|---|
-| **What you do** | Run a node and stay synced | Share your AI model access with the network | Run AI models locally on your GPU |
-| **Hardware needed** | Any computer | Any computer + LLM subscription or local model | GPU with 6GB+ VRAM |
-| **Staking required** | None | 100 CLAW | 1,000 CLAW |
-| **Earning potential** | Low | Medium | High |
-| **Difficulty** | Easy | Easy | Moderate |
+| | Tier 1: Online |
+|---|---|
+| **What you do** | Run a node and stay synced |
+| **Hardware needed** | Any computer |
+| **Staking required** | None |
+| **Earning potential** | Baseline rewards |
+| **Difficulty** | Easy |
 
-**Tier 1** is where everyone starts. Just run a node, stay online, and earn a small but steady stream of CLAW.
+**Tier 1** is where everyone starts. Just run a node, stay online, and earn a steady stream of CLAW.
 
-**Tier 2** is the sweet spot for most users. If you already pay for an AI service like ChatGPT, Claude, or DeepSeek, you can share your unused quota with the network and earn CLAW while you sleep. You can also run a local open-source model via Ollama.
-
-**Tier 3** is for users with dedicated GPUs who want to maximize earnings by serving AI inference requests at scale.
+**Tier 2 (LLM Sharing)** and **Tier 3 (GPU Compute)** are coming in future phases. These will allow users to earn additional rewards by sharing AI model access or providing GPU compute power.
 
 ## How Rewards Work
 
@@ -47,15 +45,9 @@ Like Bitcoin, the block reward halves over time to ensure long-term sustainabili
 
 The tail emission of 0.25 CLAW/block never reaches zero, ensuring miners are always incentivized. The Node Incentives pool (400M CLAW) sustains rewards for **38+ years**.
 
-### Mining Pool Split
+### Mining Pool in Phase 1
 
-The 35% Agent Mining share is further distributed by tier:
-
-| Tier | Pool Share | Description |
-|------|-----------|-------------|
-| Tier 1 (Online) | 15% | Basic liveness rewards |
-| Tier 2 (LLM) | 35% | AI model sharing rewards |
-| Tier 3 (GPU) | 50% | Professional compute rewards |
+In Phase 1, all 35% of Agent Mining rewards go to Tier 1 miners. Future phases will introduce Tier 2 and Tier 3 rewards.
 
 ### Reputation Multiplier
 
@@ -78,7 +70,7 @@ ClawNetwork takes fairness seriously. Several mechanisms prevent abuse:
 - **Subnet limits** — Maximum 3 miners per /24 IP subnet, preventing one person from running hundreds of fake nodes on the same network.
 - **Reputation cold start** — New miners earn only 20% of normal rewards for the first week, making Sybil attacks economically unattractive.
 - **Heartbeat verification** — Miners must periodically prove they're online by signing recent block hashes. Miss too many checks and you're marked offline.
-- **Staking penalties** — Tier 2 and Tier 3 miners stake CLAW that can be slashed for dishonest behavior (e.g., returning fake AI responses).
+- **Staking penalties** — Future mining tiers (Tier 2 and Tier 3) will include slashing mechanisms for dishonest behavior (e.g., returning fake AI responses).
 - **Blind challenges** — The network sends test prompts that look identical to real requests. Nodes that return low-quality responses lose reputation.
 
 ## Getting Started

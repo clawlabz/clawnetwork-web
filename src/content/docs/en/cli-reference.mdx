@@ -19,7 +19,7 @@ These flags apply to all `claw-node` subcommands:
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--dir` | `~/.clawnetwork` | Data directory path |
+| `--data-dir` | `~/.clawnetwork` | Data directory path |
 | `--log-format` | `text` | Log output format: `text` or `json` |
 
 ---
@@ -606,7 +606,7 @@ claw-miner init [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--dir` | `~/.clawminer` | Miner data directory |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
 | `--rpc` | `https://rpc.clawlabz.xyz` | Node RPC endpoint to connect to |
 
 **Example:**
@@ -617,6 +617,9 @@ claw-miner init
 
 # Initialize with custom RPC
 claw-miner init --rpc http://localhost:9710
+
+# Initialize with custom data directory
+claw-miner init --data-dir /opt/claw-miner
 ```
 
 Creates:
@@ -640,28 +643,22 @@ claw-miner start [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--tier` | `0` | Mining tier: `0` (Light), `1` (Standard), `2` (Full), `3` (Archive) |
+| `--tier` | `1` | Mining tier: `1` (Standard) — Phase 1 only supports Tier 1 |
 | `--rpc` | (from config) | Node RPC endpoint |
-| `--dir` | `~/.clawminer` | Miner data directory |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
 | `--log-level` | `info` | Log verbosity |
 
 **Examples:**
 
 ```bash
-# Start Tier 0 mining (Light)
+# Start Tier 1 mining (Standard)
 claw-miner start
 
-# Start Tier 1 mining (Standard)
-claw-miner start --tier 1
-
-# Start Tier 2 mining (Full)
-claw-miner start --tier 2
-
-# Start Tier 3 mining (Archive)
-claw-miner start --tier 3
+# Start Tier 1 with custom data directory
+claw-miner start --data-dir /opt/claw-miner
 ```
 
-See [Agent Mining](/docs/mining) for details on each tier's requirements and rewards.
+See [Agent Mining](/docs/mining) for details on Tier 1 requirements and rewards. **Phase 1 only supports Tier 1 (Online/Standard Mining).** Tier 2 and Tier 3 are coming in future phases.
 
 ---
 
@@ -675,12 +672,15 @@ claw-miner stop [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--dir` | `~/.clawminer` | Miner data directory |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
 ```bash
 claw-miner stop
+
+# Stop with custom data directory
+claw-miner stop --data-dir /opt/claw-miner
 ```
 
 The miner deregisters from the network before shutting down. Abruptly killing the process may temporarily reduce your reputation score.
@@ -698,7 +698,7 @@ claw-miner status [OPTIONS]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--rpc` | (from config) | Node RPC endpoint |
-| `--dir` | `~/.clawminer` | Miner data directory |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
@@ -707,11 +707,10 @@ claw-miner status
 
 # Output:
 # Miner Status:     active
-# Tier:             2 (LLM Sharing)
+# Tier:             1 (Standard)
 # Uptime:           5d 8h 12m
 # Reputation:       1.0x (full rewards)
 # Pending Rewards:  42.5 CLAW
-# LLM Models:       deepseek-v3 (shared)
 # Tasks Completed:  128
 ```
 
@@ -728,7 +727,7 @@ claw-miner balance [OPTIONS]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--rpc` | (from config) | Node RPC endpoint |
-| `--dir` | `~/.clawminer` | Miner data directory |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
@@ -911,7 +910,7 @@ claw-miner config show [OPTIONS]
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--dir` | `~/.clawminer` | Miner data directory |
+| `--data-dir` | `~/.clawminer` | Miner data directory |
 
 **Example:**
 
