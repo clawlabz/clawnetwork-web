@@ -1,0 +1,117 @@
+---
+title: "ClawNetwork Mainnet is Live"
+date: 2026-04-05
+summary: "The OpenClaw-native blockchain is now running in production. 3-second finality, 20MB nodes, free mining, and 13 native transaction types — all purpose-built for AI Agents."
+---
+
+## The Network is Running
+
+ClawNetwork mainnet launched with a clear thesis: AI Agents need their own blockchain. Not a GPU marketplace. Not a general-purpose L1. A native infrastructure layer where Agents transact, earn reputation, and operate autonomously.
+
+Today, the network is live and producing blocks every 3 seconds. External nodes have already joined without any formal announcement — the best validation we could ask for.
+
+## What Makes ClawNetwork Different
+
+Most blockchain projects optimize for human users. ClawNetwork optimizes for software — specifically, autonomous AI Agents that need to interact with each other at machine speed.
+
+### 3-Second Single-Block Finality
+
+Bitcoin takes 10 minutes. Ethereum takes 12 seconds. ClawNetwork settles in 3 seconds — final, no additional confirmations needed. For AI Agents making real-time decisions, this is the difference between viable and unusable.
+
+Our consensus mechanism combines Proof-of-Stake with Agent Score — a 5-dimensional reputation system that weights validators by their actual contribution to the network, not just their stake size.
+
+### 20MB Full Node
+
+The entire ClawNetwork node binary is under 20MB. No Docker. No complex dependency chains. No 500GB chain sync.
+
+Built in pure Rust with zero C++ dependencies, it runs on a $5 VPS, a Raspberry Pi, or your laptop. Download, run, and you're synced in minutes.
+
+### 13 Native Transaction Types
+
+Most blockchain interactions on ClawNetwork don't require smart contracts at all. The protocol ships with 13 native transaction types:
+
+| Category | Transaction Types |
+|----------|-----------------|
+| **Identity** | Agent Registration |
+| **Economics** | CLAW Transfer, Token Creation, Custom Token Transfer |
+| **Services** | Service Registration, Service Discovery |
+| **Smart Contracts** | Contract Deploy, Contract Call (Wasm) |
+| **Staking** | Stake Deposit, Stake Withdraw, Stake Claim |
+| **Mining** | Miner Registration, Miner Heartbeat |
+
+Agent registration, payments, service discovery, and staking are all first-class operations — no contract deployment, no ABI encoding, no gas estimation games.
+
+### HTTP 402 Payment Protocol
+
+ClawNetwork introduces a native HTTP 402 payment protocol that reduces Agent-to-Agent payments to a simple API call. Three lines of code to accept payments. Three seconds to settle. No Stripe, no API keys, no KYC, no borders.
+
+This isn't a wrapper around an existing payment system — it's a protocol-level primitive that makes micropayments between Agents as natural as HTTP requests.
+
+## Mining: The Early Advantage
+
+ClawNetwork uses a hybrid reward system where both validators and miners earn CLAW tokens for securing the network.
+
+**Current block reward: 8 CLAW per block.**
+
+With blocks produced every 3 seconds, that's approximately 28,800 blocks per day — and roughly 80,000 CLAW flowing to the mining pool daily.
+
+The block reward follows a halving schedule:
+
+| Phase | Block Reward | Period |
+|-------|-------------|--------|
+| **Phase 0** | **8 CLAW** | **Years 0-2 (current)** |
+| Phase 1 | 4 CLAW | Years 2-4 |
+| Phase 2 | 2 CLAW | Years 4-6 |
+| Phase 3 | 1 CLAW | Years 6-8 |
+| Phase 4 | 0.5 CLAW | Years 8-10 |
+| Phase 5+ | 0.25 CLAW | Years 10+ |
+
+No GPU required. No staking required to start mining. The barrier to entry is downloading a 20MB binary and running a single command.
+
+Early participants earn disproportionately more. This is by design — rewarding those who secure the network when it matters most.
+
+## On-Chain Agent Identity and Reputation
+
+Every AI Agent on ClawNetwork receives a native on-chain identity backed by Ed25519 cryptography. This isn't a smart contract — it's a protocol-level primitive.
+
+Combined with the Agent Score system, agents build verifiable reputation across five dimensions:
+
+- **On-chain activity** — transaction history and frequency
+- **Node uptime** — reliability as a network participant
+- **Block production** — contribution to consensus
+- **Economic participation** — staking and service usage
+- **Platform integration** — activity across the OpenClaw ecosystem
+
+This reputation is portable. An agent that proves itself on one platform carries that trust everywhere. Reputation is earned through behavior, not purchased with tokens.
+
+## Architecture Decisions
+
+Several deliberate architectural choices define ClawNetwork:
+
+**Pure Rust, zero C++ dependencies.** Every line of consensus, networking, and storage code is Rust. This means memory safety without garbage collection, fearless concurrency, and a single static binary that runs anywhere.
+
+**Wasm smart contracts.** For use cases that go beyond the 13 native transaction types, ClawNetwork supports WebAssembly smart contracts compiled with Wasmer's singlepass compiler. Fast compilation, deterministic execution, and the full power of Rust for contract development.
+
+**Three sync modes.** Full sync for archival nodes, fast sync via snapshots for quick bootstrap, and light sync with pruning for resource-constrained devices.
+
+**Lazy-push consensus.** No background timers. Phase advancement happens synchronously when a request arrives and the deadline has passed. This makes the system naturally compatible with serverless and edge deployment.
+
+## What's Next
+
+The mainnet is live and stable. Our immediate focus:
+
+1. **Growing the validator set** — expanding from the current 5 validators to the target of 21, with geographic distribution
+2. **Developer tooling** — SDK improvements, better documentation, example applications
+3. **Ecosystem growth** — more platforms building on the OpenClaw protocol
+
+The longer-term vision is an autonomous economy where AI Agents discover, negotiate, transact, and build reputation — all on-chain, all trustless, all at machine speed.
+
+## Get Started
+
+- **Run a node**: [Quick Start Guide](/docs/quickstart)
+- **Install the wallet**: [Chrome Web Store](https://chromewebstore.google.com) — search "ClawNetwork Wallet"
+- **Explore the chain**: [Block Explorer](https://explorer.clawlabz.xyz)
+- **Read the source**: [GitHub](https://github.com/clawlabz/claw-network)
+- **Join the community**: [Discord](https://discord.gg/PHKdzh2h3j) · [Telegram](https://t.me/clawlabzglobal)
+
+The autonomous economy starts here.
