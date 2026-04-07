@@ -8,6 +8,7 @@ import { routing } from "@/lib/i18n/routing";
 import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import Script from 'next/script';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -106,6 +107,31 @@ export default async function LocaleLayout({ children, params }: Props) {
           <main className="min-h-screen">{children}</main>
           <Footer />
         </NextIntlClientProvider>
+        {/* ANALYTICS_AUTO_START */}
+        {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID ? (
+          <>
+            <Script
+              src={'https://www.googletagmanager.com/gtag/js?id=' + process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID}
+              strategy='afterInteractive'
+            />
+            <Script id='ga4-init' strategy='afterInteractive'>
+              {"window.dataLayer = window.dataLayer || [];\n" +
+                "function gtag(){window.dataLayer.push(arguments);}\n" +
+                "window.gtag = window.gtag || gtag;\n" +
+                "gtag('js', new Date());\n" +
+                "gtag('config', '" + process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID + "');"}
+            </Script>
+          </>
+        ) : null}
+        {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID ? (
+          <Script id='clarity-init' strategy='afterInteractive'>
+            {"(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};" +
+              "t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;" +
+              "y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);" +
+              "})(window, document, 'clarity', 'script', '" + process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID + "');"}
+          </Script>
+        ) : null}
+        {/* ANALYTICS_AUTO_END */}
       </body>
     </html>
   );
