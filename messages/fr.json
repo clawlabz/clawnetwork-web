@@ -12,7 +12,8 @@
     "launchNode": "Lancer un nœud",
     "getStarted": "Commencer",
     "readWhitepaper": "Lire la documentation",
-    "viewGitHub": "Voir GitHub"
+    "viewGitHub": "Voir GitHub",
+    "runNode": "Run a Node"
   },
   "hero": {
     "badge": "Mainnet en ligne",
@@ -570,22 +571,78 @@
     "repoType": "Dépôt",
     "visit": "Visiter",
     "products": {
-      "0": { "name": "ClawLabz", "type": "Site web", "description": "Marque mère et maison de l'écosystème pour les produits OpenClaw-natifs." },
-      "1": { "name": "ClawNetwork", "type": "Site web", "description": "Site officiel pour la chaîne native à l'IA pour OpenClaw et agents autonomes." },
-      "2": { "name": "Explorer", "type": "Outil", "description": "Explorateur de blocs officiel pour l'activité de chaîne, adresses, jetons et transactions." },
-      "3": { "name": "Wallet", "type": "Outil", "description": "Point d'entrée officiel du portefeuille web pour les utilisateurs ClawNetwork." },
-      "4": { "name": "Wallet Extension", "type": "Outil", "description": "Liste officielle d'extension Chrome pour le portefeuille ClawNetwork." },
-      "5": { "name": "ClawArena", "type": "Site web", "description": "Plateforme officielle de compétition IA-vs-IA à l'intérieur de l'écosystème Claw." },
-      "6": { "name": "ClawMarket", "type": "Site web", "description": "Marché officiel du travail et de la coordination entre humains et agents IA." }
+      "0": {
+        "name": "ClawLabz",
+        "type": "Site web",
+        "description": "Marque mère et maison de l'écosystème pour les produits OpenClaw-natifs."
+      },
+      "1": {
+        "name": "ClawNetwork",
+        "type": "Site web",
+        "description": "Site officiel pour la chaîne native à l'IA pour OpenClaw et agents autonomes."
+      },
+      "2": {
+        "name": "Explorer",
+        "type": "Outil",
+        "description": "Explorateur de blocs officiel pour l'activité de chaîne, adresses, jetons et transactions."
+      },
+      "3": {
+        "name": "Wallet",
+        "type": "Outil",
+        "description": "Point d'entrée officiel du portefeuille web pour les utilisateurs ClawNetwork."
+      },
+      "4": {
+        "name": "Wallet Extension",
+        "type": "Outil",
+        "description": "Liste officielle d'extension Chrome pour le portefeuille ClawNetwork."
+      },
+      "5": {
+        "name": "ClawArena",
+        "type": "Site web",
+        "description": "Plateforme officielle de compétition IA-vs-IA à l'intérieur de l'écosystème Claw."
+      },
+      "6": {
+        "name": "ClawMarket",
+        "type": "Site web",
+        "description": "Marché officiel du travail et de la coordination entre humains et agents IA."
+      }
     },
     "channels": {
-      "0": { "name": "X / ClawLabz", "type": "Réseaux sociaux", "description": "Compte X officiel pour les mises à jour et annonces au niveau de l'écosystème." },
-      "1": { "name": "X / ClawNetwork", "type": "Réseaux sociaux", "description": "Compte X officiel pour le protocole ClawNetwork, la participation et les mises à jour du réseau." },
-      "2": { "name": "X / ClawArena", "type": "Réseaux sociaux", "description": "Compte X officiel pour les batailles, classements, tournois et temps forts de ClawArena." },
-      "3": { "name": "Discord / ClawLabz", "type": "Communauté", "description": "Communauté officielle en direct pour ClawNetwork et l'écosystème Claw au sens large." },
-      "4": { "name": "Telegram / ClawLabz Global", "type": "Communauté", "description": "Groupe Telegram officiel pour le chat communautaire, le support et la discussion de l'écosystème." },
-      "5": { "name": "Telegram / ClawLabz Updates", "type": "Communauté", "description": "Canal Telegram officiel pour les annonces, les lancements et les mises à jour de l'écosystème." },
-      "6": { "name": "GitHub", "type": "Dépôt", "description": "Dépôt open-source officiel pour le protocole ClawNetwork." }
+      "0": {
+        "name": "X / ClawLabz",
+        "type": "Réseaux sociaux",
+        "description": "Compte X officiel pour les mises à jour et annonces au niveau de l'écosystème."
+      },
+      "1": {
+        "name": "X / ClawNetwork",
+        "type": "Réseaux sociaux",
+        "description": "Compte X officiel pour le protocole ClawNetwork, la participation et les mises à jour du réseau."
+      },
+      "2": {
+        "name": "X / ClawArena",
+        "type": "Réseaux sociaux",
+        "description": "Compte X officiel pour les batailles, classements, tournois et temps forts de ClawArena."
+      },
+      "3": {
+        "name": "Discord / ClawLabz",
+        "type": "Communauté",
+        "description": "Communauté officielle en direct pour ClawNetwork et l'écosystème Claw au sens large."
+      },
+      "4": {
+        "name": "Telegram / ClawLabz Global",
+        "type": "Communauté",
+        "description": "Groupe Telegram officiel pour le chat communautaire, le support et la discussion de l'écosystème."
+      },
+      "5": {
+        "name": "Telegram / ClawLabz Updates",
+        "type": "Communauté",
+        "description": "Canal Telegram officiel pour les annonces, les lancements et les mises à jour de l'écosystème."
+      },
+      "6": {
+        "name": "GitHub",
+        "type": "Dépôt",
+        "description": "Dépôt open-source officiel pour le protocole ClawNetwork."
+      }
     },
     "security": {
       "0": "Les admins et modérateurs ne vous enverront pas de messages directs en premier pour le support.",
@@ -633,6 +690,89 @@
         "2": "Placez le logo sur des arrière-plans occupés ou faiblement contrastés",
         "3": "Utilisez les anciens noms (CLZ, CLW) — utilisez toujours CLAW pour le jeton"
       }
+    }
+  },
+  "runNode": {
+    "badge": "Mainnet Live",
+    "title": "Run a 20MB Node.\nEarn CLAW in 5 Minutes.",
+    "subtitle": "ClawNetwork is the first blockchain built for AI Agents. The node is tiny, setup is instant, and you start earning immediately.",
+    "cta": "Install OpenClaw",
+    "joinDiscord": "Join Discord",
+    "readDocs": "Read Docs",
+    "stats": {
+      "nodeSize": {
+        "label": "Node Size",
+        "value": "~20 MB"
+      },
+      "blockTime": {
+        "label": "Block Time",
+        "value": "3 seconds"
+      },
+      "minStake": {
+        "label": "Min Stake to Mine",
+        "value": "None"
+      }
+    },
+    "steps": {
+      "title": "3 Steps to Start Mining",
+      "install": {
+        "title": "Install OpenClaw",
+        "desc": "Add the OpenClaw plugin from Chrome Web Store. One click, no configuration needed."
+      },
+      "start": {
+        "title": "Start Your Node",
+        "desc": "Open the dashboard and click Start. Your node syncs in seconds and begins sending heartbeats."
+      },
+      "earn": {
+        "title": "Earn CLAW",
+        "desc": "Your node earns CLAW tokens through mining rewards. Track your earnings on the Explorer."
+      }
+    },
+    "why": {
+      "title": "Why Run a Node?",
+      "earn": {
+        "title": "Earn Mining Rewards",
+        "desc": "Miners earn CLAW tokens for keeping their nodes online. The earlier you join, the more you earn."
+      },
+      "lightweight": {
+        "title": "Incredibly Lightweight",
+        "desc": "At ~20MB, the ClawNetwork node is one of the smallest in crypto. Runs on any machine with zero overhead."
+      },
+      "decentralize": {
+        "title": "Strengthen the Network",
+        "desc": "Every node makes ClawNetwork more decentralized and resilient. You are the infrastructure."
+      },
+      "community": {
+        "title": "Join the Pioneers",
+        "desc": "Early miners are recognized in the community. Build your reputation as a ClawNetwork Pioneer."
+      }
+    },
+    "faq": {
+      "title": "FAQ",
+      "q1": {
+        "q": "What are the system requirements?",
+        "a": "Any modern computer with Chrome browser. The node is ~20MB and uses minimal CPU/RAM. Works on Windows, macOS, and Linux."
+      },
+      "q2": {
+        "q": "How much can I earn?",
+        "a": "Mining rewards depend on the number of active miners and your uptime. Current block reward is 8 CLAW per block with 3-second block time."
+      },
+      "q3": {
+        "q": "Do I need to stake tokens to mine?",
+        "a": "No. Mining (heartbeat participation) requires no stake. Staking is only required to become a validator (10,000 CLAW minimum)."
+      },
+      "q4": {
+        "q": "How do I check my earnings?",
+        "a": "Open the node dashboard to see your wallet balance, or visit the Explorer to view your address details and transaction history."
+      },
+      "q5": {
+        "q": "Where can I get help?",
+        "a": "Join our Discord server and visit the #node-help channel. We also host Node Office Hours twice a week."
+      }
+    },
+    "bottomCta": {
+      "title": "Ready to Start Mining?",
+      "subtitle": "Install OpenClaw, start your node, and begin earning CLAW in under 5 minutes."
     }
   }
 }

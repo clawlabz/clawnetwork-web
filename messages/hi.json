@@ -12,7 +12,8 @@
     "launchNode": "नोड लॉन्च करें",
     "getStarted": "शुरू करें",
     "readWhitepaper": "दस्तावेज़ पढ़ें",
-    "viewGitHub": "GitHub देखें"
+    "viewGitHub": "GitHub देखें",
+    "runNode": "Run a Node"
   },
   "hero": {
     "badge": "Mainnet लाइव",
@@ -570,22 +571,78 @@
     "repoType": "रिपोजिटरी",
     "visit": "दौरा",
     "products": {
-      "0": { "name": "ClawLabz", "type": "वेबसाइट", "description": "OpenClaw-नेटिव उत्पादों के लिए मदर ब्रांड और इकोसिस्टम होम।" },
-      "1": { "name": "ClawNetwork", "type": "वेबसाइट", "description": "OpenClaw और स्वायत्त एजेंटों के लिए AI-नेटिव चेन के लिए आधिकारिक साइट।" },
-      "2": { "name": "Explorer", "type": "उपकरण", "description": "चेन गतिविधि, पते, टोकन और लेनदेन के लिए आधिकारिक ब्लॉक एक्सप्लोरर।" },
-      "3": { "name": "वॉलेट", "type": "उपकरण", "description": "ClawNetwork उपयोगकर्ताओं के लिए आधिकारिक वेब वॉलेट प्रवेश बिंदु।" },
-      "4": { "name": "वॉलेट एक्सटेंशन", "type": "उपकरण", "description": "ClawNetwork वॉलेट के लिए आधिकारिक Chrome एक्सटेंशन सूची।" },
-      "5": { "name": "ClawArena", "type": "वेबसाइट", "description": "Claw इकोसिस्टम के अंदर आधिकारिक AI-बनाम-AI प्रतियोगिता मंच।" },
-      "6": { "name": "ClawMarket", "type": "वेबसाइट", "description": "मनुष्यों और AI एजेंटों के बीच काम और समन्वय के लिए आधिकारिक बाजारस्थल।" }
+      "0": {
+        "name": "ClawLabz",
+        "type": "वेबसाइट",
+        "description": "OpenClaw-नेटिव उत्पादों के लिए मदर ब्रांड और इकोसिस्टम होम।"
+      },
+      "1": {
+        "name": "ClawNetwork",
+        "type": "वेबसाइट",
+        "description": "OpenClaw और स्वायत्त एजेंटों के लिए AI-नेटिव चेन के लिए आधिकारिक साइट।"
+      },
+      "2": {
+        "name": "Explorer",
+        "type": "उपकरण",
+        "description": "चेन गतिविधि, पते, टोकन और लेनदेन के लिए आधिकारिक ब्लॉक एक्सप्लोरर।"
+      },
+      "3": {
+        "name": "वॉलेट",
+        "type": "उपकरण",
+        "description": "ClawNetwork उपयोगकर्ताओं के लिए आधिकारिक वेब वॉलेट प्रवेश बिंदु।"
+      },
+      "4": {
+        "name": "वॉलेट एक्सटेंशन",
+        "type": "उपकरण",
+        "description": "ClawNetwork वॉलेट के लिए आधिकारिक Chrome एक्सटेंशन सूची।"
+      },
+      "5": {
+        "name": "ClawArena",
+        "type": "वेबसाइट",
+        "description": "Claw इकोसिस्टम के अंदर आधिकारिक AI-बनाम-AI प्रतियोगिता मंच।"
+      },
+      "6": {
+        "name": "ClawMarket",
+        "type": "वेबसाइट",
+        "description": "मनुष्यों और AI एजेंटों के बीच काम और समन्वय के लिए आधिकारिक बाजारस्थल।"
+      }
     },
     "channels": {
-      "0": { "name": "X / ClawLabz", "type": "सामाजिक", "description": "इकोसिस्टम-स्तर के अपडेट और घोषणाओं के लिए आधिकारिक X खाता।" },
-      "1": { "name": "X / ClawNetwork", "type": "सामाजिक", "description": "ClawNetwork प्रोटोकॉल, भागीदारी और नेटवर्क अपडेट के लिए आधिकारिक X खाता।" },
-      "2": { "name": "X / ClawArena", "type": "सामाजिक", "description": "ClawArena लड़ाई, रैंकिंग, टूर्नामेंट और हाइलाइट के लिए आधिकारिक X खाता।" },
-      "3": { "name": "Discord / ClawLabz", "type": "समुदाय", "description": "ClawNetwork और व्यापक Claw इकोसिस्टम के लिए आधिकारिक लाइव समुदाय।" },
-      "4": { "name": "Telegram / ClawLabz Global", "type": "समुदाय", "description": "समुदाय चैट, समर्थन और इकोसिस्टम चर्चा के लिए आधिकारिक Telegram समूह।" },
-      "5": { "name": "Telegram / ClawLabz Updates", "type": "समुदाय", "description": "घोषणा, लॉन्च और इकोसिस्टम अपडेट के लिए आधिकारिक Telegram चैनल।" },
-      "6": { "name": "GitHub", "type": "रिपोजिटरी", "description": "ClawNetwork प्रोटोकॉल के लिए आधिकारिक खुला-स्रोत रिपोजिटरी।" }
+      "0": {
+        "name": "X / ClawLabz",
+        "type": "सामाजिक",
+        "description": "इकोसिस्टम-स्तर के अपडेट और घोषणाओं के लिए आधिकारिक X खाता।"
+      },
+      "1": {
+        "name": "X / ClawNetwork",
+        "type": "सामाजिक",
+        "description": "ClawNetwork प्रोटोकॉल, भागीदारी और नेटवर्क अपडेट के लिए आधिकारिक X खाता।"
+      },
+      "2": {
+        "name": "X / ClawArena",
+        "type": "सामाजिक",
+        "description": "ClawArena लड़ाई, रैंकिंग, टूर्नामेंट और हाइलाइट के लिए आधिकारिक X खाता।"
+      },
+      "3": {
+        "name": "Discord / ClawLabz",
+        "type": "समुदाय",
+        "description": "ClawNetwork और व्यापक Claw इकोसिस्टम के लिए आधिकारिक लाइव समुदाय।"
+      },
+      "4": {
+        "name": "Telegram / ClawLabz Global",
+        "type": "समुदाय",
+        "description": "समुदाय चैट, समर्थन और इकोसिस्टम चर्चा के लिए आधिकारिक Telegram समूह।"
+      },
+      "5": {
+        "name": "Telegram / ClawLabz Updates",
+        "type": "समुदाय",
+        "description": "घोषणा, लॉन्च और इकोसिस्टम अपडेट के लिए आधिकारिक Telegram चैनल।"
+      },
+      "6": {
+        "name": "GitHub",
+        "type": "रिपोजिटरी",
+        "description": "ClawNetwork प्रोटोकॉल के लिए आधिकारिक खुला-स्रोत रिपोजिटरी।"
+      }
     },
     "security": {
       "0": "प्रशासक और मध्यस्थ आपको समर्थन के लिए पहले DM नहीं करेंगे।",
@@ -633,6 +690,89 @@
         "2": "व्यस्त या कम-विपरीत पृष्ठभूमि पर लोगो रखें",
         "3": "पुराने नामों (CLZ, CLW) का उपयोग करें — हमेशा टोकन के लिए CLAW का उपयोग करें"
       }
+    }
+  },
+  "runNode": {
+    "badge": "Mainnet Live",
+    "title": "Run a 20MB Node.\nEarn CLAW in 5 Minutes.",
+    "subtitle": "ClawNetwork is the first blockchain built for AI Agents. The node is tiny, setup is instant, and you start earning immediately.",
+    "cta": "Install OpenClaw",
+    "joinDiscord": "Join Discord",
+    "readDocs": "Read Docs",
+    "stats": {
+      "nodeSize": {
+        "label": "Node Size",
+        "value": "~20 MB"
+      },
+      "blockTime": {
+        "label": "Block Time",
+        "value": "3 seconds"
+      },
+      "minStake": {
+        "label": "Min Stake to Mine",
+        "value": "None"
+      }
+    },
+    "steps": {
+      "title": "3 Steps to Start Mining",
+      "install": {
+        "title": "Install OpenClaw",
+        "desc": "Add the OpenClaw plugin from Chrome Web Store. One click, no configuration needed."
+      },
+      "start": {
+        "title": "Start Your Node",
+        "desc": "Open the dashboard and click Start. Your node syncs in seconds and begins sending heartbeats."
+      },
+      "earn": {
+        "title": "Earn CLAW",
+        "desc": "Your node earns CLAW tokens through mining rewards. Track your earnings on the Explorer."
+      }
+    },
+    "why": {
+      "title": "Why Run a Node?",
+      "earn": {
+        "title": "Earn Mining Rewards",
+        "desc": "Miners earn CLAW tokens for keeping their nodes online. The earlier you join, the more you earn."
+      },
+      "lightweight": {
+        "title": "Incredibly Lightweight",
+        "desc": "At ~20MB, the ClawNetwork node is one of the smallest in crypto. Runs on any machine with zero overhead."
+      },
+      "decentralize": {
+        "title": "Strengthen the Network",
+        "desc": "Every node makes ClawNetwork more decentralized and resilient. You are the infrastructure."
+      },
+      "community": {
+        "title": "Join the Pioneers",
+        "desc": "Early miners are recognized in the community. Build your reputation as a ClawNetwork Pioneer."
+      }
+    },
+    "faq": {
+      "title": "FAQ",
+      "q1": {
+        "q": "What are the system requirements?",
+        "a": "Any modern computer with Chrome browser. The node is ~20MB and uses minimal CPU/RAM. Works on Windows, macOS, and Linux."
+      },
+      "q2": {
+        "q": "How much can I earn?",
+        "a": "Mining rewards depend on the number of active miners and your uptime. Current block reward is 8 CLAW per block with 3-second block time."
+      },
+      "q3": {
+        "q": "Do I need to stake tokens to mine?",
+        "a": "No. Mining (heartbeat participation) requires no stake. Staking is only required to become a validator (10,000 CLAW minimum)."
+      },
+      "q4": {
+        "q": "How do I check my earnings?",
+        "a": "Open the node dashboard to see your wallet balance, or visit the Explorer to view your address details and transaction history."
+      },
+      "q5": {
+        "q": "Where can I get help?",
+        "a": "Join our Discord server and visit the #node-help channel. We also host Node Office Hours twice a week."
+      }
+    },
+    "bottomCta": {
+      "title": "Ready to Start Mining?",
+      "subtitle": "Install OpenClaw, start your node, and begin earning CLAW in under 5 minutes."
     }
   }
 }

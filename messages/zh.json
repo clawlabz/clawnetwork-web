@@ -12,7 +12,8 @@
     "launchNode": "启动节点",
     "getStarted": "开始使用",
     "readWhitepaper": "阅读文档",
-    "viewGitHub": "查看 GitHub"
+    "viewGitHub": "查看 GitHub",
+    "runNode": "运行节点"
   },
   "hero": {
     "badge": "主网已上线",
@@ -567,22 +568,78 @@
     "repoType": "仓库",
     "visit": "访问",
     "products": {
-      "0": { "name": "ClawLabz", "type": "官网", "description": "母品牌官网，也是 OpenClaw 原生产品矩阵的总入口。" },
-      "1": { "name": "ClawNetwork", "type": "官网", "description": "面向 OpenClaw 与自主 AI Agent 的原生 AI 公链官网。" },
-      "2": { "name": "Explorer", "type": "工具", "description": "官方区块浏览器，用于查看地址、交易、代币与链上活动。" },
-      "3": { "name": "Wallet", "type": "工具", "description": "ClawNetwork 官方 Web 钱包入口。" },
-      "4": { "name": "Wallet Extension", "type": "工具", "description": "ClawNetwork 钱包官方 Chrome 插件商店页面。" },
-      "5": { "name": "ClawArena", "type": "官网", "description": "Claw 生态中的官方 AI 对战与排行平台。" },
-      "6": { "name": "ClawMarket", "type": "官网", "description": "人与 AI Agent 协作、接单与结算的官方市场入口。" }
+      "0": {
+        "name": "ClawLabz",
+        "type": "官网",
+        "description": "母品牌官网，也是 OpenClaw 原生产品矩阵的总入口。"
+      },
+      "1": {
+        "name": "ClawNetwork",
+        "type": "官网",
+        "description": "面向 OpenClaw 与自主 AI Agent 的原生 AI 公链官网。"
+      },
+      "2": {
+        "name": "Explorer",
+        "type": "工具",
+        "description": "官方区块浏览器，用于查看地址、交易、代币与链上活动。"
+      },
+      "3": {
+        "name": "Wallet",
+        "type": "工具",
+        "description": "ClawNetwork 官方 Web 钱包入口。"
+      },
+      "4": {
+        "name": "Wallet Extension",
+        "type": "工具",
+        "description": "ClawNetwork 钱包官方 Chrome 插件商店页面。"
+      },
+      "5": {
+        "name": "ClawArena",
+        "type": "官网",
+        "description": "Claw 生态中的官方 AI 对战与排行平台。"
+      },
+      "6": {
+        "name": "ClawMarket",
+        "type": "官网",
+        "description": "人与 AI Agent 协作、接单与结算的官方市场入口。"
+      }
     },
     "channels": {
-      "0": { "name": "X / ClawLabz", "type": "社媒", "description": "当前生态级官方 X 账号，用于公告与母品牌更新。" },
-      "1": { "name": "X / ClawNetwork", "type": "社媒", "description": "ClawNetwork 协议、参与方式与网络更新的官方 X 账号。" },
-      "2": { "name": "X / ClawArena", "type": "社媒", "description": "ClawArena 对战、排行、赛事与精彩片段的官方 X 账号。" },
-      "3": { "name": "Discord / ClawLabz", "type": "社区", "description": "ClawNetwork 与 Claw 生态当前统一的官方社区入口。" },
-      "4": { "name": "Telegram / ClawLabz Global", "type": "社区", "description": "官方 Telegram 大群，用于社区聊天、答疑与生态讨论。" },
-      "5": { "name": "Telegram / ClawLabz Updates", "type": "社区", "description": "官方 Telegram 公告频道，用于发布上线、更新与重要通知。" },
-      "6": { "name": "GitHub", "type": "仓库", "description": "ClawNetwork 协议的官方开源仓库。" }
+      "0": {
+        "name": "X / ClawLabz",
+        "type": "社媒",
+        "description": "当前生态级官方 X 账号，用于公告与母品牌更新。"
+      },
+      "1": {
+        "name": "X / ClawNetwork",
+        "type": "社媒",
+        "description": "ClawNetwork 协议、参与方式与网络更新的官方 X 账号。"
+      },
+      "2": {
+        "name": "X / ClawArena",
+        "type": "社媒",
+        "description": "ClawArena 对战、排行、赛事与精彩片段的官方 X 账号。"
+      },
+      "3": {
+        "name": "Discord / ClawLabz",
+        "type": "社区",
+        "description": "ClawNetwork 与 Claw 生态当前统一的官方社区入口。"
+      },
+      "4": {
+        "name": "Telegram / ClawLabz Global",
+        "type": "社区",
+        "description": "官方 Telegram 大群，用于社区聊天、答疑与生态讨论。"
+      },
+      "5": {
+        "name": "Telegram / ClawLabz Updates",
+        "type": "社区",
+        "description": "官方 Telegram 公告频道，用于发布上线、更新与重要通知。"
+      },
+      "6": {
+        "name": "GitHub",
+        "type": "仓库",
+        "description": "ClawNetwork 协议的官方开源仓库。"
+      }
     },
     "security": {
       "0": "管理员和版主不会主动私聊你提供客服支持。",
@@ -635,5 +692,88 @@
   "nodes": {
     "metaTitle": "节点收益 — ClawNetwork",
     "metaDescription": "运行 ClawNetwork 节点，赚取 CLAW 代币。通过互动计算器，按声誉等级估算每日挖矿收益。"
+  },
+  "runNode": {
+    "badge": "主网已上线",
+    "title": "运行 20MB 节点\n5 分钟开始挖矿",
+    "subtitle": "ClawNetwork 是第一条为 AI Agent 原生设计的公链。节点极小、安装即用、立刻开始赚取收益。",
+    "cta": "安装 OpenClaw",
+    "joinDiscord": "加入 Discord",
+    "readDocs": "阅读文档",
+    "stats": {
+      "nodeSize": {
+        "label": "节点大小",
+        "value": "~20 MB"
+      },
+      "blockTime": {
+        "label": "出块时间",
+        "value": "3 秒"
+      },
+      "minStake": {
+        "label": "挖矿门槛",
+        "value": "无需质押"
+      }
+    },
+    "steps": {
+      "title": "3 步开始挖矿",
+      "install": {
+        "title": "安装 OpenClaw",
+        "desc": "从 Chrome 应用商店一键安装 OpenClaw 插件，无需任何配置。"
+      },
+      "start": {
+        "title": "启动节点",
+        "desc": "打开控制面板，点击启动。节点秒级同步，开始发送心跳。"
+      },
+      "earn": {
+        "title": "赚取 CLAW",
+        "desc": "节点通过挖矿奖励赚取 CLAW 代币。在浏览器中追踪你的收益。"
+      }
+    },
+    "why": {
+      "title": "为什么要跑节点？",
+      "earn": {
+        "title": "赚取挖矿奖励",
+        "desc": "矿工通过保持节点在线赚取 CLAW 代币。越早加入，收益越多。"
+      },
+      "lightweight": {
+        "title": "极致轻量",
+        "desc": "仅 ~20MB，ClawNetwork 节点是加密行业最小的节点之一。任何设备都能运行，零额外开销。"
+      },
+      "decentralize": {
+        "title": "增强网络",
+        "desc": "每个节点都让 ClawNetwork 更去中心化、更强健。你就是基础设施。"
+      },
+      "community": {
+        "title": "加入先锋",
+        "desc": "早期矿工在社区中获得认可。建立你作为 ClawNetwork 先锋的声誉。"
+      }
+    },
+    "faq": {
+      "title": "常见问题",
+      "q1": {
+        "q": "系统要求是什么？",
+        "a": "任何安装了 Chrome 浏览器的现代电脑。节点仅 ~20MB，CPU/内存占用极低。支持 Windows、macOS 和 Linux。"
+      },
+      "q2": {
+        "q": "能赚多少？",
+        "a": "挖矿收益取决于活跃矿工数量和你的在线时长。当前区块奖励为每块 8 CLAW，出块间隔 3 秒。"
+      },
+      "q3": {
+        "q": "挖矿需要质押吗？",
+        "a": "不需要。挖矿（心跳参与）无需质押。质押仅在成为验证者时需要（最低 10,000 CLAW）。"
+      },
+      "q4": {
+        "q": "怎么查看收益？",
+        "a": "打开节点控制面板查看钱包余额，或访问浏览器查看地址详情和交易记录。"
+      },
+      "q5": {
+        "q": "哪里可以获得帮助？",
+        "a": "加入我们的 Discord 服务器，访问 #node-help 频道。我们每周还有两次 Node Office Hour。"
+      }
+    },
+    "bottomCta": {
+      "title": "准备好开始挖矿了吗？",
+      "subtitle": "安装 OpenClaw，启动节点，5 分钟内开始赚取 CLAW。"
+    }
   }
 }
