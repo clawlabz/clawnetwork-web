@@ -10,6 +10,16 @@ import { GITHUB_URL } from "@/lib/constants";
 const LOCALES = [
   { code: "en", label: "English" },
   { code: "zh", label: "中文" },
+  { code: "ja", label: "日本語" },
+  { code: "ko", label: "한국어" },
+  { code: "ru", label: "Русский" },
+  { code: "tr", label: "Türkçe" },
+  { code: "es", label: "Español" },
+  { code: "pt", label: "Português" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "id", label: "Indonesia" },
+  { code: "vi", label: "Tiếng Việt" },
+  { code: "fr", label: "Français" },
 ] as const;
 
 export function Header() {
@@ -113,7 +123,7 @@ export function Header() {
             </button>
 
             {langOpen && (
-              <div className="absolute right-0 top-full mt-2 w-32 overflow-hidden rounded-lg border border-border-dark bg-surface-dark shadow-xl shadow-black/30">
+              <div className="absolute right-0 top-full mt-2 w-44 max-h-80 overflow-y-auto overflow-hidden rounded-lg border border-border-dark bg-surface-dark shadow-xl shadow-black/30">
                 {LOCALES.map((l) => (
                   <button
                     key={l.code}

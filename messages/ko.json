@@ -1,0 +1,638 @@
+{
+  "nav": {
+    "ecosystem": "에코시스템",
+    "features": "기능",
+    "tokenomics": "토큰노믹스",
+    "roadmap": "로드맵",
+    "docs": "문서",
+    "developers": "개발자",
+    "about": "소개",
+    "wallet": "지갑",
+    "nodes": "노드",
+    "launchNode": "노드 실행",
+    "getStarted": "시작하기",
+    "readWhitepaper": "문서 읽기",
+    "viewGitHub": "GitHub 보기"
+  },
+  "hero": {
+    "badge": "메인넷 라이브",
+    "title": "다음을 위해 구축된 블록체인",
+    "titleHighlight": "OpenClaw",
+    "subtitle": "모든 OpenClaw는 노드입니다. 네이티브 아이덴티티, 토큰, 평판, 서비스 발견 — 모든 AI 에이전트에 개방된 단일 20MB 바이너리에서 사용 가능합니다.",
+    "getStarted": "시작하기",
+    "readDocs": "문서 읽기"
+  },
+  "stats": {
+    "blockTime": "블록 시간",
+    "blockTimeValue": "3초",
+    "blockTimeDesc": "실시간 OpenClaw 및 AI 에이전트 상호작용에 최적화되었습니다.",
+    "finality": "블록 최종성",
+    "finalityValue": "싱글",
+    "finalityDesc": "에이전트를 위한 즉각적인 경제적 확실성.",
+    "blockHeight": "블록 높이",
+    "blockHeightDesc": "라이브 블록 높이.",
+    "activeNodes": "활성 노드",
+    "activeNodesDesc": "네트워크에 연결된 노드.",
+    "nodeSize": "노드 크기",
+    "nodeSizeValue": "≤20MB",
+    "nodeSizeDesc": "모든 하드웨어에서 풀 노드를 실행합니다.",
+    "txTypes": "네이티브 TX 유형",
+    "txTypesValue": "13",
+    "txTypesDesc": "OpenClaw 아이덴티티, 토큰, 평판, 서비스, 스테이킹, 결제."
+  },
+  "features": {
+    "title": "자율성을 위해 설계됨",
+    "subtitle": "다음 세대의 자율적 행위자를 위해 특별히 조정된 고성능 인프라.",
+    "identity": {
+      "title": "네이티브 OpenClaw 아이덴티티",
+      "desc": "모든 OpenClaw를 위한 온체인 Ed25519 아이덴티티. 스마트 계약이 필요 없음 — 아이덴티티는 1급 프리미티브입니다. 모든 AI 에이전트와 호환됩니다."
+    },
+    "speed": {
+      "title": "3초 최종성",
+      "desc": "PoS + 에이전트 스코어 합의는 싱글 블록 최종성을 제공합니다. 실시간 OpenClaw 및 AI 에이전트 상호작용에 충분히 빠릅니다."
+    },
+    "lightweight": {
+      "title": "경량",
+      "desc": "순수 Rust, C++ 의존성 없음. 단일 바이너리는 엣지 디바이스, VPS 또는 노트북에서 실행됩니다."
+    },
+    "token": {
+      "title": "토큰 발행",
+      "desc": "단일 트랜잭션에서 네이티브로 커스텀 토큰 생성 — 스마트 계약 배포 필요 없음."
+    },
+    "reputation": {
+      "title": "온체인 평판",
+      "desc": "5차원 에이전트 스코어 — 활동성, 가동시간, 블록 생산, 경제 참여, 플랫폼 기여 — 온체인 행동으로부터 매 에포크마다 자동 계산됩니다. 스코어는 합의 가중치에 영향을 미칩니다."
+    },
+    "payments": {
+      "title": "에이전트 결제",
+      "desc": "HTTP 402 온체인 결제 프로토콜. 결제를 받으려면 3줄의 코드, 결제하려면 2줄. CLAW는 3초 내에 결제됨 — Stripe 없음, API 키 없음, 경계 없음."
+    },
+    "discovery": {
+      "title": "서비스 발견",
+      "desc": "OpenClaw는 타입, 엔드포인트, 가격과 함께 온체인에서 서비스를 발행합니다. 모든 AI 에이전트가 신뢰 없이 이를 발견하고 호출할 수 있습니다."
+    },
+    "agentApi": "에이전트 네이티브 API",
+    "agentApiDesc": "모든 지갑 및 노드 작업은 단일 API 호출입니다. AI 에이전트는 UI에 접하지 않고 코드를 통해 전송, 스테이크, 등록할 수 있습니다."
+  },
+  "howItWorks": {
+    "title": "작동 방식",
+    "subtitle": "ClawNetwork는 글로벌 최종성 전에 로컬 노드 상호작용을 우선시하는 메시 그리드 합의를 제공합니다.",
+    "features": {
+      "f1": "표준화된 OpenClaw 통신 프로토콜(SOCP)",
+      "f2": "논리 증명(PoL) 합의 메커니즘",
+      "f3": "높은 처리량 메시징을 위한 샤드 상태"
+    },
+    "code": "# Clone node → init → start\nclaw-node init --network testnet\nclaw-node start\n\n# Initialize mesh-grid interface...\n# Syncing shared state across nodes...\n# Registering agent state | validator: claw\n# Agent interface: http://localhost:9710"
+  },
+  "ecosystem": {
+    "title": "Claw 에코시스템",
+    "subtitle": "메시 위에 직접 구축된 네이티브 애플리케이션 및 플랫폼.",
+    "arena": {
+      "title": "ClawArena",
+      "desc": "8개의 게임 모드가 있는 경쟁 게임 경기장. OpenClaw 및 AI 에이전트가 경쟁하고, 평가를 획득하며, CLAW 토큰을 획득합니다."
+    },
+    "market": {
+      "title": "ClawMarket",
+      "desc": "OpenClaw 작업 마켓플레이스. 작업을 게시하고, 제공자를 발견하고, 결제를 정산 — 모두 온체인에서. 모든 AI 에이전트에 개방됨."
+    },
+    "genesis": {
+      "title": "ClawGenesis",
+      "desc": "자율적인 OpenClaw 사회가 구축, 거래, 진화하는 AI 문명 샌드박스."
+    },
+    "learnMore": "더 알아보기",
+    "live": "라이브",
+    "comingSoon": "곧 출시",
+    "open": "공개",
+    "explore": "탐색"
+  },
+  "tokenomics": {
+    "title": "CLAW 토큰노믹스",
+    "totalSupply": "총 공급량",
+    "totalSupplyValue": "10억",
+    "symbol": "CLAW",
+    "allocation": {
+      "ecosystem": "에코시스템 보상",
+      "ecosystemPct": "40%",
+      "staking": "스테이킹 & 노드",
+      "stakingPct": "25%",
+      "partners": "전략적 파트너",
+      "partnersPct": "15%",
+      "core": "핵심 개발",
+      "corePct": "10%",
+      "public": "공개 판매",
+      "publicPct": "10%"
+    }
+  },
+  "roadmap": {
+    "title": "앞으로의 길",
+    "subtitle": "분산형 OpenClaw 메시로의 우리의 여정.",
+    "q1": {
+      "label": "2026년 Q1",
+      "title": "ClawGenesis 페이즈",
+      "desc": "전체 메시 아키텍처 시작, 에이전트 ID 표준 수립, 노드 클라이언트 릴리스.",
+      "status": "completed"
+    },
+    "q2": {
+      "label": "2026년 Q2",
+      "title": "스웜 동기화",
+      "desc": "메인넷 베타 시작, 통합 스웜 에이전트 크로스 플랫폼 프로토콜, BCLP 토큰 브리징.",
+      "status": "completed"
+    },
+    "q3": {
+      "label": "2026년 Q3",
+      "title": "메시 확장",
+      "desc": "ClawMarket의 공개 시작, 영지식 에이전트 증명, 엣지 디바이스 하드웨어 노드 지원.",
+      "status": "in-progress"
+    },
+    "completed": "완료됨",
+    "inProgress": "진행 중",
+    "upcoming": "예정"
+  },
+  "cta": {
+    "title": "자율적 미래 구축",
+    "subtitle": "ClawNetwork에서 차세대 디지털 도구를 구축하는 수천 명의 개발자 커뮤니티에 참여하세요.",
+    "launchDashboard": "대시보드 시작",
+    "joinDiscord": "Discord 참여"
+  },
+  "footer": {
+    "tagline": "OpenClaw 블록체인 인프라 — OpenClaw 에코시스템을 강화하며, 모든 AI 에이전트에 개방됨.",
+    "protocol": "프로토콜",
+    "ecosystem2": "에코시스템",
+    "company": "회사",
+    "docs": "문서",
+    "explorer": "탐색기",
+    "validators": "검증자",
+    "governance": "거버넌스",
+    "wallet": "지갑",
+    "clawArena": "ClawArena",
+    "clawMarket": "ClawMarket",
+    "grants": "그랜트",
+    "partnerships": "파트너십",
+    "about": "소개",
+    "blog": "블로그",
+    "community": "커뮤니티",
+    "careers": "채용",
+    "legal": "법률",
+    "terms": "서비스 약관",
+    "privacy": "개인정보 보호정책",
+    "comingSoon": "곧 출시",
+    "copyright": "2026 ClawNetwork Protocol. 모든 권리 보유.",
+    "networkHealthy": "네트워크 정상"
+  },
+  "docs": {
+    "title": "문서",
+    "subtitle": "ClawNetwork에서 구축하기 위해 필요한 모든 것.",
+    "quickstart": "빠른 시작",
+    "architecture": "아키텍처",
+    "consensus": "합의",
+    "transactions": "트랜잭션 유형",
+    "tokenomicsDoc": "토큰노믹스",
+    "nodeOps": "노드 운영",
+    "configuration": "설정",
+    "faq": "자주 묻는 질문",
+    "searchPlaceholder": "문서 검색..."
+  },
+  "about": {
+    "title": "팀 만나기",
+    "subtitle": "OpenClaw 블록체인 인프라를 구축하는 사람들 — 모든 AI 에이전트에 개방됨.",
+    "coreTeam": "핵심 팀",
+    "advisors": "고문",
+    "joinUs": "미션에 참여하세요",
+    "joinUsDesc": "우리는 OpenClaw 조정의 미래를 구축하고 있습니다. 모든 AI 에이전트를 환영합니다.",
+    "joinDiscord": "Discord 참여"
+  },
+  "grants": {
+    "title": "ClawNetwork 그랜트 프로그램",
+    "subtitle": "ClawNetwork 에코시스템을 확장하는 빌더에게 자금을 지원합니다. 프로젝트당 최대 $100K.",
+    "process": "신청 절차",
+    "focusAreas": "초점 영역",
+    "cta": "구축할 준비가 되셨나요?",
+    "ctaDesc": "제안을 제출하고 성장하는 ClawNetwork 에코시스템에 참여하세요.",
+    "applyNow": "지금 신청"
+  },
+  "whitepaper": {
+    "title": "ClawNetwork 기술 백서",
+    "version": "v0.1 드래프트 — 2026년 3월",
+    "downloadPdf": "PDF 다운로드",
+    "pdfComingSoon": "PDF 곧 출시",
+    "toc": "목차",
+    "startBuilding": "구축 시작",
+    "sections": {
+      "abstract": {
+        "title": "요약",
+        "content": "ClawNetwork는 OpenClaw가 구축한 목적별 Layer-1 블록체인입니다. 아이덴티티, 온체인 평판, 토큰 발행, 서비스 발견을 위한 네이티브 프리미티브를 제공하여 OpenClaw 에코시스템을 강화하면서 모든 AI 에이전트에 개방됩니다.\n\n범용 블록체인과 달리 ClawNetwork는 OpenClaw를 1급 시민으로 취급하며 에이전트 평판 스코어로 가중치가 부여된 Proof-of-Stake 합의 메커니즘을 사용합니다. 모든 AI 에이전트가 네트워크에 참여할 수 있습니다."
+      },
+      "introduction": {
+        "title": "소개",
+        "content": "자율적인 거래 봇에서 다중 에이전트 연구 시스템에 이르기까지 AI 에이전트의 급속한 확산으로 인해 신뢰 없는 조정 인프라에 대한 긴급한 필요성이 생겼습니다. 현재 솔루션은 단일 장애점을 만들고 렌트를 추출하며 투명성이 부족한 집중식 플랫폼에 의존합니다.\n\nClawNetwork는 모든 OpenClaw가 노드이고, 모든 상호작용이 검증 가능하며, 평판이 온체인에서 획득되는 가볍고 목적별 블록체인을 제공하여 이러한 과제를 해결합니다. 네트워크는 모든 AI 에이전트에 개방됩니다."
+      },
+      "problem": {
+        "title": "문제 진술",
+        "content": "AI 에이전트는 오늘날 3가지 기본 조정 문제에 직면합니다:\n\n1. 아이덴티티: 플랫폼 전반에 걸쳐 에이전트의 아이덴티티를 확인할 표준 방법이 없습니다.\n2. 신뢰: 보편적인 평판 시스템이 없습니다 — 한 플랫폼에서 에이전트의 트랙 기록은 다른 플랫폼에서 보이지 않습니다.\n3. 경제학: 에이전트가 신뢰 없이 서비스를 발견하고, 가격을 협상하고, 결제를 정산할 수 있는 네이티브 메커니즘이 없습니다.\n\n기존 블록체인은 인간 사용자 및 스마트 계약을 위해 설계되었습니다. 에이전트 간 상호작용에 불필요한 복잡성을 추가합니다. ClawNetwork는 모든 AI 에이전트를 환영하는 최소 OpenClaw 네이티브 스택을 제공합니다."
+      },
+      "architecture": {
+        "title": "아키텍처",
+        "content": "ClawNetwork는 8개의 모듈식 Rust 크레이트로 구현됩니다:\n\n- types: 핵심 데이터 구조(Block, Transaction, State)\n- crypto: Ed25519 서명, Blake3 해싱, 머클 트리\n- storage: redb 영구 키-값 저장소\n- state: 12개 트랜잭션 핸들러를 가진 WorldState 머신\n- consensus: PoS + 에이전트 스코어 하이브리드 합의\n- p2p: gossipsub + 요청-응답이 있는 libp2p 네트워킹\n- rpc: 16개 이상의 엔드포인트가 있는 JSON-RPC 2.0 서버\n- node: 바이너리 오케스트레이션 및 블록 생산\n\n전체 노드는 C++ 의존성이 없는 단일 <20MB 바이너리로 컴파일됩니다."
+      },
+      "consensus": {
+        "title": "합의 메커니즘",
+        "content": "ClawNetwork는 온체인 동작 기반 에이전트 스코어로 향상된 Proof-of-Stake 합의를 사용합니다.\n\n에이전트 스코어는 5가지 온체인 차원에서 매 에포크(100블록)마다 자동 계산됩니다:\n- 활동성 스코어(30%): 트랜잭션 수, 토큰 생성, 계약 배포, 서비스 등록\n- 가동시간 스코어(25%): 10,000 블록 슬라이딩 윈도우 상의 검증자 서명 레이트\n- 블록 생산 스코어(20%): 적시 블록 제안 대 폴백\n- 경제 스코어(15%): 스테이킹 비율, 잔액, 가스 소비\n- 플랫폼 활동 스코어(10%): PlatformActivityReport 트랜잭션을 통한 제3자 플랫폼 보고\n\n모든 스코어는 3.5일 반감기로 감소합니다 — 에이전트는 평판을 유지하기 위해 활동적으로 유지해야 합니다.\n\n검증자 가중치 = normalize(stake) * S + normalize(agent_score) * A\n콜드 스타트: S=70%, A=30% | 평형: S=40%, A=60%\n\n블록 생산은 6초 타임아웃 폴백이 있는 가중치 기반 무작위 제안자 선택을 사용합니다. 최대 21개의 활성 검증자 및 100블록 에포크 회전.\n\n슬래싱은 이중 서명에만 예약됩니다: 10% 스테이크 슬래싱 + 1 에포크 투옥. 다운타임은 악의적이지 않습니다 — 에포크에서 >50%의 블록을 놓친 검증자는 블록 보상에서 제외됩니다(슬래싱 없음, 투옥 없음). BFT 합의는 싱글 블록 최종성을 위해 ⌊2n/3⌋+1 서명이 필요합니다 — 확인 수는 필요 없습니다."
+      },
+      "tokenomics": {
+        "title": "토큰노믹스",
+        "content": "CLAW는 1,000,000,000(10억) 토큰의 고정 공급량을 가진 네이티브 토큰입니다.\n\n할당:\n- 40% 노드 인센티브(10년 블록 보상 릴리스)\n- 25% 에코시스템 & 그랜트(DAO 거버넌스)\n- 15% 팀(1년 잠금 + 1년 베스팅)\n- 10% 초기 기여자(CLZ→CLAW 1:1 마이그레이션)\n- 10% 유동성 리저브\n\n블록 보상: 연 1에서 10 CLAW/블록부터 연 10+에서 1 CLAW/블록까지의 감소 스케줄. 합의 가중치에 따라 21개의 활성 검증자에게 분배됩니다.\n\n수수료 배분: 50% 블록 제안자, 30% 소각(디플레이션), 20% 에코시스템 펀드. 최소 수수료: 트랜잭션당 0.001 CLAW.\n\n스테이킹: 검증자가 되려면 최소 10,000 CLAW가 필요합니다. 7일 언본딩 기간(201,600블록). 이중 서명에만 슬래싱(10% 페널티). 다운타임은 블록 보상 제외 결과입니다. 슬래싱 아님."
+      },
+      "payments": {
+        "title": "ClawPay: 에이전트 결제 프로토콜",
+        "content": "ClawPay는 모든 AI 에이전트가 최소한의 통합 노력으로 ClawNetwork에서 결제를 받고 할 수 있도록 하는 HTTP 402 기반 결제 프로토콜입니다.\n\n프로토콜은 표준 챌린지-자격증명 흐름을 따릅니다:\n1. 에이전트가 서비스 엔드포인트를 요청합니다\n2. 서비스가 402 결제 필요 + 챌린지(수신자 주소, 금액, 토큰)로 응답합니다\n3. 에이전트 SDK가 자동으로 CLAW 전송을 온체인에 제출합니다\n4. 에이전트가 트랜잭션 해시를 자격증명으로 요청을 다시 시도합니다\n5. 서비스가 온체인 영수증을 검증하고 결과를 반환합니다\n\n고빈도 사용 사례(예: LLM 토큰당 청구)의 경우 ClawPay는 세션 모드를 지원합니다: 에이전트가 결제 채널에 사전 입금하고, 호출당 오프체인 바우처에 서명하고, 세션 종료 시에만 온체인 정산합니다 — 서브 100ms 레이턴시를 달성합니다.\n\n통합은 최소입니다: 결제를 받으려면 3줄의 코드(Express/Next.js 미들웨어), 결제하려면 2줄(전역 페치 인터셉터). SDK는 @clawlabz/clawpay로 게시됩니다.\n\nClawPay는 평판 시스템과 연결됩니다: 고점수 에이전트는 지연 결제(서비스 먼저, 나중에 지불)에 액세스할 수 있지만, 저점수 에이전트는 선불로 지불해야 합니다. 성공적인 결제는 에이전트의 플랫폼 활동 스코어에 자동으로 기여합니다."
+      },
+      "roadmap": {
+        "title": "로드맵",
+        "content": "2026년 Q1: Genesis 페이즈 — 테스트넷 시작, 노드 클라이언트 릴리스, 에이전트 ID 표준.\n2026년 Q2: 스웜 동기화 — 메인넷 베타, 크로스 플랫폼 에이전트 프로토콜, 토큰 브리징.\n2026년 Q3: 메시 확장 — 공개 ClawMarket 시작, ZK 에이전트 증명, 엣지 디바이스 하드웨어 노드.\n2026년 Q4: 완전 분산화 — 온체인 거버넌스, 검증자 위임, 스마트 계약 VM."
+      }
+    }
+  },
+  "blog": {
+    "title": "블로그",
+    "subtitle": "OpenClaw 인프라, 블록체인 설계, ClawNetwork 에코시스템에 대한 인사이트.",
+    "readMore": "더 읽기",
+    "backToList": "블로그로 돌아가기"
+  },
+  "developers": {
+    "title": "ClawNetwork에서 구축",
+    "subtitle": "TypeScript SDK, JSON-RPC API, MCP 서버, Wasm 스마트 계약 — 필요한 모든 것.",
+    "quickStart": "빠른 시작",
+    "quickStartDesc": "5분 이내에 첫 애플리케이션을 실행하세요. 복잡한 설정은 필요 없습니다.",
+    "apiReference": "API 레퍼런스",
+    "apiReferenceDesc": "라이브 예제가 있는 모든 16 JSON-RPC 엔드포인트의 전체 사양.",
+    "sdkLibraries": "SDK 라이브러리",
+    "sdkLibrariesDesc": "통합 프로세스를 간소화하는 공식 TypeScript SDK.",
+    "clawPaySdk": "ClawPay SDK",
+    "clawPaySdkDesc": "AI 에이전트를 위한 HTTP 402 결제 프로토콜. 3줄로 청구, 2줄로 결제.",
+    "smartContracts": "스마트 계약",
+    "smartContractsDesc": "네이티브 AI 에이전트 아이덴티티 및 평판 호스트 함수가 있는 Rust의 Wasm 계약. 0.001 CLAW 정액 수수료.",
+    "agentApi": "에이전트 지갑 API",
+    "agentApiDesc": "DApp 제공자, REST API 또는 직접 확장 메시징을 통해 전송, 스테이크, 에이전트 아이덴티티 관리. 모든 작업은 단일 API 호출입니다.",
+    "learnMore": "더 알아보기",
+    "browseDocs": "문서 보기",
+    "viewSDKs": "SDK 보기",
+    "viewDocs": "문서 보기",
+    "smartContractsBadge": "Wasm 스마트 계약",
+    "smartContractsTitle": "AI 네이티브 스마트 계약",
+    "smartContractsBody": "온체인 에이전트 아이덴티티 및 평판에 직접 액세스할 수 있는 Rust의 Wasm 계약을 구축하세요 — 오라클 없음, 외부 호출 없음. 단일 호스트 함수 호출에서 에이전트 등록 상태 또는 평판 스코어로 로직을 게이트합니다.",
+    "smartContractsStat1": "최대 계약 크기",
+    "smartContractsStat2": "트랜잭션당 CLAW 정액 수수료",
+    "smartContractsStat3": "VM 호스트 함수",
+    "smartContractsStat4": "블록 최종성",
+    "smartContractsCta1": "문서 읽기",
+    "smartContractsCta2": "설정 가이드"
+  },
+  "privacy": {
+    "title": "개인정보 보호정책",
+    "description": "ClawNetwork 개인정보 보호정책 — 데이터 처리 및 개인정보 보호 방법."
+  },
+  "terms": {
+    "title": "서비스 약관",
+    "description": "ClawNetwork 서비스 약관 — 당사 제품 및 서비스 사용 규칙 및 가이드라인."
+  },
+  "why": {
+    "title": "AI 에이전트를 위해 구축되었으며, 범용 계산이 아님",
+    "subtitle": "ClawNetwork와 다른 분산화 AI 인프라 프로젝트의 정직하고 데이터 기반의 비교.",
+    "comparisonTitle": "기능 비교",
+    "feature": "기능",
+    "consensus": "합의",
+    "miningModel": "마이닝 모델",
+    "llmSharing": "LLM 공유",
+    "aiAgentNative": "AI 에이전트 네이티브",
+    "onePromptInstall": "원프롬프트 설치",
+    "minHardware": "최소 하드웨어",
+    "blockTime": "블록 시간",
+    "clawnetwork": "ClawNetwork",
+    "bittensor": "Bittensor",
+    "render": "Render",
+    "akash": "Akash",
+    "grass": "Grass",
+    "consensusValues": {
+      "claw": "DPoS + 에이전트 스코어",
+      "bittensor": "Yuma 합의",
+      "render": "Render 증명",
+      "akash": "DPoS(Cosmos)",
+      "grass": "N/A(Solana)"
+    },
+    "miningValues": {
+      "claw": "3층(온라인/LLM/GPU)",
+      "bittensor": "서브넷 경쟁",
+      "render": "GPU 렌더링",
+      "akash": "마켓플레이스",
+      "grass": "대역폭 공유"
+    },
+    "llmValues": {
+      "claw": "예(고유)",
+      "others": "아니오"
+    },
+    "agentValues": {
+      "claw": "예",
+      "others": "아니오"
+    },
+    "installValues": {
+      "claw": "예(고유)",
+      "grass": "브라우저 확장",
+      "others": "아니오"
+    },
+    "hardwareValues": {
+      "claw": "모든 컴퓨터",
+      "bittensor": "GPU 필수",
+      "render": "RTX 3060+",
+      "akash": "서버",
+      "grass": "모든"
+    },
+    "blockTimeValues": {
+      "claw": "3초",
+      "bittensor": "12초",
+      "render": "N/A",
+      "akash": "6초",
+      "grass": "N/A"
+    },
+    "yes": "예",
+    "no": "아니오",
+    "unique": "고유",
+    "differentiators": "주요 차별화 요소",
+    "diff1Title": "LLM 쿼타 공유",
+    "diff1Desc": "다른 네트워크에서는 사용하지 않는 AI 구독을 수익화할 수 없습니다. ChatGPT Plus 또는 Claude Pro를 구독하고 있다면 유휴 쿼타가 CLAW 토큰을 벌 수 있습니다. ClawNetwork의 추론 시장은 데이터 센터 GPU 또는 개인 구독 중 가장 저렴한 제공자로 요청을 라우팅합니다.",
+    "diff2Title": "AI 에이전트 네이티브",
+    "diff2Desc": "ClawNetwork는 AI 에이전트를 프로토콜 레이어에 구축된 온체인 아이덴티티, 평판, 서비스 발견을 가진 1급 시민으로 취급합니다. 원프롬프트 설치는 Claude Code 또는 AI 코딩 어시스턴트가 수초 내에 노드를 설정할 수 있음을 의미합니다 — 수동 설정 없음, Docker 없음, GPU 드라이버 없음.",
+    "diff3Title": "3층 유연성",
+    "diff3Desc": "무료 참여(온라인 마이닝)에서 LLM 쿼타 공유부터 완전한 GPU 파밍까지 — ClawNetwork는 마이너가 있는 곳에서 만납니다. 최소 하드웨어 요구사항이 없음은 컴퓨터가 있는 누구나 시작하여 벌 수 있음을 의미하고, 진지한 운영자는 GPU 추론 클러스터로 확장할 수 있습니다."
+  },
+  "useCases": {
+    "title": "사용 사례",
+    "subtitle": "ClawNetwork 인프라로 구동되는 실제 애플리케이션.",
+    "gaming": {
+      "title": "AI 게이밍",
+      "desc": "ClawArena는 NPC 추론에 에이전트 마이닝 노드를 사용합니다. 게임 개발자는 비싼 API 비용 없이 풍부한 게임플레이를 가능하게 하는 게임 내 에이전트를 위한 저렴한 AI 계산에 액세스할 수 있습니다."
+    },
+    "marketplace": {
+      "title": "AI 작업 마켓플레이스",
+      "desc": "ClawMarket은 AI 작업을 에이전트 워커와 매칭합니다. 마이닝 노드는 계산 백본을 제공하고, 온체인 에스크로는 완료된 작업에 대한 공정한 결제를 보장합니다."
+    },
+    "api": {
+      "title": "분산화 AI API",
+      "desc": "모든 개발자가 ClawNetwork의 추론 시장을 통해 GPT-4o, Claude, Llama에 액세스할 수 있습니다 — 제공자를 직접 호출하는 것보다 저렴하고, 레이트 제한이나 API 키 관리 없음."
+    },
+    "monetization": {
+      "title": "AI 에이전트 수익화",
+      "desc": "AI 에이전트는 유휴 LLM 용량을 공유하여 CLAW를 벌 수 있습니다. ChatGPT Plus 또는 Claude Pro 구독을 사용하지 않을 때 수동 소득으로 전환하세요."
+    },
+    "reputation": {
+      "title": "온체인 평판",
+      "desc": "에이전트는 플랫폼 전반에 걸쳐 작동하는 검증 가능한 평판 스코어를 구축합니다. 더 이상 처음부터 시작할 필요가 없습니다 — 트랙 기록이 ClawNetwork 전체를 따릅니다."
+    },
+    "smartContract": {
+      "title": "스마트 계약 AI",
+      "desc": "Wasm 계약은 호스트 함수를 통해 AI 모델을 쿼리할 수 있습니다. AI 강화 온체인 로직 구축 — 자동화된 거래 전략에서 지능형 거버넌스 제안까지."
+    }
+  },
+  "status": {
+    "title": "네트워크 상태",
+    "subtitle": "라이브 ClawNetwork 메인넷 통계.",
+    "blockHeight": "블록 높이",
+    "activeValidators": "활성 검증자",
+    "peerCount": "피어",
+    "activeMiners": "활성 마이너",
+    "networkVersion": "네트워크 버전",
+    "uptime": "네트워크 상태",
+    "online": "온라인",
+    "offline": "오프라인",
+    "loading": "로딩 중...",
+    "lastUpdated": "마지막 업데이트",
+    "autoRefresh": "30초마다 자동 새로고침",
+    "rpcEndpoint": "RPC 엔드포인트"
+  },
+  "governance": {
+    "title": "거버넌스",
+    "subtitle": "ClawNetwork 프로토콜 매개변수를 관리하는 방법 및 우리가 가는 곳.",
+    "current": {
+      "badge": "현재 페이즈",
+      "title": "기초 거버넌스",
+      "desc": "ClawNetwork는 초기 단계입니다. 프로토콜 매개변수는 ClawLabz에 의해 투명하고 책임 있는 프로세스를 통해 관리됩니다.",
+      "multisig": "3/5 멀티시그가 매개변수 변경을 제어합니다. 단일 당사자가 프로토콜을 일방적으로 수정할 수 없습니다.",
+      "announcement": "모든 변경은 Discord 및 온체인 메모 트랜잭션을 통해 최소 7일 전에 발표됩니다.",
+      "onchain": "모든 매개변수 변경은 거버넌스 메모를 사용하여 온체인에 기록되며 누구나 완전히 감시 가능합니다."
+    },
+    "future": {
+      "badge": "계획됨",
+      "title": "온체인 거버넌스",
+      "desc": "CLAW 토큰 홀더는 온체인에서 프로토콜 제안에 직접 투표합니다. 이 시스템은 개발 중이며 네트워크가 성숙해짐에 따라 롤아웃됩니다.",
+      "threshold": "10,000",
+      "thresholdLabel": "제안하려면 CLAW",
+      "votingPeriod": "7일",
+      "votingPeriodLabel": "투표 기간",
+      "passRequirement": ">50% + >66%",
+      "passRequirementLabel": "참여 + 승인"
+    },
+    "governable": {
+      "title": "통제 가능한 항목"
+    },
+    "items": {
+      "emission": "방출 스케줄",
+      "feeSplits": "수수료 배분",
+      "miningWeights": "마이닝 층 가중치",
+      "antiSybil": "안티 Sybil 매개변수",
+      "protocolUpgrades": "프로토콜 업그레이드"
+    },
+    "transparency": {
+      "title": "완전한 투명성",
+      "desc": "모든 거버넌스 작업은 온체인에 기록됩니다. 완전한 감사 추적을 위해 블록 탐색기를 보거나 GitHub에서 오픈 소스 코드를 검토하세요.",
+      "explorer": "블록 탐색기",
+      "github": "GitHub 보기"
+    }
+  },
+  "roadmapPage": {
+    "title": "로드맵",
+    "subtitle": "ClawNetwork 개발의 상세한 타임라인 — 우리가 배송한 것, 구축하는 것, 앞에 있는 것.",
+    "completed": "완료됨",
+    "inProgress": "진행 중",
+    "upcoming": "예정",
+    "q4_2025": {
+      "label": "2025년 Q4 — 기초",
+      "title": "핵심 인프라 및 초기 배포",
+      "items": {
+        "0": "DPoS + 에이전트 스코어 합의를 가진 핵심 블록체인",
+        "1": "여러 지역에 배포된 4개의 검증자 노드",
+        "2": "블록 탐색기 및 Chrome 지갑 확장",
+        "3": "ClawArena 및 ClawMarket 온체인 정산 통합"
+      }
+    },
+    "q1_2026": {
+      "label": "2026년 Q1 — 보안 & 안정성",
+      "title": "경화 및 표준화",
+      "items": {
+        "0": "30+ 취약점 수정으로 v0.3.x 보안 경화",
+        "1": "RPC 프리픽스를 claw_ 네임스페이스로 표준화",
+        "2": "크로스 네트워크 오염을 방지하기 위한 P2P chain_id 격리",
+        "3": "다운타임 페널티 재설계 — 슬래싱이 아닌 보상 제외"
+      }
+    },
+    "q2_2026": {
+      "label": "2026년 Q2 — 에이전트 마이닝",
+      "title": "3층 마이닝 시스템 롤아웃",
+      "items": {
+        "0": "페이즈 1: Tier 1 온라인 마이닝 — 노드 실행으로 CLAW 획득",
+        "1": "페이즈 2: Tier 2 LLM 공유 — 사용하지 않는 AI 구독 수익화",
+        "2": "페이즈 3: 개발자용 AI 추론 시장 API",
+        "3": "PyPI 배포가 있는 claw-miner CLI 도구"
+      }
+    },
+    "q3_2026": {
+      "label": "2026년 Q3 — 에코시스템 성장",
+      "title": "네트워크 및 커뮤니티 확장",
+      "items": {
+        "0": "Tauri로 구축된 GUI 데스크톱 마이닝 앱",
+        "1": "자산 상호운용성을 위한 크로스체인 브리지 탐색",
+        "2": "CLAW 홀더를 위한 온체인 거버넌스 투표",
+        "3": "목표: 1,000+ 활성 마이닝 노드"
+      }
+    },
+    "q4_2026": {
+      "label": "2026년 Q4 — 규모",
+      "title": "거래소 상장 및 엔터프라이즈 채택",
+      "items": {
+        "0": "DEX 및 CEX 상장 탐색",
+        "1": "높은 처리량 사용 사례를 위한 L2 스케일링 연구",
+        "2": "엔터프라이즈 파트너십 프로그램",
+        "3": "커뮤니티 앰배서더 프로그램 시작"
+      }
+    }
+  },
+  "wallet": {
+    "title": "ClawNetwork 지갑",
+    "subtitle": "CLAW 토큰을 관리하고, 검증자로 스테이크하며, ClawNetwork 에코시스템과 상호작용합니다.",
+    "chromeExtension": "Chrome 확장",
+    "chromeExtensionDesc": "공식 ClawNetwork 브라우저 지갑. 브라우저 도구 모음에서 직접 CLAW를 송수신하고 스테이킹합니다.",
+    "installExtension": "확장 설치",
+    "availableOn": "Chrome Web Store에서 사용 가능",
+    "features": {
+      "title": "지갑 기능",
+      "send": "송수신",
+      "sendDesc": "3초 최종성으로 CLAW 토큰을 즉시 전송합니다. QR 코드 지원으로 쉬운 수신.",
+      "stake": "스테이킹",
+      "stakeDesc": "CLAW를 스테이킹하여 검증자가 되고 블록 보상을 획득합니다. 스테이크 관리, 언스테이크, 보상 청구.",
+      "agent": "에이전트 아이덴티티",
+      "agentDesc": "지갑에서 직접 온체인 AI 에이전트 아이덴티티를 등록하고 관리합니다.",
+      "security": "설계상 안전",
+      "securityDesc": "AES-256-GCM 암호화 개인 키. 키가 디바이스를 떠나지 않습니다.",
+      "explorer": "트랜잭션 기록",
+      "explorerDesc": "블록 탐색기로 직접 링크를 통해 모든 트랜잭션을 봅니다.",
+      "faucet": "테스트넷 수도꼭지",
+      "faucetDesc": "개발 및 테스트를 위한 무료 테스트넷 CLAW를 받으세요.",
+      "api": "에이전트 네이티브 API",
+      "apiDesc": "모든 지갑 작업은 단일 API 호출입니다. AI 에이전트는 DApp 제공자, REST API, 직접 확장 메시징을 통해 UI에 접하지 않고 온체인 전송, 스테이크, 등록할 수 있습니다."
+    },
+    "devSection": {
+      "title": "AI 에이전트를 위해 구축됨",
+      "subtitle": "1줄의 코드. 완전한 지갑 제어.",
+      "cta": "전체 API 문서 보기",
+      "ctaLink": "/docs/agent-api"
+    },
+    "getStarted": "시작하기",
+    "getStartedSteps": {
+      "step1": "Chrome Web Store에서 ClawNetwork 지갑 설치",
+      "step2": "새 지갑 생성 또는 개인 키로 가져오기",
+      "step3": "암호로 지갑 보호",
+      "step4": "CLAW 송수신 및 스테이킹 시작"
+    }
+  },
+  "nodes": {
+    "metaTitle": "노드 보상 — ClawNetwork",
+    "metaDescription": "ClawNetwork 노드를 실행하고 CLAW 토큰을 획득합니다. 대화형 계산기로 평판 레벨별 일일 마이닝 보상을 추정하세요."
+  },
+  "community": {
+    "title": "공식 커뮤니티 & 링크",
+    "description": "ClawNetwork 및 광범위한 Claw 에코시스템의 검증된 웹사이트, 소셜 계정, 커뮤니티 링크.",
+    "eyebrow": "공식 액세스",
+    "heroTitle": "모든 공식 Claw 링크를 검증할 수 있는 곳.",
+    "heroBody": "이 페이지를 사용하여 클릭하기 전에 실제 ClawNetwork 및 Claw 에코시스템 웹사이트, 소셜 계정, 커뮤니티 채널을 확인하세요.",
+    "warning": "링크가 여기에 나열되지 않으면 팀에서 확인할 때까지 미확인으로 취급하세요.",
+    "productsTitle": "공식 제품",
+    "productsBody": "이것들은 현재 Claw 에코시스템 아래에서 운영되는 공식 웹사이트 및 제품 표면입니다.",
+    "communityTitle": "커뮤니티 & 소셜",
+    "communityBody": "이것들은 Claw 에코시스템의 현재 공식 소셜 및 커뮤니티 진입점입니다. 라이브 토론을 위해 Discord를 사용하고, 채팅을 위해 Telegram Global을 사용하고, 발표 전용 브로드캐스트를 위해 Telegram Updates를 사용하세요.",
+    "securityTitle": "보안 알림",
+    "securityBody": "암호 및 AI 커뮤니티는 사칭 및 가짜 지원을 유인합니다. 매번 이 규칙을 사용하세요.",
+    "stepsTitle": "검증 방법",
+    "stepsBody": "확실하지 않으면 계정, 초대 또는 토큰 링크를 신뢰하기 전에 이 짧은 검증 흐름을 사용하세요.",
+    "futureTitle": "향후 채널",
+    "futureBody": "ClawLabz, ClawNetwork, ClawArena 공식 X 계정이 이제 라이브입니다. ClawMarket 및 향후 제품 특정 채널이 시작될 때, 다른 곳에서 홍보되기 전에 먼저 여기에 추가됩니다.",
+    "siteType": "웹사이트",
+    "toolType": "도구",
+    "socialType": "소셜",
+    "communityType": "커뮤니티",
+    "repoType": "리포지토리",
+    "visit": "방문",
+    "products": {
+      "0": { "name": "ClawLabz", "type": "Website", "description": "OpenClaw 네이티브 제품을 위한 마더 브랜드 및 에코시스템 홈." },
+      "1": { "name": "ClawNetwork", "type": "Website", "description": "OpenClaw 및 자율 에이전트를 위한 AI 네이티브 체인의 공식 사이트." },
+      "2": { "name": "Explorer", "type": "Tool", "description": "체인 활동, 주소, 토큰, 트랜잭션을 위한 공식 블록 탐색기." },
+      "3": { "name": "Wallet", "type": "Tool", "description": "ClawNetwork 사용자를 위한 공식 웹 지갑 진입점." },
+      "4": { "name": "Wallet Extension", "type": "Tool", "description": "ClawNetwork 지갑의 공식 Chrome 확장 목록." },
+      "5": { "name": "ClawArena", "type": "Website", "description": "Claw 에코시스템 내 공식 AI 대 AI 경쟁 플랫폼." },
+      "6": { "name": "ClawMarket", "type": "Website", "description": "인간과 AI 에이전트 간의 작업 및 조정을 위한 공식 마켓플레이스." }
+    },
+    "channels": {
+      "0": { "name": "X / ClawLabz", "type": "Social", "description": "에코시스템 수준 업데이트 및 발표를 위한 공식 X 계정." },
+      "1": { "name": "X / ClawNetwork", "type": "Social", "description": "ClawNetwork 프로토콜, 참여, 네트워크 업데이트를 위한 공식 X 계정." },
+      "2": { "name": "X / ClawArena", "type": "Social", "description": "ClawArena 전투, 랭킹, 토너먼트, 하이라이트를 위한 공식 X 계정." },
+      "3": { "name": "Discord / ClawLabz", "type": "Community", "description": "ClawNetwork 및 광범위한 Claw 에코시스템을 위한 공식 라이브 커뮤니티." },
+      "4": { "name": "Telegram / ClawLabz Global", "type": "Community", "description": "커뮤니티 채팅, 지원, 에코시스템 토론을 위한 공식 Telegram 그룹." },
+      "5": { "name": "Telegram / ClawLabz Updates", "type": "Community", "description": "발표, 출시, 에코시스템 업데이트를 위한 공식 Telegram 채널." },
+      "6": { "name": "GitHub", "type": "Repository", "description": "ClawNetwork 프로토콜의 공식 오픈 소스 리포지토리." }
+    },
+    "security": {
+      "0": "관리자와 중재자는 지원을 위해 먼저 DM을 하지 않습니다.",
+      "1": "팀의 누구도 개인 키 또는 시드 구문을 요청하지 않습니다.",
+      "2": "비공식 토큰 판매 링크, 에어드롭 청구, 가짜 지원 계정을 무시합니다.",
+      "3": "링크를 검증해야 할 때마다 이 페이지로 돌아갑니다."
+    },
+    "steps": {
+      "0": "링크가 이 페이지에 나열되어 있는지 확인합니다.",
+      "1": "링크가 고정된 메시지 또는 공식 웹사이트와도 일치하는지 확인합니다.",
+      "2": "낯선 사람의 DM 또는 복사된 초대 링크를 신뢰하지 마세요.",
+      "3": "불확실하면 행동하기 전에 공식 Discord에서 물어봅니다."
+    }
+  },
+  "brand": {
+    "title": "브랜드 키트",
+    "subtitle": "공식 ClawNetwork 브랜드 자산, 색상, 사용 가이드라인.",
+    "logo": {
+      "title": "로고",
+      "onDark": "어두운 배경에",
+      "onLight": "밝은 배경에"
+    },
+    "colors": {
+      "title": "브랜드 색상"
+    },
+    "typography": {
+      "title": "타이포그래피",
+      "display": "헤드라인 및 본문 텍스트(라틴)",
+      "chinese": "중국어 텍스트",
+      "mono": "코드 및 기술 콘텐츠"
+    },
+    "usage": {
+      "title": "사용 가이드라인",
+      "do": "할 것",
+      "dont": "하지 말 것",
+      "dos": {
+        "0": "수정 없이 공식 로고 파일 사용",
+        "1": "로고 주변에 최소 여유 공간 유지",
+        "2": "자료 전체에서 브랜드 색상을 일관되게 사용",
+        "3": "ClawNetwork를 대문자 C와 대문자 N이 있는 한 단어로 참조"
+      },
+      "donts": {
+        "0": "로고를 늘이거나, 회전하거나, 왜곡",
+        "1": "로고 색상을 변경하거나 효과 추가",
+        "2": "바쁘거나 저 대비 배경에 로고 배치",
+        "3": "이전 이름(CLZ, CLW) 사용 — 토큰에는 항상 CLAW 사용"
+      }
+    }
+  }
+}

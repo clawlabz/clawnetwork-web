@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getDoc, getAllDocs } from "@/lib/docs";
 import { renderMDX } from "@/lib/mdx";
+import { routing } from "@/lib/i18n/routing";
 import type { Metadata } from "next";
 
 type Props = {
@@ -40,7 +41,7 @@ export default async function DocPage({ params }: Props) {
 
 export async function generateStaticParams() {
   const params: { locale: string; slug: string[] }[] = [];
-  for (const locale of ["en", "zh"]) {
+  for (const locale of routing.locales) {
     const docs = getAllDocs(locale);
     for (const doc of docs) {
       params.push({ locale, slug: [doc.slug] });

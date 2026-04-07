@@ -3,6 +3,7 @@ import { getBlogPost, getBlogPosts } from "@/lib/blog";
 import { renderMDX } from "@/lib/mdx";
 import { Link } from "@/lib/i18n/navigation";
 import { getTranslations } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import type { Metadata } from "next";
 
 type Props = {
@@ -52,7 +53,7 @@ export default async function BlogPostPage({ params }: Props) {
 export async function generateStaticParams() {
   const posts = getBlogPosts();
   const params: { locale: string; slug: string }[] = [];
-  for (const locale of ["en", "zh"]) {
+  for (const locale of routing.locales) {
     for (const post of posts) {
       params.push({ locale, slug: post.slug });
     }

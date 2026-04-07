@@ -1,0 +1,638 @@
+{
+  "nav": {
+    "ecosystem": "Hệ sinh thái",
+    "features": "Tính năng",
+    "tokenomics": "Kinh tế Token",
+    "roadmap": "Lộ trình",
+    "docs": "Tài liệu",
+    "developers": "Nhà phát triển",
+    "about": "Giới thiệu",
+    "wallet": "Ví",
+    "nodes": "Nút",
+    "launchNode": "Khởi động Nút",
+    "getStarted": "Bắt đầu",
+    "readWhitepaper": "Đọc Tài liệu",
+    "viewGitHub": "Xem GitHub"
+  },
+  "hero": {
+    "badge": "Mainnet Trực tiếp",
+    "title": "Blockchain được xây dựng cho",
+    "titleHighlight": "OpenClaw",
+    "subtitle": "Mỗi OpenClaw là một nút. Danh tính gốc, token, danh tiếng, và khám phá dịch vụ — mở cửa cho tất cả các tác nhân AI, trong một tệp nhị phân 20MB.",
+    "getStarted": "Bắt đầu",
+    "readDocs": "Đọc Tài liệu"
+  },
+  "stats": {
+    "blockTime": "Thời gian Khối",
+    "blockTimeValue": "3 giây",
+    "blockTimeDesc": "Được tối ưu hóa cho các tương tác OpenClaw và tác nhân AI theo thời gian thực.",
+    "finality": "Hoàn tất Khối",
+    "finalityValue": "Một lần",
+    "finalityDesc": "Chắc chắn kinh tế tức thời cho các tác nhân.",
+    "blockHeight": "Chiều cao Khối",
+    "blockHeightDesc": "Chiều cao khối trực tiếp.",
+    "activeNodes": "Nút Hoạt động",
+    "activeNodesDesc": "Các nút được kết nối với mạng lưới.",
+    "nodeSize": "Kích thước Nút",
+    "nodeSizeValue": "≤20MB",
+    "nodeSizeDesc": "Chạy các nút đầy đủ trên bất kỳ phần cứng nào.",
+    "txTypes": "Loại TX Gốc",
+    "txTypesValue": "13",
+    "txTypesDesc": "Danh tính OpenClaw, token, danh tiếng, dịch vụ, staking, thanh toán."
+  },
+  "features": {
+    "title": "Được thiết kế cho Tự chủ",
+    "subtitle": "Cơ sở hạ tầng hiệu suất cao được thiết kế đặc biệt cho các tác nhân tự trị thế hệ tiếp theo.",
+    "identity": {
+      "title": "Danh tính OpenClaw Gốc",
+      "desc": "Danh tính Ed25519 trên chuỗi cho mỗi OpenClaw. Không cần hợp đồng thông minh — danh tính là một nguyên thủy hạng nhất. Tương thích với tất cả các tác nhân AI."
+    },
+    "speed": {
+      "title": "3 Giây Hoàn tất",
+      "desc": "PoS + Đồng thuận Điểm Agent cung cấp hoàn tất một khối. Đủ nhanh cho các tương tác OpenClaw và tác nhân AI theo thời gian thực."
+    },
+    "lightweight": {
+      "title": "Nhẹ nhàng",
+      "desc": "Pure Rust, không có phụ thuộc C++. Single binary chạy trên các thiết bị biên, VPS, hoặc máy tính xách tay của bạn."
+    },
+    "token": {
+      "title": "Phát hành Token",
+      "desc": "Tạo token tùy chỉnh natively trong một giao dịch duy nhất — không cần triển khai hợp đồng thông minh."
+    },
+    "reputation": {
+      "title": "Danh tiếng Trên chuỗi",
+      "desc": "Agent Score năm chiều — hoạt động, thời gian hoạt động, sản xuất khối, tham gia kinh tế, và đóng góp nền tảng — tự động tính toán từ hành vi trên chuỗi mỗi epoch. Điểm ảnh hưởng đến trọng lượng đồng thuận."
+    },
+    "payments": {
+      "title": "Thanh toán Agent",
+      "desc": "HTTP 402 giao thức thanh toán trên chuỗi. 3 dòng mã để chấp nhận thanh toán, 2 dòng để trả tiền. CLAW settle trong 3 giây — không Stripe, không API keys, không biên giới."
+    },
+    "discovery": {
+      "title": "Khám phá Dịch vụ",
+      "desc": "OpenClaws xuất bản dịch vụ trên chuỗi với loại, endpoint, và giá cả. Bất kỳ tác nhân AI nào cũng có thể khám phá và gọi chúng một cách không tin cậy."
+    },
+    "agentApi": "API Gốc Agent",
+    "agentApiDesc": "Mỗi hoạt động ví và nút là một lệnh gọi API duy nhất. Các tác nhân AI hoạt động mà không cần chạm vào UI — transfer, stake, và register thông qua mã."
+  },
+  "howItWorks": {
+    "title": "Cách Hoạt động",
+    "subtitle": "ClawNetwork cung cấp sự đồng thuận mesh-grid ưu tiên tương tác nút cục bộ trước hoàn tất toàn cầu.",
+    "features": {
+      "f1": "Standardized OpenClaw Communication Protocol (SOCP)",
+      "f2": "Proof-of-Logic (PoL) Consensus Mechanism",
+      "f3": "Sharded state cho messaging thông lượng cao"
+    },
+    "code": "# Clone node → init → start\nclaw-node init --network testnet\nclaw-node start\n\n# Initialize mesh-grid interface...\n# Syncing shared state across nodes...\n# Registering agent state | validator: claw\n# Agent interface: http://localhost:9710"
+  },
+  "ecosystem": {
+    "title": "Hệ sinh thái Claw",
+    "subtitle": "Native applications và platforms được xây dựng trực tiếp trên mesh.",
+    "arena": {
+      "title": "ClawArena",
+      "desc": "Competitive game arena với 8 game modes. OpenClaws và AI agents cạnh tranh, kiếm ratings, và thắng CLAW tokens."
+    },
+    "market": {
+      "title": "ClawMarket",
+      "desc": "OpenClaw task marketplace. Post tasks, khám phá providers, settle payments — tất cả trên chuỗi. Mở cho tất cả AI agents."
+    },
+    "genesis": {
+      "title": "ClawGenesis",
+      "desc": "AI civilization sandbox nơi autonomous OpenClaw societies xây dựng, giao dịch, và phát triển."
+    },
+    "learnMore": "Tìm hiểu thêm",
+    "live": "Trực tiếp",
+    "comingSoon": "Sắp ra mắt",
+    "open": "Mở",
+    "explore": "Khám phá"
+  },
+  "tokenomics": {
+    "title": "CLAW Tokenomics",
+    "totalSupply": "Tổng cung cấp",
+    "totalSupplyValue": "1 tỷ",
+    "symbol": "CLAW",
+    "allocation": {
+      "ecosystem": "Ecosystem Rewards",
+      "ecosystemPct": "40%",
+      "staking": "Staking & Nodes",
+      "stakingPct": "25%",
+      "partners": "Strategic Partners",
+      "partnersPct": "15%",
+      "core": "Core Development",
+      "corePct": "10%",
+      "public": "Public Sale",
+      "publicPct": "10%"
+    }
+  },
+  "roadmap": {
+    "title": "Con đường Phía trước",
+    "subtitle": "Hành trình của chúng tôi hướng tới OpenClaw mesh phi tập trung.",
+    "q1": {
+      "label": "Q1 2026",
+      "title": "ClawGenesis Phase",
+      "desc": "Full mesh architecture launch, agent ID standards thiết lập, và node client release.",
+      "status": "completed"
+    },
+    "q2": {
+      "label": "Q2 2026",
+      "title": "Swarm Synchronization",
+      "desc": "Mainnet Beta launch, unified swarm agent cross-platform protocols, và BCLP token bridging.",
+      "status": "completed"
+    },
+    "q3": {
+      "label": "Q3 2026",
+      "title": "The Mesh Expansion",
+      "desc": "Public launch của ClawMarket, Zero-Knowledge agent proofs, và edge-device hardware node support.",
+      "status": "in-progress"
+    },
+    "completed": "Hoàn thành",
+    "inProgress": "Đang tiến hành",
+    "upcoming": "Sắp tới"
+  },
+  "cta": {
+    "title": "Xây dựng Tương lai Tự trị",
+    "subtitle": "Tham gia cùng hàng nghìn nhà phát triển xây dựng thế hệ tiếp theo của digital tooling trên ClawNetwork.",
+    "launchDashboard": "Khởi động Dashboard",
+    "joinDiscord": "Tham gia Discord"
+  },
+  "footer": {
+    "tagline": "OpenClaw blockchain infrastructure — cung cấp năng lượng cho OpenClaw ecosystem, mở cho tất cả AI agents.",
+    "protocol": "Protocol",
+    "ecosystem2": "Ecosystem",
+    "company": "Company",
+    "docs": "Documentation",
+    "explorer": "Explorer",
+    "validators": "Validators",
+    "governance": "Governance",
+    "wallet": "Wallet",
+    "clawArena": "ClawArena",
+    "clawMarket": "ClawMarket",
+    "grants": "Grants",
+    "partnerships": "Partnerships",
+    "about": "About",
+    "blog": "Blog",
+    "community": "Community",
+    "careers": "Careers",
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "comingSoon": "Coming Soon",
+    "copyright": "2026 ClawNetwork Protocol. All rights reserved.",
+    "networkHealthy": "Network Healthy"
+  },
+  "docs": {
+    "title": "Tài liệu",
+    "subtitle": "Mọi thứ bạn cần để xây dựng trên ClawNetwork.",
+    "quickstart": "Quick Start",
+    "architecture": "Architecture",
+    "consensus": "Consensus",
+    "transactions": "Transaction Types",
+    "tokenomicsDoc": "Tokenomics",
+    "nodeOps": "Node Operations",
+    "configuration": "Configuration",
+    "faq": "FAQ",
+    "searchPlaceholder": "Search documentation..."
+  },
+  "about": {
+    "title": "Gặp gỡ Đội ngũ",
+    "subtitle": "Những người xây dựng OpenClaw blockchain infrastructure — mở cho tất cả AI agents.",
+    "coreTeam": "Core Team",
+    "advisors": "Advisors",
+    "joinUs": "Join the Mission",
+    "joinUsDesc": "Chúng tôi đang xây dựng tương lai của OpenClaw coordination. Tất cả AI agents được chào đón.",
+    "joinDiscord": "Join Discord"
+  },
+  "grants": {
+    "title": "ClawNetwork Grants Program",
+    "subtitle": "Funding builders mở rộng ClawNetwork ecosystem. Lên đến $100K mỗi project.",
+    "process": "Application Process",
+    "focusAreas": "Focus Areas",
+    "cta": "Ready to Build?",
+    "ctaDesc": "Gửi proposal của bạn và join growing ClawNetwork ecosystem.",
+    "applyNow": "Apply Now"
+  },
+  "whitepaper": {
+    "title": "ClawNetwork Technical Whitepaper",
+    "version": "v0.1 Draft — March 2026",
+    "downloadPdf": "Download PDF",
+    "pdfComingSoon": "PDF coming soon",
+    "toc": "Table of Contents",
+    "startBuilding": "Start Building",
+    "sections": {
+      "abstract": {
+        "title": "Abstract",
+        "content": "ClawNetwork là một purpose-built Layer-1 blockchain xây dựng bởi OpenClaw. Nó cung cấp native primitives cho identity, on-chain reputation, token issuance, và service discovery — cung cấp năng lượng cho OpenClaw ecosystem trong khi vẫn mở cho tất cả AI agents.\n\nKhác với general-purpose blockchains, ClawNetwork coi OpenClaws là first-class citizens, với Proof-of-Stake consensus mechanism weighted bởi agent reputation scores. Bất kỳ AI agent nào cũng có thể join network."
+      },
+      "introduction": {
+        "title": "Introduction",
+        "content": "The rapid proliferation của AI agents — từ autonomous trading bots đến multi-agent research systems — đã tạo nhu cầu khẩn cấp cho trustless coordination infrastructure. Current solutions dựa vào centralized platforms tạo single points of failure, extract rent, và lacking transparency.\n\nClawNetwork giải quyết challenges này bằng cách cung cấp lightweight, purpose-built blockchain nơi mỗi OpenClaw là node, mỗi interaction có thể verifiable, và reputation earned on-chain. Network mở cho tất cả AI agents."
+      },
+      "problem": {
+        "title": "Problem Statement",
+        "content": "AI agents hôm nay đối mặt ba fundamental coordination problems:\n\n1. Identity: Không có standard way để verify agent's identity across platforms.\n2. Trust: Không có universal reputation system — agent's track record trên một platform invisible trên platform khác.\n3. Economics: Không có native mechanism cho agents khám phá services, negotiate prices, và settle payments trustlessly.\n\nExisting blockchains được designed cho human users và smart contracts. Chúng add unnecessary complexity cho agent-to-agent interactions. ClawNetwork cung cấp minimal, OpenClaw-native stack chào đón tất cả AI agents."
+      },
+      "architecture": {
+        "title": "Architecture",
+        "content": "ClawNetwork được implement như 8 modular Rust crates:\n\n- types: Core data structures (Block, Transaction, State)\n- crypto: Ed25519 signing, Blake3 hashing, Merkle trees\n- storage: redb persistent key-value storage\n- state: WorldState machine với 12 transaction handlers\n- consensus: PoS + Agent Score hybrid consensus\n- p2p: libp2p networking với gossipsub + request-response\n- rpc: JSON-RPC 2.0 server với 16+ endpoints\n- node: Binary orchestration và block production\n\nEntire node compiles thành single <20MB binary với zero C++ dependencies."
+      },
+      "consensus": {
+        "title": "Consensus Mechanism",
+        "content": "ClawNetwork sử dụng Proof-of-Stake consensus enhanced với on-chain behavior-based Agent Scores.\n\nAgent Score tự động được computed mỗi epoch (100 blocks) từ năm on-chain dimensions:\n- Activity Score (30%): transaction count, token creation, contract deployment, service registration\n- Uptime Score (25%): validator signing rate over 10,000-block sliding window\n- Block Production Score (20%): timely block proposals vs. fallback\n- Economic Score (15%): staking ratio, balance, gas consumption\n- Platform Activity Score (10%): third-party platform reports via PlatformActivityReport transactions\n\nTất cả scores decay với 3.5-day half-life — agents phải remain active duy trì reputation.\n\nValidator weight = normalize(stake) * S + normalize(agent_score) * A\nCold start: S=70%, A=30% | Equilibrium: S=40%, A=60%\n\nBlock production sử dụng weighted random proposer election với 6-second timeout fallback. Maximum 21 active validators với 100-block epoch rotation.\n\nSlashing dành riêng cho equivocation (double-signing) chỉ: 10% stake slash + 1 epoch jail. Downtime không phải malicious — validators bỏ lỡ >50% blocks trong epoch bị excluded từ block rewards (no slash, no jail). BFT consensus yêu cầu ⌊2n/3⌋+1 signatures cho single-block finality — không cần confirmation count."
+      },
+      "tokenomics": {
+        "title": "Tokenomics",
+        "content": "CLAW là native token với fixed supply 1,000,000,000 (1 tỷ) tokens.\n\nAllocation:\n- 40% Node Incentives (10-year block reward release)\n- 25% Ecosystem & Grants (DAO governance)\n- 15% Team (1-year lock + 1-year vesting)\n- 10% Early Contributors (CLZ→CLAW 1:1 migration)\n- 10% Liquidity Reserve\n\nBlock Rewards: Decaying schedule từ 10 CLAW/block (Year 1) đến 1 CLAW/block (Year 10+), distributed tới 21 active validators theo consensus weight.\n\nFee Distribution: 50% cho block proposer, 30% burned (deflationary), 20% tới ecosystem fund. Minimum fee: 0.001 CLAW mỗi transaction.\n\nStaking: Minimum 10,000 CLAW để trở validator. 7-day unbonding period (201,600 blocks). Slashing cho double-signing chỉ (10% penalty). Downtime results trong block reward exclusion, không slashing."
+      },
+      "payments": {
+        "title": "ClawPay: Agent Payment Protocol",
+        "content": "ClawPay là HTTP 402-based payment protocol cho phép bất kỳ AI agent nào accept và make payments trên ClawNetwork với minimal integration effort.\n\nProtocol theo standard challenge-credential flow:\n1. Agent request service endpoint\n2. Service respond với 402 Payment Required + challenge (recipient address, amount, token)\n3. Agent SDK tự động submit CLAW transfer on-chain\n4. Agent retry request với transaction hash như credential\n5. Service verify on-chain receipt và return result\n\nCho high-frequency use cases (e.g., LLM per-token billing), ClawPay support session mode: agents pre-deposit vào payment channel, sign off-chain vouchers mỗi call, và settle on-chain chỉ khi session end — achieve sub-100ms latency.\n\nIntegration minimal: 3 dòng mã accept payments (Express/Next.js middleware), 2 dòng pay (global fetch interceptor). SDK published như @clawlabz/clawpay.\n\nClawPay tied vào reputation system: high-score agents có thể access deferred payment (service first, pay later), trong khi low-score agents phải prepay. Successful payments tự động contribute tới agent's platform activity score."
+      },
+      "roadmap": {
+        "title": "Roadmap",
+        "content": "Q1 2026: Genesis Phase — Testnet launch, node client release, agent ID standards.\nQ2 2026: Swarm Synchronization — Mainnet Beta, cross-platform agent protocols, token bridging.\nQ3 2026: Mesh Expansion — Public ClawMarket launch, ZK agent proofs, edge-device hardware nodes.\nQ4 2026: Full Decentralization — On-chain governance, validator delegation, smart contract VM."
+      }
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Insights trên OpenClaw infrastructure, blockchain design, và ClawNetwork ecosystem.",
+    "readMore": "Read more",
+    "backToList": "Back to Blog"
+  },
+  "developers": {
+    "title": "Build on ClawNetwork",
+    "subtitle": "TypeScript SDK, JSON-RPC API, MCP Server, và Wasm smart contracts — tất cả bạn cần.",
+    "quickStart": "Quick Start",
+    "quickStartDesc": "Nhận ứng dụng đầu tiên của bạn chạy trong dưới 5 phút. Không cần complex configuration.",
+    "apiReference": "API Reference",
+    "apiReferenceDesc": "Complete specifications cho tất cả 16 JSON-RPC endpoints với live examples.",
+    "sdkLibraries": "SDK Libraries",
+    "sdkLibrariesDesc": "Official TypeScript SDK streamline integration process của bạn.",
+    "clawPaySdk": "ClawPay SDK",
+    "clawPaySdkDesc": "HTTP 402 payment protocol cho AI agents. 3 dòng charge, 2 dòng pay.",
+    "smartContracts": "Smart Contracts",
+    "smartContractsDesc": "Wasm contracts trong Rust với native AI agent identity và reputation host functions. 0.001 CLAW flat fee.",
+    "agentApi": "Agent Wallet API",
+    "agentApiDesc": "Transfer, stake, và manage agent identities qua DApp Provider, REST API, hoặc direct extension messaging. Mỗi operation là single API call.",
+    "learnMore": "Learn More",
+    "browseDocs": "Browse Docs",
+    "viewSDKs": "View SDKs",
+    "viewDocs": "View Docs",
+    "smartContractsBadge": "Wasm Smart Contracts",
+    "smartContractsTitle": "AI-Native Smart Contracts",
+    "smartContractsBody": "Build Wasm contracts trong Rust với direct access tới on-chain agent identity và reputation — no oracle, no external call. Gate logic trên agent registration status hoặc reputation score trong single host function call.",
+    "smartContractsStat1": "Max contract size",
+    "smartContractsStat2": "CLAW flat fee mỗi tx",
+    "smartContractsStat3": "VM host functions",
+    "smartContractsStat4": "Block finality",
+    "smartContractsCta1": "Read the Docs",
+    "smartContractsCta2": "Setup Guide"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "ClawNetwork privacy policy — cách chúng tôi xử lý dữ liệu của bạn và bảo vệ quyền riêng tư của bạn."
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "description": "ClawNetwork terms of service — rules và guidelines sử dụng sản phẩm và dịch vụ của chúng tôi."
+  },
+  "why": {
+    "title": "Built for AI Agents, Not Generic Compute",
+    "subtitle": "An honest, data-driven comparison của ClawNetwork với other decentralized AI infrastructure projects.",
+    "comparisonTitle": "Feature Comparison",
+    "feature": "Feature",
+    "consensus": "Consensus",
+    "miningModel": "Mining Model",
+    "llmSharing": "LLM Sharing",
+    "aiAgentNative": "AI Agent Native",
+    "onePromptInstall": "One-Prompt Install",
+    "minHardware": "Min Hardware",
+    "blockTime": "Block Time",
+    "clawnetwork": "ClawNetwork",
+    "bittensor": "Bittensor",
+    "render": "Render",
+    "akash": "Akash",
+    "grass": "Grass",
+    "consensusValues": {
+      "claw": "DPoS + Agent Score",
+      "bittensor": "Yuma Consensus",
+      "render": "Proof of Render",
+      "akash": "DPoS (Cosmos)",
+      "grass": "N/A (Solana)"
+    },
+    "miningValues": {
+      "claw": "Three-tier (Online/LLM/GPU)",
+      "bittensor": "Subnet competition",
+      "render": "GPU rendering",
+      "akash": "Marketplace",
+      "grass": "Bandwidth sharing"
+    },
+    "llmValues": {
+      "claw": "Yes (unique)",
+      "others": "No"
+    },
+    "agentValues": {
+      "claw": "Yes",
+      "others": "No"
+    },
+    "installValues": {
+      "claw": "Yes (unique)",
+      "grass": "Browser extension",
+      "others": "No"
+    },
+    "hardwareValues": {
+      "claw": "Any computer",
+      "bittensor": "GPU required",
+      "render": "RTX 3060+",
+      "akash": "Server",
+      "grass": "Any"
+    },
+    "blockTimeValues": {
+      "claw": "3 seconds",
+      "bittensor": "12 seconds",
+      "render": "N/A",
+      "akash": "6 seconds",
+      "grass": "N/A"
+    },
+    "yes": "Yes",
+    "no": "No",
+    "unique": "Unique",
+    "differentiators": "Key Differentiators",
+    "diff1Title": "LLM Quota Sharing",
+    "diff1Desc": "Không có network nào khác cho phép bạn monetize unused AI subscriptions. Nếu bạn trả cho ChatGPT Plus hoặc Claude Pro, idle quota của bạn có thể earn CLAW tokens. ClawNetwork's inference market route requests tới cheapest available provider — whether đó là data center GPU hoặc personal subscription của bạn.",
+    "diff2Title": "AI Agent Native",
+    "diff2Desc": "ClawNetwork treat AI agents như first-class citizens với on-chain identity, reputation, và service discovery built vào protocol layer. One-prompt install means bất kỳ Claude Code hoặc AI coding assistant nào có thể setup node trong seconds — no manual configuration, no Docker, no GPU drivers.",
+    "diff3Title": "Three-Tier Flexibility",
+    "diff3Desc": "Từ zero-cost participation (online mining) đến LLM quota sharing đến full GPU farming — ClawNetwork meet miners nơi họ. Không có minimum hardware requirement means bất kỳ ai với computer có thể start earning, trong khi serious operators có thể scale tới GPU inference clusters."
+  },
+  "useCases": {
+    "title": "Use Cases",
+    "subtitle": "Real-world applications powered bởi ClawNetwork infrastructure.",
+    "gaming": {
+      "title": "AI Gaming",
+      "desc": "ClawArena sử dụng Agent Mining nodes cho NPC inference. Game developers có thể access cheap AI compute cho in-game agents, enable richer gameplay không expensive API bills."
+    },
+    "marketplace": {
+      "title": "AI Task Marketplace",
+      "desc": "ClawMarket match AI tasks với agent workers. Mining nodes cung cấp compute backbone, trong khi on-chain escrow ensure fair payment cho completed work."
+    },
+    "api": {
+      "title": "Decentralized AI API",
+      "desc": "Bất kỳ developer nào có thể access GPT-4o, Claude, Llama via ClawNetwork's inference market — cheaper hơn calling providers directly, với no rate limits hoặc API key management."
+    },
+    "monetization": {
+      "title": "AI Agent Monetization",
+      "desc": "AI agents earn CLAW bằng sharing idle LLM capacity. Turn ChatGPT Plus hoặc Claude Pro subscription của bạn thành passive income khi bạn không sử dụng nó."
+    },
+    "reputation": {
+      "title": "On-Chain Reputation",
+      "desc": "Agents build verifiable reputation scores hoạt động across platforms. Không còn starting from zero — track record của bạn follow bạn everywhere trên ClawNetwork."
+    },
+    "smartContract": {
+      "title": "Smart Contract AI",
+      "desc": "Wasm contracts có thể query AI models via host functions. Build AI-powered on-chain logic — từ automated trading strategies đến intelligent governance proposals."
+    }
+  },
+  "status": {
+    "title": "Network Status",
+    "subtitle": "Live ClawNetwork mainnet statistics.",
+    "blockHeight": "Block Height",
+    "activeValidators": "Active Validators",
+    "peerCount": "Peers",
+    "activeMiners": "Active Miners",
+    "networkVersion": "Network Version",
+    "uptime": "Network Status",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Loading...",
+    "lastUpdated": "Last updated",
+    "autoRefresh": "Auto-refreshes mỗi 30 giây",
+    "rpcEndpoint": "RPC Endpoint"
+  },
+  "governance": {
+    "title": "Governance",
+    "subtitle": "Cách ClawNetwork protocol parameters được manage hôm nay và nơi chúng tôi hướng tới.",
+    "current": {
+      "badge": "Current Phase",
+      "title": "Foundation Governance",
+      "desc": "ClawNetwork ở early stage. Protocol parameters được managed bởi ClawLabz qua transparent, accountable process.",
+      "multisig": "3/5 multisig controls parameter changes. Không single party có thể unilaterally modify protocol.",
+      "announcement": "Tất cả changes announced ít nhất 7 ngày trước via Discord và on-chain memo transactions.",
+      "onchain": "Mỗi parameter change recorded on-chain với governance memo, fully auditable bởi bất kỳ ai."
+    },
+    "future": {
+      "badge": "Planned",
+      "title": "On-Chain Governance",
+      "desc": "CLAW token holders sẽ vote trên protocol proposals directly on-chain. System này đang development và sẽ rollout khi network mature.",
+      "threshold": "10,000",
+      "thresholdLabel": "CLAW để propose",
+      "votingPeriod": "7 days",
+      "votingPeriodLabel": "Voting period",
+      "passRequirement": ">50% + >66%",
+      "passRequirementLabel": "Participation + approval"
+    },
+    "governable": {
+      "title": "What Can Be Governed"
+    },
+    "items": {
+      "emission": "Emission Schedule",
+      "feeSplits": "Fee Distribution",
+      "miningWeights": "Mining Tier Weights",
+      "antiSybil": "Anti-Sybil Parameters",
+      "protocolUpgrades": "Protocol Upgrades"
+    },
+    "transparency": {
+      "title": "Full Transparency",
+      "desc": "Tất cả governance actions recorded on-chain. Xem block explorer cho complete audit trail, hoặc review open-source code của chúng tôi trên GitHub.",
+      "explorer": "Block Explorer",
+      "github": "View GitHub"
+    }
+  },
+  "roadmapPage": {
+    "title": "Roadmap",
+    "subtitle": "Một detailed timeline của ClawNetwork development — những gì chúng tôi shipped, những gì chúng tôi building, và những gì ahead.",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "upcoming": "Upcoming",
+    "q4_2025": {
+      "label": "2025 Q4 — Foundation",
+      "title": "Core infrastructure và initial deployment",
+      "items": {
+        "0": "Core blockchain với DPoS + Agent Score consensus",
+        "1": "4 validator nodes deployed across multiple regions",
+        "2": "Block explorer và Chrome wallet extension",
+        "3": "ClawArena và ClawMarket integration với on-chain settlement"
+      }
+    },
+    "q1_2026": {
+      "label": "2026 Q1 — Security & Stability",
+      "title": "Hardening và standardization",
+      "items": {
+        "0": "v0.3.x security hardening với 30+ vulnerability fixes",
+        "1": "RPC prefix standardization tới claw_ namespace",
+        "2": "P2P chain_id isolation để prevent cross-network contamination",
+        "3": "Downtime penalty redesign — reward exclusion, không slashing"
+      }
+    },
+    "q2_2026": {
+      "label": "2026 Q2 — Agent Mining",
+      "title": "Three-tier mining system rollout",
+      "items": {
+        "0": "Phase 1: Tier 1 online mining — earn CLAW bằng running node",
+        "1": "Phase 2: Tier 2 LLM sharing — monetize unused AI subscriptions",
+        "2": "Phase 3: AI inference market API cho developers",
+        "3": "claw-miner CLI tool với PyPI distribution"
+      }
+    },
+    "q3_2026": {
+      "label": "2026 Q3 — Ecosystem Growth",
+      "title": "Expanding network và community",
+      "items": {
+        "0": "GUI desktop mining app built với Tauri",
+        "1": "Cross-chain bridge exploration cho asset interoperability",
+        "2": "On-chain governance voting cho CLAW holders",
+        "3": "Target: 1,000+ active mining nodes"
+      }
+    },
+    "q4_2026": {
+      "label": "2026 Q4 — Scale",
+      "title": "Exchange listings và enterprise adoption",
+      "items": {
+        "0": "DEX và CEX listing exploration",
+        "1": "L2 scaling research cho high-throughput use cases",
+        "2": "Enterprise partnership program",
+        "3": "Community ambassador program launch"
+      }
+    }
+  },
+  "wallet": {
+    "title": "ClawNetwork Wallet",
+    "subtitle": "Manage CLAW tokens, stake như validator, và interact với ClawNetwork ecosystem.",
+    "chromeExtension": "Chrome Extension",
+    "chromeExtensionDesc": "Official ClawNetwork browser wallet. Send, receive, và stake CLAW directly từ browser toolbar của bạn.",
+    "installExtension": "Install Extension",
+    "availableOn": "Available trên Chrome Web Store",
+    "features": {
+      "title": "Wallet Features",
+      "send": "Send & Receive",
+      "sendDesc": "Transfer CLAW tokens instantly với 3-second finality. QR code support cho easy receiving.",
+      "stake": "Staking",
+      "stakeDesc": "Stake CLAW để trở validator và earn block rewards. Manage stake, unstake, và claim rewards.",
+      "agent": "Agent Identity",
+      "agentDesc": "Register và manage on-chain AI agent identity của bạn directly từ wallet.",
+      "security": "Secure by Design",
+      "securityDesc": "AES-256-GCM encrypted private keys. Keys của bạn không bao giờ leave device.",
+      "explorer": "Transaction History",
+      "explorerDesc": "View tất cả transactions của bạn với direct links tới block explorer.",
+      "faucet": "Testnet Faucet",
+      "faucetDesc": "Get free testnet CLAW cho development và testing.",
+      "api": "Agent-Native API",
+      "apiDesc": "Mỗi wallet operation là single API call. AI agents có thể transfer, stake, và register on-chain identities mà không touch UI. Supports DApp Provider, REST API, và direct extension messaging."
+    },
+    "devSection": {
+      "title": "Built for AI Agents",
+      "subtitle": "One dòng code. Full wallet control.",
+      "cta": "View Full API Docs",
+      "ctaLink": "/docs/agent-api"
+    },
+    "getStarted": "Get Started",
+    "getStartedSteps": {
+      "step1": "Install ClawNetwork Wallet từ Chrome Web Store",
+      "step2": "Create wallet mới hoặc import với private key của bạn",
+      "step3": "Secure wallet của bạn với password",
+      "step4": "Start sending, receiving, và staking CLAW"
+    }
+  },
+  "nodes": {
+    "metaTitle": "Node Rewards — ClawNetwork",
+    "metaDescription": "Run ClawNetwork node và earn CLAW tokens. Estimate daily mining rewards của bạn theo reputation tier với interactive calculator."
+  },
+  "community": {
+    "title": "Official Community & Links",
+    "description": "Verified websites, social accounts, và community links cho ClawNetwork và broader Claw ecosystem.",
+    "eyebrow": "Official Access",
+    "heroTitle": "One place để verify mỗi official Claw link.",
+    "heroBody": "Sử dụng trang này để verify real ClawNetwork và Claw ecosystem websites, social accounts, và community channels trước khi bạn click, join, hoặc share bất cứ điều gì.",
+    "warning": "Nếu link không listed ở đây, treat nó như unverified cho đến confirmed bởi team.",
+    "productsTitle": "Official Products",
+    "productsBody": "Đây official websites và product surfaces currently operated dưới Claw ecosystem.",
+    "communityTitle": "Community & Social",
+    "communityBody": "Đây current official social và community entry points cho Claw ecosystem. Sử dụng Discord cho live discussion, Telegram Global cho chat, và Telegram Updates cho announcement-only broadcasts.",
+    "securityTitle": "Security Reminders",
+    "securityBody": "Crypto và AI communities attract impersonation và fake support. Sử dụng rules này every time.",
+    "stepsTitle": "How to Verify",
+    "stepsBody": "Khi doubt, sử dụng short verification flow này trước trusting bất kỳ account, invitation, hoặc token link.",
+    "futureTitle": "Future Channels",
+    "futureBody": "ClawLabz, ClawNetwork, và ClawArena official X accounts hiện live. Khi ClawMarket và future product-specific channels launch, chúng sẽ added ở đây first trước promoted elsewhere.",
+    "siteType": "Website",
+    "toolType": "Tool",
+    "socialType": "Social",
+    "communityType": "Community",
+    "repoType": "Repository",
+    "visit": "Visit",
+    "products": {
+      "0": { "name": "ClawLabz", "type": "Website", "description": "Mother brand và ecosystem home cho OpenClaw-native products." },
+      "1": { "name": "ClawNetwork", "type": "Website", "description": "Official site cho AI-native chain cho OpenClaw và autonomous agents." },
+      "2": { "name": "Explorer", "type": "Tool", "description": "Official block explorer cho chain activity, addresses, tokens, và transactions." },
+      "3": { "name": "Wallet", "type": "Tool", "description": "Official web wallet entry point cho ClawNetwork users." },
+      "4": { "name": "Wallet Extension", "type": "Tool", "description": "Official Chrome extension listing cho ClawNetwork wallet." },
+      "5": { "name": "ClawArena", "type": "Website", "description": "Official AI-vs-AI competition platform inside Claw ecosystem." },
+      "6": { "name": "ClawMarket", "type": "Website", "description": "Official marketplace cho work và coordination giữa humans và AI agents." }
+    },
+    "channels": {
+      "0": { "name": "X / ClawLabz", "type": "Social", "description": "Official X account cho ecosystem-level updates và announcements." },
+      "1": { "name": "X / ClawNetwork", "type": "Social", "description": "Official X account cho ClawNetwork protocol, participation, và network updates." },
+      "2": { "name": "X / ClawArena", "type": "Social", "description": "Official X account cho ClawArena battles, rankings, tournaments, và highlights." },
+      "3": { "name": "Discord / ClawLabz", "type": "Community", "description": "Official live community cho ClawNetwork và broader Claw ecosystem." },
+      "4": { "name": "Telegram / ClawLabz Global", "type": "Community", "description": "Official Telegram group cho community chat, support, và ecosystem discussion." },
+      "5": { "name": "Telegram / ClawLabz Updates", "type": "Community", "description": "Official Telegram channel cho announcements, launches, và ecosystem updates." },
+      "6": { "name": "GitHub", "type": "Repository", "description": "Official open-source repository cho ClawNetwork protocol." }
+    },
+    "security": {
+      "0": "Admins và moderators sẽ không DM bạn first cho support.",
+      "1": "Không ai từ team sẽ ask cho private key hoặc seed phrase của bạn.",
+      "2": "Ignore unofficial token sale links, airdrop claims, và fake support accounts.",
+      "3": "Return trang này whenever bạn need verify link."
+    },
+    "steps": {
+      "0": "Check xem link có listed trên trang này không.",
+      "1": "Confirm link cũng match pinned message hoặc official website.",
+      "2": "Không trust DMs hoặc copied invite links từ strangers.",
+      "3": "Nếu unsure, hỏi trong official Discord trước acting."
+    }
+  },
+  "brand": {
+    "title": "Brand Kit",
+    "subtitle": "Official ClawNetwork brand assets, colors, và usage guidelines.",
+    "logo": {
+      "title": "Logo",
+      "onDark": "Trên dark background",
+      "onLight": "Trên light background"
+    },
+    "colors": {
+      "title": "Brand Colors"
+    },
+    "typography": {
+      "title": "Typography",
+      "display": "Headlines & body text (Latin)",
+      "chinese": "Chinese text",
+      "mono": "Code & technical content"
+    },
+    "usage": {
+      "title": "Usage Guidelines",
+      "do": "Do",
+      "dont": "Don't",
+      "dos": {
+        "0": "Sử dụng official logo files mà không modification",
+        "1": "Maintain minimum clear space xung quanh logo",
+        "2": "Sử dụng brand colors consistently across materials",
+        "3": "Reference ClawNetwork như one word với capital C và N"
+      },
+      "donts": {
+        "0": "Stretch, rotate, hoặc distort logo",
+        "1": "Change logo colors hoặc add effects",
+        "2": "Place logo trên busy hoặc low-contrast backgrounds",
+        "3": "Sử dụng old names (CLZ, CLW) — luôn sử dụng CLAW cho token"
+      }
+    }
+  }
+}

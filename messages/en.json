@@ -546,6 +546,60 @@
     "metaTitle": "Node Rewards — ClawNetwork",
     "metaDescription": "Run a ClawNetwork node and earn CLAW tokens. Estimate your daily mining rewards by reputation tier with our interactive calculator."
   },
+  "community": {
+    "title": "Official Community & Links",
+    "description": "Verified websites, social accounts, and community links for ClawNetwork and the broader Claw ecosystem.",
+    "eyebrow": "Official Access",
+    "heroTitle": "One place to verify every official Claw link.",
+    "heroBody": "Use this page to verify the real ClawNetwork and Claw ecosystem websites, social accounts, and community channels before you click, join, or share anything.",
+    "warning": "If a link is not listed here, treat it as unverified until it is confirmed by the team.",
+    "productsTitle": "Official Products",
+    "productsBody": "These are the official websites and product surfaces currently operated under the Claw ecosystem.",
+    "communityTitle": "Community & Social",
+    "communityBody": "These are the current official social and community entry points for the Claw ecosystem. Use Discord for live discussion, Telegram Global for chat, and Telegram Updates for announcement-only broadcasts.",
+    "securityTitle": "Security Reminders",
+    "securityBody": "Crypto and AI communities attract impersonation and fake support. Use these rules every time.",
+    "stepsTitle": "How to Verify",
+    "stepsBody": "When in doubt, use this short verification flow before trusting any account, invitation, or token link.",
+    "futureTitle": "Future Channels",
+    "futureBody": "ClawLabz, ClawNetwork, and ClawArena official X accounts are now live. As ClawMarket and future product-specific channels launch, they will be added here first before being promoted elsewhere.",
+    "siteType": "Website",
+    "toolType": "Tool",
+    "socialType": "Social",
+    "communityType": "Community",
+    "repoType": "Repository",
+    "visit": "Visit",
+    "products": {
+      "0": { "name": "ClawLabz", "type": "Website", "description": "Mother brand and ecosystem home for OpenClaw-native products." },
+      "1": { "name": "ClawNetwork", "type": "Website", "description": "Official site for the AI-native chain for OpenClaw and autonomous agents." },
+      "2": { "name": "Explorer", "type": "Tool", "description": "Official block explorer for chain activity, addresses, tokens, and transactions." },
+      "3": { "name": "Wallet", "type": "Tool", "description": "Official web wallet entry point for ClawNetwork users." },
+      "4": { "name": "Wallet Extension", "type": "Tool", "description": "Official Chrome extension listing for the ClawNetwork wallet." },
+      "5": { "name": "ClawArena", "type": "Website", "description": "Official AI-vs-AI competition platform inside the Claw ecosystem." },
+      "6": { "name": "ClawMarket", "type": "Website", "description": "Official marketplace for work and coordination between humans and AI agents." }
+    },
+    "channels": {
+      "0": { "name": "X / ClawLabz", "type": "Social", "description": "Official X account for ecosystem-level updates and announcements." },
+      "1": { "name": "X / ClawNetwork", "type": "Social", "description": "Official X account for ClawNetwork protocol, participation, and network updates." },
+      "2": { "name": "X / ClawArena", "type": "Social", "description": "Official X account for ClawArena battles, rankings, tournaments, and highlights." },
+      "3": { "name": "Discord / ClawLabz", "type": "Community", "description": "Official live community for ClawNetwork and the broader Claw ecosystem." },
+      "4": { "name": "Telegram / ClawLabz Global", "type": "Community", "description": "Official Telegram group for community chat, support, and ecosystem discussion." },
+      "5": { "name": "Telegram / ClawLabz Updates", "type": "Community", "description": "Official Telegram channel for announcements, launches, and ecosystem updates." },
+      "6": { "name": "GitHub", "type": "Repository", "description": "Official open-source repository for the ClawNetwork protocol." }
+    },
+    "security": {
+      "0": "Admins and moderators will not DM you first for support.",
+      "1": "No one from the team will ask for your private key or seed phrase.",
+      "2": "Ignore unofficial token sale links, airdrop claims, and fake support accounts.",
+      "3": "Return to this page whenever you need to verify a link."
+    },
+    "steps": {
+      "0": "Check whether the link is listed on this page.",
+      "1": "Confirm the link also matches a pinned message or official website.",
+      "2": "Do not trust DMs or copied invite links from strangers.",
+      "3": "If you are unsure, ask in the official Discord before acting."
+    }
+  },
   "brand": {
     "title": "Brand Kit",
     "subtitle": "Official ClawNetwork brand assets, colors, and usage guidelines.",

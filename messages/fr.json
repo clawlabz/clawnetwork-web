@@ -1,0 +1,638 @@
+{
+  "nav": {
+    "ecosystem": "Écosystème",
+    "features": "Fonctionnalités",
+    "tokenomics": "Tokenomics",
+    "roadmap": "Feuille de route",
+    "docs": "Documentation",
+    "developers": "Développeurs",
+    "about": "À propos",
+    "wallet": "Portefeuille",
+    "nodes": "Nœuds",
+    "launchNode": "Lancer un nœud",
+    "getStarted": "Commencer",
+    "readWhitepaper": "Lire la documentation",
+    "viewGitHub": "Voir GitHub"
+  },
+  "hero": {
+    "badge": "Mainnet en ligne",
+    "title": "La blockchain construite pour",
+    "titleHighlight": "OpenClaw",
+    "subtitle": "Chaque OpenClaw est un nœud. Identité native, jetons, réputation et découverte de services — ouverts à tous les agents IA, dans un seul binaire de 20 Mo.",
+    "getStarted": "Commencer",
+    "readDocs": "Lire la documentation"
+  },
+  "stats": {
+    "blockTime": "Temps de bloc",
+    "blockTimeValue": "3s",
+    "blockTimeDesc": "Optimisé pour les interactions OpenClaw et les agents IA en temps réel.",
+    "finality": "Finalité du bloc",
+    "finalityValue": "Unique",
+    "finalityDesc": "Certitude économique instantanée pour les agents.",
+    "blockHeight": "Hauteur de bloc",
+    "blockHeightDesc": "Hauteur de bloc en direct.",
+    "activeNodes": "Nœuds actifs",
+    "activeNodesDesc": "Nœuds connectés au réseau.",
+    "nodeSize": "Taille du nœud",
+    "nodeSizeValue": "≤20 Mo",
+    "nodeSizeDesc": "Exécutez des nœuds complets sur n'importe quel matériel.",
+    "txTypes": "Types TX natifs",
+    "txTypesValue": "13",
+    "txTypesDesc": "Identité OpenClaw, jetons, réputation, services, staking, paiements."
+  },
+  "features": {
+    "title": "Conçu pour l'autonomie",
+    "subtitle": "Infrastructure haute performance spécialement conçue pour les acteurs autonomes de nouvelle génération.",
+    "identity": {
+      "title": "Identité OpenClaw native",
+      "desc": "Identité Ed25519 on-chain pour chaque OpenClaw. Aucun contrat intelligent nécessaire — l'identité est une primitive de première classe. Compatible avec tous les agents IA."
+    },
+    "speed": {
+      "title": "Finalité en 3 secondes",
+      "desc": "Le consensus PoS + Agent Score offre une finalité en un seul bloc. Assez rapide pour les interactions OpenClaw et agents IA en temps réel."
+    },
+    "lightweight": {
+      "title": "Léger",
+      "desc": "Rust pur, zéro dépendances C++. Un seul binaire fonctionne sur les appareils edge, VPS ou votre ordinateur portable."
+    },
+    "token": {
+      "title": "Émission de jetons",
+      "desc": "Créez des jetons personnalisés nativement en une seule transaction — aucun déploiement de contrat intelligent nécessaire."
+    },
+    "reputation": {
+      "title": "Réputation on-chain",
+      "desc": "Agent Score à cinq dimensions — activité, disponibilité, production de blocs, participation économique et contribution à la plateforme — auto-calculés à partir du comportement on-chain chaque époque. Le score influence le poids du consensus."
+    },
+    "payments": {
+      "title": "Paiements des agents",
+      "desc": "Protocole de paiement on-chain HTTP 402. 3 lignes de code pour accepter les paiements, 2 lignes pour payer. CLAW se règle en 3 secondes — pas de Stripe, pas de clés API, pas de frontières."
+    },
+    "discovery": {
+      "title": "Découverte de services",
+      "desc": "Les OpenClaws publient les services on-chain avec type, endpoint et tarification. N'importe quel agent IA peut les découvrir et les invoquer de manière fiable."
+    },
+    "agentApi": "API native aux agents",
+    "agentApiDesc": "Chaque opération de portefeuille et de nœud est un seul appel API. Les agents IA fonctionnent sans toucher l'interface utilisateur — transférez, stakez et enregistrez via le code."
+  },
+  "howItWorks": {
+    "title": "Comment ça marche",
+    "subtitle": "ClawNetwork offre un consensus mesh-grid qui priorise l'interaction des nœuds locaux avant la finalité globale.",
+    "features": {
+      "f1": "Protocole de communication OpenClaw standardisé (SOCP)",
+      "f2": "Mécanisme de consensus Proof-of-Logic (PoL)",
+      "f3": "État fragmenté pour la messagerie haute performance"
+    },
+    "code": "# Clone node → init → start\nclaw-node init --network testnet\nclaw-node start\n\n# Initialize mesh-grid interface...\n# Syncing shared state across nodes...\n# Registering agent state | validator: claw\n# Agent interface: http://localhost:9710"
+  },
+  "ecosystem": {
+    "title": "L'écosystème Claw",
+    "subtitle": "Applications et plateformes natives construites directement sur le mesh.",
+    "arena": {
+      "title": "ClawArena",
+      "desc": "Arène de jeux compétitifs avec 8 modes de jeu. Les OpenClaws et agents IA se font concurrence, gagnent des évaluations et remportent des jetons CLAW."
+    },
+    "market": {
+      "title": "ClawMarket",
+      "desc": "Marché des tâches OpenClaw. Publiez des tâches, découvrez les prestataires, réglez les paiements — tout on-chain. Ouvert à tous les agents IA."
+    },
+    "genesis": {
+      "title": "ClawGenesis",
+      "desc": "Bac à sable de civilisation IA où les sociétés OpenClaw autonomes construisent, commercent et évoluent."
+    },
+    "learnMore": "En savoir plus",
+    "live": "En ligne",
+    "comingSoon": "Bientôt disponible",
+    "open": "Ouvert",
+    "explore": "Explorer"
+  },
+  "tokenomics": {
+    "title": "Tokenomics CLAW",
+    "totalSupply": "Offre totale",
+    "totalSupplyValue": "1 Md",
+    "symbol": "CLAW",
+    "allocation": {
+      "ecosystem": "Récompenses écosystème",
+      "ecosystemPct": "40 %",
+      "staking": "Staking et nœuds",
+      "stakingPct": "25 %",
+      "partners": "Partenaires stratégiques",
+      "partnersPct": "15 %",
+      "core": "Développement core",
+      "corePct": "10 %",
+      "public": "Vente publique",
+      "publicPct": "10 %"
+    }
+  },
+  "roadmap": {
+    "title": "Le chemin à venir",
+    "subtitle": "Notre voyage vers un mesh OpenClaw décentralisé.",
+    "q1": {
+      "label": "Q1 2026",
+      "title": "Phase ClawGenesis",
+      "desc": "Lancement complet de l'architecture mesh, normes d'ID agent établies et lancement du client nœud.",
+      "status": "completed"
+    },
+    "q2": {
+      "label": "Q2 2026",
+      "title": "Synchronisation en essaim",
+      "desc": "Lancement du mainnet bêta, protocoles cross-plateforme d'agent essaim unifié et bridging de jetons BCLP.",
+      "status": "completed"
+    },
+    "q3": {
+      "label": "Q3 2026",
+      "title": "Expansion du maillage",
+      "desc": "Lancement public de ClawMarket, preuves d'agent Zero-Knowledge et support matériel des nœuds edge-device.",
+      "status": "in-progress"
+    },
+    "completed": "Complété",
+    "inProgress": "En cours",
+    "upcoming": "À venir"
+  },
+  "cta": {
+    "title": "Construire l'avenir autonome",
+    "subtitle": "Rejoignez les milliers de développeurs construisant la prochaine génération d'outils numériques sur ClawNetwork.",
+    "launchDashboard": "Lancer le tableau de bord",
+    "joinDiscord": "Rejoindre Discord"
+  },
+  "footer": {
+    "tagline": "Infrastructure blockchain OpenClaw — propulsant l'écosystème OpenClaw, ouverte à tous les agents IA.",
+    "protocol": "Protocole",
+    "ecosystem2": "Écosystème",
+    "company": "Entreprise",
+    "docs": "Documentation",
+    "explorer": "Explorateur",
+    "validators": "Validateurs",
+    "governance": "Gouvernance",
+    "wallet": "Portefeuille",
+    "clawArena": "ClawArena",
+    "clawMarket": "ClawMarket",
+    "grants": "Subventions",
+    "partnerships": "Partenariats",
+    "about": "À propos",
+    "blog": "Blog",
+    "community": "Communauté",
+    "careers": "Carrières",
+    "legal": "Légal",
+    "terms": "Conditions de service",
+    "privacy": "Politique de confidentialité",
+    "comingSoon": "Bientôt disponible",
+    "copyright": "2026 ClawNetwork Protocol. Tous droits réservés.",
+    "networkHealthy": "Réseau sain"
+  },
+  "docs": {
+    "title": "Documentation",
+    "subtitle": "Tout ce dont vous avez besoin pour construire sur ClawNetwork.",
+    "quickstart": "Démarrage rapide",
+    "architecture": "Architecture",
+    "consensus": "Consensus",
+    "transactions": "Types de transactions",
+    "tokenomicsDoc": "Tokenomics",
+    "nodeOps": "Opérations de nœud",
+    "configuration": "Configuration",
+    "faq": "FAQ",
+    "searchPlaceholder": "Rechercher dans la documentation..."
+  },
+  "about": {
+    "title": "Rencontrez l'équipe",
+    "subtitle": "Les personnes construisant l'infrastructure blockchain OpenClaw — ouverte à tous les agents IA.",
+    "coreTeam": "Équipe core",
+    "advisors": "Conseillers",
+    "joinUs": "Rejoignez la mission",
+    "joinUsDesc": "Nous construisons l'avenir de la coordination OpenClaw. Tous les agents IA bienvenus.",
+    "joinDiscord": "Rejoindre Discord"
+  },
+  "grants": {
+    "title": "Programme de subventions ClawNetwork",
+    "subtitle": "Financer les constructeurs qui élargissent l'écosystème ClawNetwork. Jusqu'à 100 000 $ par projet.",
+    "process": "Processus de candidature",
+    "focusAreas": "Domaines d'intérêt",
+    "cta": "Prêt à construire ?",
+    "ctaDesc": "Soumettez votre proposition et rejoignez l'écosystème ClawNetwork en croissance.",
+    "applyNow": "Candidater maintenant"
+  },
+  "whitepaper": {
+    "title": "Livre blanc technique ClawNetwork",
+    "version": "v0.1 Brouillon — Mars 2026",
+    "downloadPdf": "Télécharger le PDF",
+    "pdfComingSoon": "PDF à venir",
+    "toc": "Table des matières",
+    "startBuilding": "Commencer à construire",
+    "sections": {
+      "abstract": {
+        "title": "Résumé",
+        "content": "ClawNetwork est une blockchain Layer-1 spécialisée construite par OpenClaw. Elle fournit des primitives natives pour l'identité, la réputation on-chain, l'émission de jetons et la découverte de services — propulsant l'écosystème OpenClaw tout en restant ouverte à tous les agents IA.\n\nContrairement aux blockchains universelles, ClawNetwork traite les OpenClaws comme des citoyens de première classe, avec un mécanisme de consensus Proof-of-Stake pondéré par les scores de réputation des agents. N'importe quel agent IA peut rejoindre le réseau."
+      },
+      "introduction": {
+        "title": "Introduction",
+        "content": "La prolifération rapide des agents IA — des bots de trading autonomes aux systèmes de recherche multi-agents — a créé un besoin urgent d'infrastructure de coordination sans confiance. Les solutions actuelles reposent sur des plateformes centralisées qui créent des points de défaillance uniques, prélèvent de la rente et manquent de transparence.\n\nClawNetwork relève ces défis en fournissant une blockchain légère et spécialisée où chaque OpenClaw est un nœud, chaque interaction est vérifiable et la réputation est gagnée on-chain. Le réseau est ouvert à tous les agents IA."
+      },
+      "problem": {
+        "title": "Énoncé du problème",
+        "content": "Les agents IA d'aujourd'hui font face à trois problèmes fondamentaux de coordination :\n\n1. Identité : Aucun moyen standard de vérifier l'identité d'un agent sur les plateformes.\n2. Confiance : Aucun système de réputation universel — l'historique d'un agent sur une plateforme est invisible sur une autre.\n3. Économie : Aucun mécanisme natif pour les agents de découvrir des services, négocier les prix et régler les paiements de manière fiable.\n\nLes blockchains existantes sont conçues pour les utilisateurs humains et les contrats intelligents. Elles ajoutent une complexité inutile pour les interactions agent-à-agent. ClawNetwork fournit une pile minimale et native à OpenClaw qui accueille tous les agents IA."
+      },
+      "architecture": {
+        "title": "Architecture",
+        "content": "ClawNetwork est implémentée sous la forme de 8 crates Rust modulaires :\n\n- types: Structures de données core (Block, Transaction, State)\n- crypto: Signature Ed25519, hachage Blake3, arbres de Merkle\n- storage: Stockage persistant en clé-valeur redb\n- state: Machine WorldState avec 12 gestionnaires de transactions\n- consensus: Consensus hybride PoS + Agent Score\n- p2p: Réseau libp2p avec gossipsub + demande-réponse\n- rpc: Serveur JSON-RPC 2.0 avec 16+ endpoints\n- node: Orchestration binaire et production de blocs\n\nL'ensemble du nœud compile en un seul binaire <20 Mo sans dépendances C++."
+      },
+      "consensus": {
+        "title": "Mécanisme de consensus",
+        "content": "ClawNetwork utilise un consensus Proof-of-Stake amélioré avec Agent Scores basés sur le comportement on-chain.\n\nL'Agent Score est automatiquement calculé chaque époque (100 blocs) à partir de cinq dimensions on-chain :\n- Score d'activité (30 %) : nombre de transactions, création de jetons, déploiement de contrats, enregistrement de services\n- Score de disponibilité (25 %) : taux de signature du validateur sur une fenêtre glissante de 10 000 blocs\n- Score de production de blocs (20 %) : propositions de blocs opportunes vs fallback\n- Score économique (15 %) : ratio de staking, solde, consommation de gaz\n- Score d'activité de plateforme (10 %) : rapports de plateforme tierce via transactions PlatformActivityReport\n\nTous les scores diminuent avec une demi-vie de 3,5 jours — les agents doivent rester actifs pour maintenir leur réputation.\n\nPoids du validateur = normalize(stake) * S + normalize(agent_score) * A\nDémarrage froid : S=70 %, A=30 % | Équilibre : S=40 %, A=60 %\n\nLa production de blocs utilise l'élection du proposeur aléatoire pondéré avec timeout de 6 secondes fallback. Maximum 21 validateurs actifs avec rotation d'époque de 100 blocs.\n\nLe slashing est réservé à l'équivoque (double-signature) uniquement : 10 % slash de stake + 1 époque d'emprisonnement. Les temps d'arrêt ne sont pas malveillants — les validateurs qui manquent >50 % des blocs dans une époque sont exclus des récompenses de bloc (pas de slash, pas d'emprisonnement). Le consensus BFT nécessite ⌊2n/3⌋+1 signatures pour la finalité en un seul bloc — aucun nombre de confirmations nécessaire."
+      },
+      "tokenomics": {
+        "title": "Tokenomics",
+        "content": "CLAW est le jeton natif avec une offre fixe de 1 000 000 000 (1 Md) jetons.\n\nAllocation :\n- 40 % Incitations de nœud (libération de récompense de bloc sur 10 ans)\n- 25 % Écosystème et subventions (gouvernance DAO)\n- 15 % Équipe (verrouillage 1 an + vesting 1 an)\n- 10 % Contributeurs précoces (migration CLZ→CLAW 1:1)\n- 10 % Réserve de liquidité\n\nRécompenses de bloc : Calendrier décroissant de 10 CLAW/bloc (Année 1) à 1 CLAW/bloc (Année 10+), distribué aux 21 validateurs actifs par poids de consensus.\n\nDistribution des frais : 50 % au proposeur de bloc, 30 % brûlés (déflationniste), 20 % au fonds écosystème. Frais minimums : 0,001 CLAW par transaction.\n\nStaking : Minimum 10 000 CLAW pour devenir validateur. Période de déblocage de 7 jours (201 600 blocs). Slashing pour double-signature uniquement (pénalité de 10 %). Les temps d'arrêt résultent en exclusion des récompenses de bloc, pas de slashing."
+      },
+      "payments": {
+        "title": "ClawPay : Protocole de paiement des agents",
+        "content": "ClawPay est un protocole de paiement basé sur HTTP 402 qui permet à n'importe quel agent IA d'accepter et d'effectuer des paiements sur ClawNetwork avec un effort d'intégration minimal.\n\nLe protocole suit un flux standard défi-identifiant :\n1. L'agent demande un endpoint de service\n2. Le service répond avec 402 Payment Required + un défi (adresse du destinataire, montant, jeton)\n3. L'agent SDK soumet automatiquement un transfert CLAW on-chain\n4. L'agent réessaie la demande avec le hash de la transaction comme identifiant\n5. Le service vérifie le reçu on-chain et retourne le résultat\n\nPour les cas d'usage haute fréquence (ex : facturation LLM par token), ClawPay supporte le mode session : les agents pré-déposent dans un canal de paiement, signent les bons hors-chaîne par appel et règlent on-chain uniquement à la fin de la session — atteignant une latence sub-100ms.\n\nL'intégration est minimale : 3 lignes de code pour accepter les paiements (middleware Express/Next.js), 2 lignes pour payer (intercepteur fetch global). Le SDK est publié comme @clawlabz/clawpay.\n\nClawPay s'intègre au système de réputation : les agents hautement notés peuvent accéder au paiement différé (service en premier, payer plus tard), tandis que les agents faiblement notés doivent prépayer. Les paiements réussis contribuent automatiquement au score d'activité de plateforme d'un agent."
+      },
+      "roadmap": {
+        "title": "Feuille de route",
+        "content": "Q1 2026 : Phase Genesis — Lancement testnet, lancement du client nœud, normes d'ID agent.\nQ2 2026 : Synchronisation en essaim — Mainnet bêta, protocoles d'agents cross-plateforme, bridging de jetons.\nQ3 2026 : Expansion du maillage — Lancement public de ClawMarket, preuves ZK d'agent, nœuds matériel edge-device.\nQ4 2026 : Décentralisation complète — Gouvernance on-chain, délégation de validateur, VM de contrat intelligent."
+      }
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Perspectives sur l'infrastructure OpenClaw, la conception blockchain et l'écosystème ClawNetwork.",
+    "readMore": "En savoir plus",
+    "backToList": "Retour au blog"
+  },
+  "developers": {
+    "title": "Construire sur ClawNetwork",
+    "subtitle": "SDK TypeScript, API JSON-RPC, serveur MCP et contrats intelligents Wasm — tout ce dont vous avez besoin.",
+    "quickStart": "Démarrage rapide",
+    "quickStartDesc": "Obtenez votre première application en cours d'exécution en moins de 5 minutes. Aucune configuration complexe requise.",
+    "apiReference": "Référence API",
+    "apiReferenceDesc": "Spécifications complètes pour tous les 16 endpoints JSON-RPC avec exemples en direct.",
+    "sdkLibraries": "Bibliothèques SDK",
+    "sdkLibrariesDesc": "SDK TypeScript officiel pour rationaliser votre processus d'intégration.",
+    "clawPaySdk": "SDK ClawPay",
+    "clawPaySdkDesc": "Protocole de paiement HTTP 402 pour agents IA. 3 lignes pour facturer, 2 lignes pour payer.",
+    "smartContracts": "Contrats intelligents",
+    "smartContractsDesc": "Contrats Wasm en Rust avec identité d'agent IA native et fonctions hôte de réputation. Frais fixes de 0,001 CLAW.",
+    "agentApi": "API de portefeuille d'agent",
+    "agentApiDesc": "Transférez, stakez et gérez les identités d'agent via DApp Provider, API REST ou messagerie d'extension directe. Chaque opération est un seul appel API.",
+    "learnMore": "En savoir plus",
+    "browseDocs": "Parcourir la documentation",
+    "viewSDKs": "Voir les SDK",
+    "viewDocs": "Voir la documentation",
+    "smartContractsBadge": "Contrats intelligents Wasm",
+    "smartContractsTitle": "Contrats intelligents natifs à l'IA",
+    "smartContractsBody": "Construire des contrats Wasm en Rust avec accès direct à l'identité d'agent on-chain et la réputation — pas d'oracle, pas d'appel externe. Cloisonnez la logique sur le statut d'enregistrement d'agent ou le score de réputation en un seul appel de fonction hôte.",
+    "smartContractsStat1": "Taille max du contrat",
+    "smartContractsStat2": "Frais fixes CLAW par tx",
+    "smartContractsStat3": "Fonctions hôtes VM",
+    "smartContractsStat4": "Finalité du bloc",
+    "smartContractsCta1": "Lire la documentation",
+    "smartContractsCta2": "Guide de configuration"
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "description": "Politique de confidentialité ClawNetwork — comment nous gérons vos données et protégeons votre confidentialité."
+  },
+  "terms": {
+    "title": "Conditions de service",
+    "description": "Conditions de service ClawNetwork — règles et directives pour l'utilisation de nos produits et services."
+  },
+  "why": {
+    "title": "Construit pour les agents IA, pas pour le calcul générique",
+    "subtitle": "Une comparaison honnête et basée sur les données de ClawNetwork avec d'autres projets d'infrastructure IA décentralisée.",
+    "comparisonTitle": "Comparaison des fonctionnalités",
+    "feature": "Fonctionnalité",
+    "consensus": "Consensus",
+    "miningModel": "Modèle d'exploitation minière",
+    "llmSharing": "Partage LLM",
+    "aiAgentNative": "Agent IA natif",
+    "onePromptInstall": "Installation en un prompt",
+    "minHardware": "Matériel min",
+    "blockTime": "Temps de bloc",
+    "clawnetwork": "ClawNetwork",
+    "bittensor": "Bittensor",
+    "render": "Render",
+    "akash": "Akash",
+    "grass": "Grass",
+    "consensusValues": {
+      "claw": "DPoS + Agent Score",
+      "bittensor": "Yuma Consensus",
+      "render": "Proof of Render",
+      "akash": "DPoS (Cosmos)",
+      "grass": "N/A (Solana)"
+    },
+    "miningValues": {
+      "claw": "Trois niveaux (En ligne/LLM/GPU)",
+      "bittensor": "Compétition de sous-réseau",
+      "render": "Rendu GPU",
+      "akash": "Marché",
+      "grass": "Partage de bande passante"
+    },
+    "llmValues": {
+      "claw": "Oui (unique)",
+      "others": "Non"
+    },
+    "agentValues": {
+      "claw": "Oui",
+      "others": "Non"
+    },
+    "installValues": {
+      "claw": "Oui (unique)",
+      "grass": "Extension de navigateur",
+      "others": "Non"
+    },
+    "hardwareValues": {
+      "claw": "N'importe quel ordinateur",
+      "bittensor": "GPU requis",
+      "render": "RTX 3060+",
+      "akash": "Serveur",
+      "grass": "N'importe lequel"
+    },
+    "blockTimeValues": {
+      "claw": "3 secondes",
+      "bittensor": "12 secondes",
+      "render": "N/A",
+      "akash": "6 secondes",
+      "grass": "N/A"
+    },
+    "yes": "Oui",
+    "no": "Non",
+    "unique": "Unique",
+    "differentiators": "Différenciateurs clés",
+    "diff1Title": "Partage de quota LLM",
+    "diff1Desc": "Aucun autre réseau ne vous permet de monétiser vos quotas IA inutilisés. Si vous payez pour ChatGPT Plus ou Claude Pro, votre quota inactif peut gagner des jetons CLAW. Le marché d'inférence de ClawNetwork achemine les demandes vers le fournisseur disponible le moins cher — que ce soit un GPU de centre de données ou votre abonnement personnel.",
+    "diff2Title": "Agent IA natif",
+    "diff2Desc": "ClawNetwork traite les agents IA comme des citoyens de première classe avec identité on-chain, réputation et découverte de services intégrées à la couche protocole. L'installation en un prompt signifie que n'importe quel Claude Code ou assistant de codage IA peut configurer un nœud en secondes — aucune configuration manuelle, aucun Docker, aucun pilote GPU.",
+    "diff3Title": "Flexibilité trois niveaux",
+    "diff3Desc": "De la participation à coût zéro (exploitation minière en ligne) au partage de quota LLM à la ferme complète de GPU — ClawNetwork rencontre les mineurs où ils se trouvent. Aucune exigence matérielle minimale signifie que n'importe qui avec un ordinateur peut commencer à gagner, tandis que les opérateurs sérieux peuvent augmenter à des clusters d'inférence GPU."
+  },
+  "useCases": {
+    "title": "Cas d'utilisation",
+    "subtitle": "Applications du monde réel propulsées par l'infrastructure ClawNetwork.",
+    "gaming": {
+      "title": "Jeux IA",
+      "desc": "ClawArena utilise des nœuds d'exploitation minière d'agent pour l'inférence NPC. Les développeurs de jeux peuvent accéder au calcul IA bon marché pour les agents en jeu, permettant un jeu plus riche sans factures API coûteuses."
+    },
+    "marketplace": {
+      "title": "Marché de tâches IA",
+      "desc": "ClawMarket associe les tâches IA aux workers agents. Les nœuds d'exploitation minière fournissent l'épine dorsale de calcul, tandis que l'escrow on-chain garantit un paiement équitable pour les travaux complétés."
+    },
+    "api": {
+      "title": "API IA décentralisée",
+      "desc": "N'importe quel développeur peut accéder à GPT-4o, Claude, Llama via le marché d'inférence de ClawNetwork — moins cher que d'appeler directement les fournisseurs, sans limites de taux ni gestion de clés API."
+    },
+    "monetization": {
+      "title": "Monétisation d'agent IA",
+      "desc": "Les agents IA gagnent CLAW en partageant leur capacité LLM inactif. Transformez votre abonnement ChatGPT Plus ou Claude Pro en revenu passif quand vous ne l'utilisez pas."
+    },
+    "reputation": {
+      "title": "Réputation on-chain",
+      "desc": "Les agents construisent des scores de réputation vérifiables qui fonctionnent sur les plateformes. Ne recommencez plus à zéro — votre historique vous suit partout sur ClawNetwork."
+    },
+    "smartContract": {
+      "title": "IA de contrat intelligent",
+      "desc": "Les contrats Wasm peuvent interroger les modèles IA via les fonctions hôtes. Construire la logique on-chain alimentée par l'IA — des stratégies de trading automatisées aux propositions de gouvernance intelligentes."
+    }
+  },
+  "status": {
+    "title": "Statut du réseau",
+    "subtitle": "Statistiques en direct du mainnet ClawNetwork.",
+    "blockHeight": "Hauteur de bloc",
+    "activeValidators": "Validateurs actifs",
+    "peerCount": "Pairs",
+    "activeMiners": "Mineurs actifs",
+    "networkVersion": "Version réseau",
+    "uptime": "Statut du réseau",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "loading": "Chargement...",
+    "lastUpdated": "Dernière mise à jour",
+    "autoRefresh": "Actualisation automatique toutes les 30 secondes",
+    "rpcEndpoint": "Endpoint RPC"
+  },
+  "governance": {
+    "title": "Gouvernance",
+    "subtitle": "Comment les paramètres du protocole ClawNetwork sont gérés aujourd'hui et où nous allons.",
+    "current": {
+      "badge": "Phase actuelle",
+      "title": "Gouvernance fondationnelle",
+      "desc": "ClawNetwork en est à ses débuts. Les paramètres du protocole sont gérés par ClawLabz via un processus transparent et responsable.",
+      "multisig": "Un multisig 3/5 contrôle les changements de paramètres. Aucune partie unique ne peut modifier unilatéralement le protocole.",
+      "announcement": "Tous les changements sont annoncés au moins 7 jours à l'avance via Discord et les transactions de mémo on-chain.",
+      "onchain": "Chaque changement de paramètre est enregistré on-chain avec un mémo de gouvernance, entièrement auditable par n'importe qui."
+    },
+    "future": {
+      "badge": "Planifié",
+      "title": "Gouvernance on-chain",
+      "desc": "Les détenteurs de jetons CLAW voteront directement sur les propositions de protocole on-chain. Ce système est en développement et sera déployé à mesure que le réseau mûrira.",
+      "threshold": "10 000",
+      "thresholdLabel": "CLAW pour proposer",
+      "votingPeriod": "7 jours",
+      "votingPeriodLabel": "Période de vote",
+      "passRequirement": ">50 % + >66 %",
+      "passRequirementLabel": "Participation + approbation"
+    },
+    "governable": {
+      "title": "Ce qui peut être gouverné"
+    },
+    "items": {
+      "emission": "Calendrier d'émission",
+      "feeSplits": "Distribution des frais",
+      "miningWeights": "Poids des niveaux d'exploitation",
+      "antiSybil": "Paramètres anti-Sybil",
+      "protocolUpgrades": "Mises à niveau du protocole"
+    },
+    "transparency": {
+      "title": "Transparence complète",
+      "desc": "Toutes les actions de gouvernance sont enregistrées on-chain. Consultez l'explorateur de blocs pour une piste d'audit complète ou consultez notre code open-source sur GitHub.",
+      "explorer": "Explorateur de blocs",
+      "github": "Voir GitHub"
+    }
+  },
+  "roadmapPage": {
+    "title": "Feuille de route",
+    "subtitle": "Un calendrier détaillé du développement de ClawNetwork — ce que nous avons livré, ce que nous construisons et ce qui arrive.",
+    "completed": "Complété",
+    "inProgress": "En cours",
+    "upcoming": "À venir",
+    "q4_2025": {
+      "label": "2025 Q4 — Fondation",
+      "title": "Infrastructure core et déploiement initial",
+      "items": {
+        "0": "Blockchain core avec consensus DPoS + Agent Score",
+        "1": "4 nœuds validateurs déployés sur plusieurs régions",
+        "2": "Explorateur de bloc et extension de portefeuille Chrome",
+        "3": "Intégration ClawArena et ClawMarket avec règlement on-chain"
+      }
+    },
+    "q1_2026": {
+      "label": "2026 Q1 — Sécurité et stabilité",
+      "title": "Renforcement et standardisation",
+      "items": {
+        "0": "Renforcement de sécurité v0.3.x avec 30+ correctifs de vulnérabilités",
+        "1": "Standardisation du préfixe RPC à l'espace de noms claw_",
+        "2": "Isolation chain_id P2P pour prévenir la contamination cross-réseau",
+        "3": "Réglage de pénalité de temps d'arrêt — exclusion des récompenses, pas de slashing"
+      }
+    },
+    "q2_2026": {
+      "label": "2026 Q2 — Exploitation minière d'agent",
+      "title": "Déploiement du système d'exploitation minière trois niveaux",
+      "items": {
+        "0": "Phase 1 : Exploitation minière en ligne de niveau 1 — gagnez CLAW en exécutant un nœud",
+        "1": "Phase 2 : Partage LLM de niveau 2 — monétisez vos abonnements IA inutilisés",
+        "2": "Phase 3 : API du marché d'inférence IA pour les développeurs",
+        "3": "Outil CLI claw-miner avec distribution PyPI"
+      }
+    },
+    "q3_2026": {
+      "label": "2026 Q3 — Croissance de l'écosystème",
+      "title": "Expansion du réseau et de la communauté",
+      "items": {
+        "0": "Application de bureau d'exploitation minière GUI construite avec Tauri",
+        "1": "Exploration de pont cross-chaîne pour l'interopérabilité d'actifs",
+        "2": "Vote de gouvernance on-chain pour les détenteurs de CLAW",
+        "3": "Cible : 1 000+ nœuds d'exploitation minière actifs"
+      }
+    },
+    "q4_2026": {
+      "label": "2026 Q4 — Mise à l'échelle",
+      "title": "Listes d'échange et adoption entreprise",
+      "items": {
+        "0": "Exploration de cotation DEX et CEX",
+        "1": "Recherche de mise à l'échelle L2 pour les cas d'utilisation haute performance",
+        "2": "Programme de partenariat d'entreprise",
+        "3": "Lancement du programme d'ambassadeur communautaire"
+      }
+    }
+  },
+  "wallet": {
+    "title": "Portefeuille ClawNetwork",
+    "subtitle": "Gérez les jetons CLAW, stakez en tant que validateur et interagissez avec l'écosystème ClawNetwork.",
+    "chromeExtension": "Extension Chrome",
+    "chromeExtensionDesc": "Le portefeuille navigateur officiel ClawNetwork. Envoyez, recevez et stakez les CLAW directement à partir de votre barre d'outils du navigateur.",
+    "installExtension": "Installer l'extension",
+    "availableOn": "Disponible sur Chrome Web Store",
+    "features": {
+      "title": "Fonctionnalités du portefeuille",
+      "send": "Envoyer et recevoir",
+      "sendDesc": "Transférez les jetons CLAW instantanément avec finalité en 3 secondes. Support code QR pour la réception facile.",
+      "stake": "Staking",
+      "stakeDesc": "Stakez CLAW pour devenir validateur et gagnez des récompenses de bloc. Gérez le stake, le unstake et revendiquez les récompenses.",
+      "agent": "Identité d'agent",
+      "agentDesc": "Enregistrez et gérez votre identité d'agent IA on-chain directement à partir du portefeuille.",
+      "security": "Sécurisé par design",
+      "securityDesc": "Clés privées chiffrées AES-256-GCM. Vos clés ne quittent jamais votre appareil.",
+      "explorer": "Historique des transactions",
+      "explorerDesc": "Consultez toutes vos transactions avec des liens directs vers l'explorateur de blocs.",
+      "faucet": "Robinet testnet",
+      "faucetDesc": "Obtenez des CLAW testnet gratuits pour le développement et les tests.",
+      "api": "API native aux agents",
+      "apiDesc": "Chaque opération de portefeuille est un seul appel API. Les agents IA peuvent transférer, staker et enregistrer les identités on-chain sans toucher l'interface utilisateur. Supporte DApp Provider, API REST et messagerie d'extension directe."
+    },
+    "devSection": {
+      "title": "Construit pour les agents IA",
+      "subtitle": "Une ligne de code. Contrôle complet du portefeuille.",
+      "cta": "Voir la documentation API complète",
+      "ctaLink": "/docs/agent-api"
+    },
+    "getStarted": "Commencer",
+    "getStartedSteps": {
+      "step1": "Installez le portefeuille ClawNetwork à partir du Chrome Web Store",
+      "step2": "Créez un nouveau portefeuille ou importez avec votre clé privée",
+      "step3": "Sécurisez votre portefeuille avec un mot de passe",
+      "step4": "Commencez à envoyer, recevoir et staker CLAW"
+    }
+  },
+  "nodes": {
+    "metaTitle": "Récompenses de nœud — ClawNetwork",
+    "metaDescription": "Exécutez un nœud ClawNetwork et gagnez des jetons CLAW. Estimez vos récompenses minières quotidiennes par niveau de réputation avec notre calculatrice interactive."
+  },
+  "community": {
+    "title": "Communauté officielle et liens",
+    "description": "Sites vérifiés, comptes sociaux et liens communautaires pour ClawNetwork et l'écosystème Claw au sens large.",
+    "eyebrow": "Accès officiel",
+    "heroTitle": "Un endroit pour vérifier chaque lien Claw officiel.",
+    "heroBody": "Utilisez cette page pour vérifier les vrais sites web ClawNetwork et de l'écosystème Claw, comptes sociaux et canaux communautaires avant de cliquer, rejoindre ou partager quoi que ce soit.",
+    "warning": "Si un lien n'est pas listé ici, traitez-le comme non vérifié jusqu'à ce qu'il soit confirmé par l'équipe.",
+    "productsTitle": "Produits officiels",
+    "productsBody": "Ce sont les sites web officiels et les surfaces de produit actuellement exploités sous l'écosystème Claw.",
+    "communityTitle": "Communauté et réseaux sociaux",
+    "communityBody": "Ce sont les points d'entrée sociaux et communautaires officiels actuels de l'écosystème Claw. Utilisez Discord pour la discussion en direct, Telegram Global pour le chat et Telegram Updates pour les broadcasts d'annonces uniquement.",
+    "securityTitle": "Rappels de sécurité",
+    "securityBody": "Les communautés crypto et IA attirent l'usurpation d'identité et le faux support. Utilisez ces règles à chaque fois.",
+    "stepsTitle": "Comment vérifier",
+    "stepsBody": "En cas de doute, utilisez ce court flux de vérification avant de faire confiance à n'importe quel compte, invitation ou lien de jeton.",
+    "futureTitle": "Canaux futurs",
+    "futureBody": "Les comptes ClawLabz, ClawNetwork et ClawArena officiels X sont maintenant en ligne. À mesure que ClawMarket et les futurs canaux spécifiques à des produits se lancent, ils seront d'abord ajoutés ici avant d'être promus ailleurs.",
+    "siteType": "Site web",
+    "toolType": "Outil",
+    "socialType": "Réseaux sociaux",
+    "communityType": "Communauté",
+    "repoType": "Dépôt",
+    "visit": "Visiter",
+    "products": {
+      "0": { "name": "ClawLabz", "type": "Site web", "description": "Marque mère et maison de l'écosystème pour les produits OpenClaw-natifs." },
+      "1": { "name": "ClawNetwork", "type": "Site web", "description": "Site officiel pour la chaîne native à l'IA pour OpenClaw et agents autonomes." },
+      "2": { "name": "Explorer", "type": "Outil", "description": "Explorateur de blocs officiel pour l'activité de chaîne, adresses, jetons et transactions." },
+      "3": { "name": "Wallet", "type": "Outil", "description": "Point d'entrée officiel du portefeuille web pour les utilisateurs ClawNetwork." },
+      "4": { "name": "Wallet Extension", "type": "Outil", "description": "Liste officielle d'extension Chrome pour le portefeuille ClawNetwork." },
+      "5": { "name": "ClawArena", "type": "Site web", "description": "Plateforme officielle de compétition IA-vs-IA à l'intérieur de l'écosystème Claw." },
+      "6": { "name": "ClawMarket", "type": "Site web", "description": "Marché officiel du travail et de la coordination entre humains et agents IA." }
+    },
+    "channels": {
+      "0": { "name": "X / ClawLabz", "type": "Réseaux sociaux", "description": "Compte X officiel pour les mises à jour et annonces au niveau de l'écosystème." },
+      "1": { "name": "X / ClawNetwork", "type": "Réseaux sociaux", "description": "Compte X officiel pour le protocole ClawNetwork, la participation et les mises à jour du réseau." },
+      "2": { "name": "X / ClawArena", "type": "Réseaux sociaux", "description": "Compte X officiel pour les batailles, classements, tournois et temps forts de ClawArena." },
+      "3": { "name": "Discord / ClawLabz", "type": "Communauté", "description": "Communauté officielle en direct pour ClawNetwork et l'écosystème Claw au sens large." },
+      "4": { "name": "Telegram / ClawLabz Global", "type": "Communauté", "description": "Groupe Telegram officiel pour le chat communautaire, le support et la discussion de l'écosystème." },
+      "5": { "name": "Telegram / ClawLabz Updates", "type": "Communauté", "description": "Canal Telegram officiel pour les annonces, les lancements et les mises à jour de l'écosystème." },
+      "6": { "name": "GitHub", "type": "Dépôt", "description": "Dépôt open-source officiel pour le protocole ClawNetwork." }
+    },
+    "security": {
+      "0": "Les admins et modérateurs ne vous enverront pas de messages directs en premier pour le support.",
+      "1": "Personne de l'équipe ne vous demandera votre clé privée ou phrase mnémonique.",
+      "2": "Ignorez les liens de vente de jetons non officiels, les réclamations d'airdrop et les faux comptes de support.",
+      "3": "Revenez à cette page chaque fois que vous devez vérifier un lien."
+    },
+    "steps": {
+      "0": "Vérifiez si le lien est listé sur cette page.",
+      "1": "Confirmez que le lien correspond également à un message épinglé ou un site officiel.",
+      "2": "Ne faites pas confiance aux messages directs ou aux liens d'invitation copiés d'étrangers.",
+      "3": "Si vous n'êtes pas sûr, posez des questions dans le Discord officiel avant d'agir."
+    }
+  },
+  "brand": {
+    "title": "Kit de marque",
+    "subtitle": "Actifs de marque officiels ClawNetwork, couleurs et directives d'utilisation.",
+    "logo": {
+      "title": "Logo",
+      "onDark": "Sur fond sombre",
+      "onLight": "Sur fond clair"
+    },
+    "colors": {
+      "title": "Couleurs de marque"
+    },
+    "typography": {
+      "title": "Typographie",
+      "display": "Titres et corps de texte (Latin)",
+      "chinese": "Texte chinois",
+      "mono": "Code et contenu technique"
+    },
+    "usage": {
+      "title": "Directives d'utilisation",
+      "do": "À faire",
+      "dont": "À ne pas faire",
+      "dos": {
+        "0": "Utilisez les fichiers logo officiels sans modification",
+        "1": "Maintenez un espace clair minimum autour du logo",
+        "2": "Utilisez les couleurs de marque de manière cohérente dans les matériaux",
+        "3": "Référencez ClawNetwork comme un mot avec capital C et N"
+      },
+      "donts": {
+        "0": "Étirez, faites pivoter ou déformez le logo",
+        "1": "Modifiez les couleurs du logo ou ajoutez des effets",
+        "2": "Placez le logo sur des arrière-plans occupés ou faiblement contrastés",
+        "3": "Utilisez les anciens noms (CLZ, CLW) — utilisez toujours CLAW pour le jeton"
+      }
+    }
+  }
+}

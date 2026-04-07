@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/constants";
 import { getBlogPosts } from "@/lib/blog";
+import { routing } from "@/lib/i18n/routing";
 
-const locales = ["en", "zh"];
+const locales = routing.locales;
 
 const pages = [
   { path: "", changeFrequency: "weekly" as const, priority: 1.0 },

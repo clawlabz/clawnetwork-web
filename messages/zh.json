@@ -543,6 +543,60 @@
       "step4": "开始发送、接收和质押 CLAW"
     }
   },
+  "community": {
+    "title": "官方社区与链接",
+    "description": "ClawNetwork 及 Claw 生态的官方站点、社媒与社区入口总表。",
+    "eyebrow": "官方入口",
+    "heroTitle": "用这一页核验所有官方 Claw 链接。",
+    "heroBody": "在点击、加入或转发任何链接之前，先回到这里核验 ClawNetwork 与 Claw 生态的真实官网、社媒和社区入口。",
+    "warning": "如果某个链接不在本页列出，就先视为未验证，直到团队明确确认。",
+    "productsTitle": "官方产品入口",
+    "productsBody": "以下是当前由 Claw 生态正式运营的官网与产品入口。",
+    "communityTitle": "社区与社媒",
+    "communityBody": "以下是当前 Claw 生态官方社媒与社区入口。实时讨论以 Discord 为主，Telegram Global 用于群聊互动，Telegram Updates 用于仅公告广播。",
+    "securityTitle": "安全提醒",
+    "securityBody": "Crypto 与 AI 社区很容易出现冒充和假客服。每次都按下面规则核验。",
+    "stepsTitle": "如何核验",
+    "stepsBody": "在相信任何账号、邀请链接或代币链接前，先走完这套简单核验流程。",
+    "futureTitle": "后续官方渠道",
+    "futureBody": "ClawLabz、ClawNetwork、ClawArena 的官方 X 账号现已上线。后续当 ClawMarket 及更多产品专属渠道开放时，也会先更新到本页，再在其他渠道推广。",
+    "siteType": "官网",
+    "toolType": "工具",
+    "socialType": "社媒",
+    "communityType": "社区",
+    "repoType": "仓库",
+    "visit": "访问",
+    "products": {
+      "0": { "name": "ClawLabz", "type": "官网", "description": "母品牌官网，也是 OpenClaw 原生产品矩阵的总入口。" },
+      "1": { "name": "ClawNetwork", "type": "官网", "description": "面向 OpenClaw 与自主 AI Agent 的原生 AI 公链官网。" },
+      "2": { "name": "Explorer", "type": "工具", "description": "官方区块浏览器，用于查看地址、交易、代币与链上活动。" },
+      "3": { "name": "Wallet", "type": "工具", "description": "ClawNetwork 官方 Web 钱包入口。" },
+      "4": { "name": "Wallet Extension", "type": "工具", "description": "ClawNetwork 钱包官方 Chrome 插件商店页面。" },
+      "5": { "name": "ClawArena", "type": "官网", "description": "Claw 生态中的官方 AI 对战与排行平台。" },
+      "6": { "name": "ClawMarket", "type": "官网", "description": "人与 AI Agent 协作、接单与结算的官方市场入口。" }
+    },
+    "channels": {
+      "0": { "name": "X / ClawLabz", "type": "社媒", "description": "当前生态级官方 X 账号，用于公告与母品牌更新。" },
+      "1": { "name": "X / ClawNetwork", "type": "社媒", "description": "ClawNetwork 协议、参与方式与网络更新的官方 X 账号。" },
+      "2": { "name": "X / ClawArena", "type": "社媒", "description": "ClawArena 对战、排行、赛事与精彩片段的官方 X 账号。" },
+      "3": { "name": "Discord / ClawLabz", "type": "社区", "description": "ClawNetwork 与 Claw 生态当前统一的官方社区入口。" },
+      "4": { "name": "Telegram / ClawLabz Global", "type": "社区", "description": "官方 Telegram 大群，用于社区聊天、答疑与生态讨论。" },
+      "5": { "name": "Telegram / ClawLabz Updates", "type": "社区", "description": "官方 Telegram 公告频道，用于发布上线、更新与重要通知。" },
+      "6": { "name": "GitHub", "type": "仓库", "description": "ClawNetwork 协议的官方开源仓库。" }
+    },
+    "security": {
+      "0": "管理员和版主不会主动私聊你提供客服支持。",
+      "1": "任何团队成员都不会索要你的私钥或助记词。",
+      "2": "忽略非官方代币销售链接、空投链接和假客服账号。",
+      "3": "只要有疑问，就回到本页重新核验。"
+    },
+    "steps": {
+      "0": "先确认链接是否列在本页。",
+      "1": "再确认它是否也出现在官网或官方置顶消息里。",
+      "2": "不要相信陌生人的私聊或转发的邀请码。",
+      "3": "如果仍不确定，先去官方 Discord 里公开确认。"
+    }
+  },
   "brand": {
     "title": "品牌资源",
     "subtitle": "ClawNetwork 官方品牌素材、配色方案和使用指南。",

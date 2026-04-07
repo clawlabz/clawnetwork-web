@@ -16,7 +16,10 @@ export interface Doc extends DocMeta {
 }
 
 export function getDocSlugs(locale: string): string[] {
-  const dir = path.join(CONTENT_DIR, locale);
+  let dir = path.join(CONTENT_DIR, locale);
+  if (!fs.existsSync(dir) && locale !== "en") {
+    dir = path.join(CONTENT_DIR, "en");
+  }
   if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)
@@ -25,7 +28,10 @@ export function getDocSlugs(locale: string): string[] {
 }
 
 export function getDoc(locale: string, slug: string): Doc | null {
-  const filePath = path.join(CONTENT_DIR, locale, `${slug}.mdx`);
+  let filePath = path.join(CONTENT_DIR, locale, `${slug}.mdx`);
+  if (!fs.existsSync(filePath) && locale !== "en") {
+    filePath = path.join(CONTENT_DIR, "en", `${slug}.mdx`);
+  }
   if (!fs.existsSync(filePath)) return null;
 
   const raw = fs.readFileSync(filePath, "utf-8");

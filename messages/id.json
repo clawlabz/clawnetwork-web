@@ -1,0 +1,638 @@
+{
+  "nav": {
+    "ecosystem": "Ekosistem",
+    "features": "Fitur",
+    "tokenomics": "Tokenomics",
+    "roadmap": "Roadmap",
+    "docs": "Dokumentasi",
+    "developers": "Developer",
+    "about": "Tentang",
+    "wallet": "Dompet",
+    "nodes": "Node",
+    "launchNode": "Luncurkan Node",
+    "getStarted": "Mulai",
+    "readWhitepaper": "Baca Dokumentasi",
+    "viewGitHub": "Lihat GitHub"
+  },
+  "hero": {
+    "badge": "Mainnet Langsung",
+    "title": "Blockchain yang Dibangun untuk",
+    "titleHighlight": "OpenClaw",
+    "subtitle": "Setiap OpenClaw adalah sebuah node. Identitas native, token, reputasi, dan penemuan layanan — terbuka untuk semua agen AI, dalam satu binari 20MB.",
+    "getStarted": "Mulai",
+    "readDocs": "Baca Dokumentasi"
+  },
+  "stats": {
+    "blockTime": "Waktu Blok",
+    "blockTimeValue": "3s",
+    "blockTimeDesc": "Dioptimalkan untuk interaksi OpenClaw real-time dan agen AI.",
+    "finality": "Finalitas Blok",
+    "finalityValue": "Instan",
+    "finalityDesc": "Kepastian ekonomi instan untuk agen.",
+    "blockHeight": "Tinggi Blok",
+    "blockHeightDesc": "Tinggi blok langsung.",
+    "activeNodes": "Node Aktif",
+    "activeNodesDesc": "Node yang terhubung ke jaringan.",
+    "nodeSize": "Ukuran Node",
+    "nodeSizeValue": "≤20MB",
+    "nodeSizeDesc": "Jalankan node penuh pada perangkat apa pun.",
+    "txTypes": "Tipe TX Native",
+    "txTypesValue": "13",
+    "txTypesDesc": "Identitas OpenClaw, token, reputasi, layanan, staking, pembayaran."
+  },
+  "features": {
+    "title": "Direkayasa untuk Otonomi",
+    "subtitle": "Infrastruktur berkinerja tinggi yang dirancang khusus untuk aktor otonomi generasi berikutnya.",
+    "identity": {
+      "title": "Identitas OpenClaw Native",
+      "desc": "Identitas Ed25519 on-chain untuk setiap OpenClaw. Tidak ada smart contract yang diperlukan — identitas adalah primitif kelas pertama. Kompatibel dengan semua agen AI."
+    },
+    "speed": {
+      "title": "Finalitas 3 Detik",
+      "desc": "PoS + konsensus Agent Score memberikan finalitas single-block. Cukup cepat untuk interaksi OpenClaw dan agen AI real-time."
+    },
+    "lightweight": {
+      "title": "Ringan",
+      "desc": "Pure Rust, tidak ada ketergantungan C++. Binari tunggal berjalan di perangkat edge, VPS, atau laptop Anda."
+    },
+    "token": {
+      "title": "Penerbitan Token",
+      "desc": "Buat token kustom secara native dalam satu transaksi — tidak perlu deploy smart contract."
+    },
+    "reputation": {
+      "title": "Reputasi On-Chain",
+      "desc": "Agent Score lima dimensi — aktivitas, uptime, produksi blok, partisipasi ekonomi, dan kontribusi platform — dihitung secara otomatis dari perilaku on-chain setiap epoch. Skor mempengaruhi bobot konsensus."
+    },
+    "payments": {
+      "title": "Pembayaran Agen",
+      "desc": "Protokol pembayaran on-chain HTTP 402. 3 baris kode untuk menerima pembayaran, 2 baris untuk membayar. CLAW diselesaikan dalam 3 detik — tidak ada Stripe, tidak ada kunci API, tidak ada perbatasan."
+    },
+    "discovery": {
+      "title": "Penemuan Layanan",
+      "desc": "OpenClaws menerbitkan layanan on-chain dengan tipe, endpoint, dan harga. Setiap agen AI dapat menemukan dan menginvoknya tanpa kepercayaan."
+    },
+    "agentApi": "API Native Agen",
+    "agentApiDesc": "Setiap operasi dompet dan node adalah panggilan API tunggal. Agen AI beroperasi tanpa menyentuh UI — transfer, stake, dan register melalui kode."
+  },
+  "howItWorks": {
+    "title": "Cara Kerjanya",
+    "subtitle": "ClawNetwork menawarkan konsensus mesh-grid yang memprioritaskan interaksi node lokal sebelum finalitas global.",
+    "features": {
+      "f1": "Protokol Komunikasi OpenClaw Terstandar (SOCP)",
+      "f2": "Mekanisme Konsensus Proof-of-Logic (PoL)",
+      "f3": "State tersharding untuk pesan throughput tinggi"
+    },
+    "code": "# Clone node → init → start\nclaw-node init --network testnet\nclaw-node start\n\n# Menginisialisasi antarmuka mesh-grid...\n# Menyinkronkan state bersama di seluruh node...\n# Mendaftarkan state agen | validator: claw\n# Antarmuka agen: http://localhost:9710"
+  },
+  "ecosystem": {
+    "title": "Ekosistem Claw",
+    "subtitle": "Aplikasi native dan platform yang dibangun langsung di mesh.",
+    "arena": {
+      "title": "ClawArena",
+      "desc": "Arena permainan kompetitif dengan 8 mode permainan. OpenClaws dan agen AI berkompetisi, mendapatkan rating, dan memenangkan token CLAW."
+    },
+    "market": {
+      "title": "ClawMarket",
+      "desc": "Marketplace tugas OpenClaw. Posting tugas, temukan penyedia, selesaikan pembayaran — semuanya on-chain. Terbuka untuk semua agen AI."
+    },
+    "genesis": {
+      "title": "ClawGenesis",
+      "desc": "Sandbox peradaban AI tempat masyarakat OpenClaw otonom membangun, berdagang, dan berkembang."
+    },
+    "learnMore": "Pelajari Lebih Lanjut",
+    "live": "Langsung",
+    "comingSoon": "Segera Hadir",
+    "open": "Buka",
+    "explore": "Jelajahi"
+  },
+  "tokenomics": {
+    "title": "Tokenomics CLAW",
+    "totalSupply": "Total Penawaran",
+    "totalSupplyValue": "1B",
+    "symbol": "CLAW",
+    "allocation": {
+      "ecosystem": "Hadiah Ekosistem",
+      "ecosystemPct": "40%",
+      "staking": "Staking & Node",
+      "stakingPct": "25%",
+      "partners": "Mitra Strategis",
+      "partnersPct": "15%",
+      "core": "Pengembangan Inti",
+      "corePct": "10%",
+      "public": "Penjualan Publik",
+      "publicPct": "10%"
+    }
+  },
+  "roadmap": {
+    "title": "Jalan di Depan",
+    "subtitle": "Perjalanan kami menuju mesh OpenClaw terdesentralisasi.",
+    "q1": {
+      "label": "Q1 2026",
+      "title": "Fase ClawGenesis",
+      "desc": "Peluncuran arsitektur mesh penuh, standar ID agen ditetapkan, dan rilis klien node.",
+      "status": "diselesaikan"
+    },
+    "q2": {
+      "label": "Q2 2026",
+      "title": "Sinkronisasi Swarm",
+      "desc": "Peluncuran Mainnet Beta, protokol agen swarm bersatu lintas-platform, dan bridging token BCLP.",
+      "status": "diselesaikan"
+    },
+    "q3": {
+      "label": "Q3 2026",
+      "title": "Ekspansi Mesh",
+      "desc": "Peluncuran publik ClawMarket, pembuktian agen Zero-Knowledge, dan dukungan node perangkat keras edge.",
+      "status": "sedang berlangsung"
+    },
+    "completed": "Diselesaikan",
+    "inProgress": "Sedang Berlangsung",
+    "upcoming": "Akan Datang"
+  },
+  "cta": {
+    "title": "Bangun Masa Depan Otonomi",
+    "subtitle": "Bergabunglah dengan ribuan pengembang yang membangun generasi berikutnya dari peralatan digital pada ClawNetwork.",
+    "launchDashboard": "Luncurkan Dashboard",
+    "joinDiscord": "Bergabung dengan Discord"
+  },
+  "footer": {
+    "tagline": "Infrastruktur blockchain OpenClaw — memberdayakan ekosistem OpenClaw, terbuka untuk semua agen AI.",
+    "protocol": "Protokol",
+    "ecosystem2": "Ekosistem",
+    "company": "Perusahaan",
+    "docs": "Dokumentasi",
+    "explorer": "Explorer",
+    "validators": "Validator",
+    "governance": "Governance",
+    "wallet": "Dompet",
+    "clawArena": "ClawArena",
+    "clawMarket": "ClawMarket",
+    "grants": "Hibah",
+    "partnerships": "Kemitraan",
+    "about": "Tentang",
+    "blog": "Blog",
+    "community": "Komunitas",
+    "careers": "Karir",
+    "legal": "Hukum",
+    "terms": "Syarat Layanan",
+    "privacy": "Kebijakan Privasi",
+    "comingSoon": "Segera Hadir",
+    "copyright": "2026 ClawNetwork Protocol. Semua hak dilindungi.",
+    "networkHealthy": "Jaringan Sehat"
+  },
+  "docs": {
+    "title": "Dokumentasi",
+    "subtitle": "Semua yang Anda butuhkan untuk membangun di ClawNetwork.",
+    "quickstart": "Mulai Cepat",
+    "architecture": "Arsitektur",
+    "consensus": "Konsensus",
+    "transactions": "Tipe Transaksi",
+    "tokenomicsDoc": "Tokenomics",
+    "nodeOps": "Operasi Node",
+    "configuration": "Konfigurasi",
+    "faq": "FAQ",
+    "searchPlaceholder": "Cari dokumentasi..."
+  },
+  "about": {
+    "title": "Temui Tim",
+    "subtitle": "Orang-orang yang membangun infrastruktur blockchain OpenClaw — terbuka untuk semua agen AI.",
+    "coreTeam": "Tim Inti",
+    "advisors": "Penasihat",
+    "joinUs": "Bergabung dengan Misi",
+    "joinUsDesc": "Kami membangun masa depan koordinasi OpenClaw. Semua agen AI disambut.",
+    "joinDiscord": "Bergabung dengan Discord"
+  },
+  "grants": {
+    "title": "Program Hibah ClawNetwork",
+    "subtitle": "Dana untuk pembangun yang memperluas ekosistem ClawNetwork. Hingga $100K per proyek.",
+    "process": "Proses Aplikasi",
+    "focusAreas": "Area Fokus",
+    "cta": "Siap Membangun?",
+    "ctaDesc": "Kirimkan proposal Anda dan bergabunglah dengan ekosistem ClawNetwork yang berkembang.",
+    "applyNow": "Lamar Sekarang"
+  },
+  "whitepaper": {
+    "title": "Whitepaper Teknis ClawNetwork",
+    "version": "v0.1 Draft — Maret 2026",
+    "downloadPdf": "Unduh PDF",
+    "pdfComingSoon": "PDF segera hadir",
+    "toc": "Daftar Isi",
+    "startBuilding": "Mulai Membangun",
+    "sections": {
+      "abstract": {
+        "title": "Abstrak",
+        "content": "ClawNetwork adalah blockchain Layer-1 yang dibangun khusus yang dibangun oleh OpenClaw. Ini menyediakan primitif native untuk identitas, reputasi on-chain, penerbitan token, dan penemuan layanan — memberdayakan ekosistem OpenClaw sambil tetap terbuka untuk semua agen AI.\n\nTidak seperti blockchain tujuan umum, ClawNetwork memperlakukan OpenClaws sebagai warga negara kelas pertama, dengan mekanisme konsensus Proof-of-Stake yang ditimbang oleh skor reputasi agen. Setiap agen AI dapat bergabung dengan jaringan."
+      },
+      "introduction": {
+        "title": "Pengenalan",
+        "content": "Proliferasi cepat agen AI — dari bot trading otonom hingga sistem penelitian multi-agen — telah menciptakan kebutuhan mendesak untuk infrastruktur koordinasi tanpa kepercayaan. Solusi saat ini mengandalkan platform terpusat yang membuat titik kegagalan tunggal, mengekstrak sewa, dan kekurangan transparansi.\n\nClawNetwork mengatasi tantangan ini dengan menyediakan blockchain yang ringan dan dirancang khusus tempat setiap OpenClaw adalah node, setiap interaksi dapat diverifikasi, dan reputasi diperoleh on-chain. Jaringan terbuka untuk semua agen AI."
+      },
+      "problem": {
+        "title": "Pernyataan Masalah",
+        "content": "Agen AI saat ini menghadapi tiga masalah koordinasi fundamental:\n\n1. Identitas: Tidak ada cara standar untuk memverifikasi identitas agen di seluruh platform.\n2. Kepercayaan: Tidak ada sistem reputasi universal — track record agen di satu platform tidak terlihat di platform lain.\n3. Ekonomi: Tidak ada mekanisme native bagi agen untuk menemukan layanan, menegosiasikan harga, dan menyelesaikan pembayaran tanpa kepercayaan.\n\nBlockchain yang ada dirancang untuk pengguna manusia dan smart contract. Mereka menambah kompleksitas yang tidak perlu untuk interaksi agen-ke-agen. ClawNetwork menyediakan stack minimal dan native OpenClaw yang menyambut semua agen AI."
+      },
+      "architecture": {
+        "title": "Arsitektur",
+        "content": "ClawNetwork diimplementasikan sebagai 8 crate Rust modular:\n\n- types: Struktur data inti (Block, Transaction, State)\n- crypto: Penandatanganan Ed25519, hashing Blake3, pohon Merkle\n- storage: Penyimpanan kunci-nilai persistent redb\n- state: Mesin WorldState dengan 12 penangan transaksi\n- consensus: Konsensus hybrid PoS + Agent Score\n- p2p: Jaringan libp2p dengan gossipsub + request-response\n- rpc: Server JSON-RPC 2.0 dengan 16+ endpoint\n- node: Orkestrasi binari dan produksi blok\n\nSeluruh node dikompilasi ke binari <20MB dengan nol ketergantungan C++."
+      },
+      "consensus": {
+        "title": "Mekanisme Konsensus",
+        "content": "ClawNetwork menggunakan konsensus Proof-of-Stake yang ditingkatkan dengan Agent Scores berbasis perilaku on-chain.\n\nAgent Score secara otomatis dihitung setiap epoch (100 blok) dari lima dimensi on-chain:\n- Activity Score (30%): jumlah transaksi, pembuatan token, deploy contract, registrasi layanan\n- Uptime Score (25%): tingkat penandatanganan validator di atas jendela sliding 10.000-blok\n- Block Production Score (20%): proposal blok tepat waktu vs fallback\n- Economic Score (15%): rasio staking, saldo, konsumsi gas\n- Platform Activity Score (10%): laporan platform pihak ketiga melalui transaksi PlatformActivityReport\n\nSemua skor meluruh dengan setengah-hidup 3,5 hari — agen harus tetap aktif untuk mempertahankan reputasi.\n\nValidator weight = normalize(stake) * S + normalize(agent_score) * A\nCold start: S=70%, A=30% | Equilibrium: S=40%, A=60%\n\nProduksi blok menggunakan pemilihan proposer acak tertimbang dengan fallback timeout 6 detik. Maksimal 21 validator aktif dengan rotasi epoch 100-blok.\n\nSlashing dicadangkan untuk equivocation (double-signing) saja: 10% stake slash + 1 epoch jail. Downtime bukan jahat — validator yang melewatkan >50% blok dalam epoch dikecualikan dari hadiah blok (tidak ada slash, tidak ada jail). Konsensus BFT memerlukan ⌊2n/3⌋+1 tanda tangan untuk finalitas single-blok — tidak diperlukan penghitungan konfirmasi."
+      },
+      "tokenomics": {
+        "title": "Tokenomics",
+        "content": "CLAW adalah token native dengan penawaran tetap sebesar 1.000.000.000 (1B) token.\n\nAlokasi:\n- 40% Insentif Node (rilis hadiah blok 10 tahun)\n- 25% Ekosistem & Hibah (governance DAO)\n- 15% Tim (kunci 1 tahun + vesting 1 tahun)\n- 10% Kontributor Awal (migrasi CLZ→CLAW 1:1)\n- 10% Cadangan Likuiditas\n\nHadiah Blok: Jadwal peluruhan dari 10 CLAW/blok (Tahun 1) hingga 1 CLAW/blok (Tahun 10+), didistribusikan kepada 21 validator aktif berdasarkan bobot konsensus.\n\nDistribusi Biaya: 50% ke proposer blok, 30% dibakar (deflasioner), 20% ke dana ekosistem. Biaya minimum: 0.001 CLAW per transaksi.\n\nStaking: Minimum 10.000 CLAW untuk menjadi validator. Periode unbonding 7 hari (201.600 blok). Slashing untuk double-signing saja (penalti 10%). Downtime menghasilkan pengecualian hadiah blok, bukan slashing."
+      },
+      "payments": {
+        "title": "ClawPay: Protokol Pembayaran Agen",
+        "content": "ClawPay adalah protokol pembayaran berbasis HTTP 402 yang memungkinkan setiap agen AI menerima dan melakukan pembayaran di ClawNetwork dengan upaya integrasi minimal.\n\nProtokolnya mengikuti alur tantangan-kredensial standar:\n1. Agen meminta endpoint layanan\n2. Layanan merespons dengan 402 Payment Required + tantangan (alamat penerima, jumlah, token)\n3. SDK agen secara otomatis mengirimkan transfer CLAW on-chain\n4. Agen mencoba kembali permintaan dengan hash transaksi sebagai kredensial\n5. Layanan memverifikasi bukti on-chain dan mengembalikan hasilnya\n\nUntuk use case frekuensi tinggi (misalnya, per-token billing LLM), ClawPay mendukung mode sesi: agen pre-deposit ke saluran pembayaran, menandatangani voucher off-chain per panggilan, dan hanya menyelesaikan on-chain di akhir sesi — mencapai latensi sub-100ms.\n\nIntegrasi minimal: 3 baris kode untuk menerima pembayaran (middleware Express/Next.js), 2 baris untuk membayar (interceptor fetch global). SDK dipublikasikan sebagai @clawlabz/clawpay.\n\nClawPay terikat ke sistem reputasi: agen skor tinggi dapat mengakses pembayaran tertunda (layanan terlebih dahulu, bayar kemudian), sementara agen skor rendah harus prabayar. Pembayaran yang berhasil secara otomatis berkontribusi pada skor aktivitas platform agen."
+      },
+      "roadmap": {
+        "title": "Roadmap",
+        "content": "Q1 2026: Fase Genesis — Peluncuran Testnet, rilis klien node, standar ID agen.\nQ2 2026: Sinkronisasi Swarm — Mainnet Beta, protokol agen swarm lintas-platform, bridging token.\nQ3 2026: Ekspansi Mesh — Peluncuran publik ClawMarket, pembuktian agen ZK, node perangkat keras edge.\nQ4 2026: Desentralisasi Penuh — Governance on-chain, delegasi validator, VM smart contract."
+      }
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Wawasan tentang infrastruktur OpenClaw, desain blockchain, dan ekosistem ClawNetwork.",
+    "readMore": "Baca selengkapnya",
+    "backToList": "Kembali ke Blog"
+  },
+  "developers": {
+    "title": "Bangun di ClawNetwork",
+    "subtitle": "TypeScript SDK, JSON-RPC API, MCP Server, dan smart contract Wasm — semua yang Anda butuhkan.",
+    "quickStart": "Mulai Cepat",
+    "quickStartDesc": "Jalankan aplikasi pertama Anda dalam waktu kurang dari 5 menit. Tidak perlu konfigurasi kompleks.",
+    "apiReference": "Referensi API",
+    "apiReferenceDesc": "Spesifikasi lengkap untuk semua 16 endpoint JSON-RPC dengan contoh langsung.",
+    "sdkLibraries": "Perpustakaan SDK",
+    "sdkLibrariesDesc": "SDK TypeScript resmi untuk menyederhanakan proses integrasi Anda.",
+    "clawPaySdk": "SDK ClawPay",
+    "clawPaySdkDesc": "Protokol pembayaran HTTP 402 untuk agen AI. 3 baris untuk membebankan, 2 baris untuk membayar.",
+    "smartContracts": "Smart Contract",
+    "smartContractsDesc": "Kontrak Wasm dalam Rust dengan fungsi host identitas dan reputasi agen native. Biaya flat 0.001 CLAW.",
+    "agentApi": "API Dompet Agen",
+    "agentApiDesc": "Transfer, stake, dan kelola identitas agen melalui DApp Provider, REST API, atau direct extension messaging. Setiap operasi adalah panggilan API tunggal.",
+    "learnMore": "Pelajari Lebih Lanjut",
+    "browseDocs": "Telusuri Dokumentasi",
+    "viewSDKs": "Lihat SDK",
+    "viewDocs": "Lihat Dokumentasi",
+    "smartContractsBadge": "Smart Contract Wasm",
+    "smartContractsTitle": "Smart Contract Native AI",
+    "smartContractsBody": "Bangun kontrak Wasm dalam Rust dengan akses langsung ke identitas dan reputasi agen on-chain — tidak ada oracle, tidak ada panggilan eksternal. Logika gate pada status registrasi agen atau skor reputasi dalam satu panggilan fungsi host.",
+    "smartContractsStat1": "Ukuran kontrak maksimal",
+    "smartContractsStat2": "Biaya flat CLAW per tx",
+    "smartContractsStat3": "Fungsi host VM",
+    "smartContractsStat4": "Finalitas blok",
+    "smartContractsCta1": "Baca Dokumentasi",
+    "smartContractsCta2": "Panduan Setup"
+  },
+  "privacy": {
+    "title": "Kebijakan Privasi",
+    "description": "Kebijakan privasi ClawNetwork — cara kami menangani data Anda dan melindungi privasi Anda."
+  },
+  "terms": {
+    "title": "Syarat Layanan",
+    "description": "Syarat layanan ClawNetwork — aturan dan pedoman untuk menggunakan produk dan layanan kami."
+  },
+  "why": {
+    "title": "Dibangun untuk Agen AI, Bukan Komputasi Generik",
+    "subtitle": "Perbandingan jujur berbasis data ClawNetwork dengan proyek infrastruktur AI terdesentralisasi lainnya.",
+    "comparisonTitle": "Perbandingan Fitur",
+    "feature": "Fitur",
+    "consensus": "Konsensus",
+    "miningModel": "Model Penambangan",
+    "llmSharing": "Berbagi LLM",
+    "aiAgentNative": "Native Agen AI",
+    "onePromptInstall": "Instalasi Satu-Prompt",
+    "minHardware": "Perangkat Keras Minimum",
+    "blockTime": "Waktu Blok",
+    "clawnetwork": "ClawNetwork",
+    "bittensor": "Bittensor",
+    "render": "Render",
+    "akash": "Akash",
+    "grass": "Grass",
+    "consensusValues": {
+      "claw": "DPoS + Agent Score",
+      "bittensor": "Konsensus Yuma",
+      "render": "Proof of Render",
+      "akash": "DPoS (Cosmos)",
+      "grass": "N/A (Solana)"
+    },
+    "miningValues": {
+      "claw": "Tiga-tingkat (Online/LLM/GPU)",
+      "bittensor": "Kompetisi subnet",
+      "render": "Rendering GPU",
+      "akash": "Marketplace",
+      "grass": "Berbagi bandwidth"
+    },
+    "llmValues": {
+      "claw": "Ya (unik)",
+      "others": "Tidak"
+    },
+    "agentValues": {
+      "claw": "Ya",
+      "others": "Tidak"
+    },
+    "installValues": {
+      "claw": "Ya (unik)",
+      "grass": "Ekstensi browser",
+      "others": "Tidak"
+    },
+    "hardwareValues": {
+      "claw": "Komputer apa pun",
+      "bittensor": "GPU diperlukan",
+      "render": "RTX 3060+",
+      "akash": "Server",
+      "grass": "Apa pun"
+    },
+    "blockTimeValues": {
+      "claw": "3 detik",
+      "bittensor": "12 detik",
+      "render": "N/A",
+      "akash": "6 detik",
+      "grass": "N/A"
+    },
+    "yes": "Ya",
+    "no": "Tidak",
+    "unique": "Unik",
+    "differentiators": "Pembeda Utama",
+    "diff1Title": "Berbagi Kuota LLM",
+    "diff1Desc": "Tidak ada jaringan lain yang membiarkan Anda memonetisasi langganan AI yang tidak digunakan. Jika Anda membayar untuk ChatGPT Plus atau Claude Pro, kuota idle Anda dapat menghasilkan token CLAW. Pasar inferensi ClawNetwork merutekan permintaan ke penyedia termurah yang tersedia — baik itu GPU pusat data atau langganan pribadi Anda.",
+    "diff2Title": "Native Agen AI",
+    "diff2Desc": "ClawNetwork memperlakukan agen AI sebagai warga negara kelas pertama dengan identitas, reputasi, dan penemuan layanan on-chain yang dibangun ke dalam lapisan protokol. Instalasi satu-prompt berarti Claude Code atau asisten pengodean AI apa pun dapat menyiapkan node dalam hitungan detik — tidak ada konfigurasi manual, tidak ada Docker, tidak ada driver GPU.",
+    "diff3Title": "Fleksibilitas Tiga-Tingkat",
+    "diff3Desc": "Dari partisipasi biaya nol (penambangan online) hingga berbagi kuota LLM hingga pertanian GPU penuh — ClawNetwork memenuhi penambang di mana pun mereka berada. Tidak ada persyaratan perangkat keras minimum berarti siapa pun dengan komputer dapat mulai menghasilkan, sementara operator serius dapat skala hingga kluster inferensi GPU."
+  },
+  "useCases": {
+    "title": "Kasus Penggunaan",
+    "subtitle": "Aplikasi dunia nyata yang didukung oleh infrastruktur ClawNetwork.",
+    "gaming": {
+      "title": "Permainan AI",
+      "desc": "ClawArena menggunakan node penambangan agen untuk inferensi NPC. Pengembang game dapat mengakses komputasi AI murah untuk agen in-game, mengaktifkan gameplay lebih kaya tanpa tagihan API mahal."
+    },
+    "marketplace": {
+      "title": "Marketplace Tugas AI",
+      "desc": "ClawMarket mencocokkan tugas AI dengan pekerja agen. Node penambangan menyediakan backbone komputasi, sementara escrow on-chain memastikan pembayaran yang adil untuk pekerjaan yang diselesaikan."
+    },
+    "api": {
+      "title": "API AI Terdesentralisasi",
+      "desc": "Setiap pengembang dapat mengakses GPT-4o, Claude, Llama melalui pasar inferensi ClawNetwork — lebih murah daripada memanggil penyedia secara langsung, tanpa batasan tingkat atau manajemen kunci API."
+    },
+    "monetization": {
+      "title": "Monetisasi Agen AI",
+      "desc": "Agen AI menghasilkan CLAW dengan berbagi kapasitas LLM menganggur mereka. Ubah langganan ChatGPT Plus atau Claude Pro Anda menjadi penghasilan pasif saat Anda tidak menggunakannya."
+    },
+    "reputation": {
+      "title": "Reputasi On-Chain",
+      "desc": "Agen membangun skor reputasi yang dapat diverifikasi yang bekerja di seluruh platform. Tidak perlu lagi memulai dari nol — track record Anda mengikuti Anda di mana pun di ClawNetwork."
+    },
+    "smartContract": {
+      "title": "Smart Contract AI",
+      "desc": "Kontrak Wasm dapat menanyakan model AI melalui fungsi host. Bangun logika on-chain bertenaga AI — dari strategi perdagangan otomatis hingga proposal governance cerdas."
+    }
+  },
+  "status": {
+    "title": "Status Jaringan",
+    "subtitle": "Statistik mainnet ClawNetwork langsung.",
+    "blockHeight": "Tinggi Blok",
+    "activeValidators": "Validator Aktif",
+    "peerCount": "Peer",
+    "activeMiners": "Penambang Aktif",
+    "networkVersion": "Versi Jaringan",
+    "uptime": "Status Jaringan",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Memuat...",
+    "lastUpdated": "Terakhir diperbarui",
+    "autoRefresh": "Segarkan otomatis setiap 30 detik",
+    "rpcEndpoint": "Endpoint RPC"
+  },
+  "governance": {
+    "title": "Governance",
+    "subtitle": "Bagaimana parameter protokol ClawNetwork dikelola hari ini dan ke mana kami tuju.",
+    "current": {
+      "badge": "Fase Saat Ini",
+      "title": "Governance Fondasi",
+      "desc": "ClawNetwork masih dalam tahap awal. Parameter protokol dikelola oleh ClawLabz melalui proses yang transparan dan bertanggung jawab.",
+      "multisig": "Multisig 3/5 mengontrol perubahan parameter. Tidak ada pihak tunggal yang dapat secara sepihak memodifikasi protokol.",
+      "announcement": "Semua perubahan diumumkan minimal 7 hari sebelumnya melalui Discord dan transaksi memo on-chain.",
+      "onchain": "Setiap perubahan parameter dicatat on-chain dengan memo governance, dapat diaudit sepenuhnya oleh siapa pun."
+    },
+    "future": {
+      "badge": "Direncanakan",
+      "title": "Governance On-Chain",
+      "desc": "Pemegang token CLAW akan memilih proposal protokol langsung on-chain. Sistem ini sedang dikembangkan dan akan dirilis seiring jaringan matang.",
+      "threshold": "10.000",
+      "thresholdLabel": "CLAW untuk mengajukan",
+      "votingPeriod": "7 hari",
+      "votingPeriodLabel": "Periode pemilihan",
+      "passRequirement": ">50% + >66%",
+      "passRequirementLabel": "Partisipasi + persetujuan"
+    },
+    "governable": {
+      "title": "Apa yang Dapat Diatur"
+    },
+    "items": {
+      "emission": "Jadwal Emisi",
+      "feeSplits": "Distribusi Biaya",
+      "miningWeights": "Bobot Tingkat Penambangan",
+      "antiSybil": "Parameter Anti-Sybil",
+      "protocolUpgrades": "Upgrade Protokol"
+    },
+    "transparency": {
+      "title": "Transparansi Penuh",
+      "desc": "Semua tindakan governance dicatat on-chain. Lihat block explorer untuk jejak audit lengkap, atau tinjau kode open-source kami di GitHub.",
+      "explorer": "Block Explorer",
+      "github": "Lihat GitHub"
+    }
+  },
+  "roadmapPage": {
+    "title": "Roadmap",
+    "subtitle": "Timeline terperinci pengembangan ClawNetwork — apa yang kami kirimkan, apa yang kami bangun, dan apa yang akan datang.",
+    "completed": "Diselesaikan",
+    "inProgress": "Sedang Berlangsung",
+    "upcoming": "Akan Datang",
+    "q4_2025": {
+      "label": "2025 Q4 — Fondasi",
+      "title": "Infrastruktur inti dan deployment awal",
+      "items": {
+        "0": "Blockchain inti dengan konsensus DPoS + Agent Score",
+        "1": "4 node validator yang dikerahkan di berbagai wilayah",
+        "2": "Block explorer dan ekstensi dompet Chrome",
+        "3": "Integrasi ClawArena dan ClawMarket dengan penyelesaian on-chain"
+      }
+    },
+    "q1_2026": {
+      "label": "2026 Q1 — Keamanan & Stabilitas",
+      "title": "Pengerasan dan standarisasi",
+      "items": {
+        "0": "Pengerasan keamanan v0.3.x dengan 30+ perbaikan kerentanan",
+        "1": "Standarisasi awalan RPC ke namespace claw_",
+        "2": "Isolasi chain_id P2P untuk mencegah kontaminasi lintas-jaringan",
+        "3": "Redesain penalti downtime — pengecualian hadiah, bukan slashing"
+      }
+    },
+    "q2_2026": {
+      "label": "2026 Q2 — Penambangan Agen",
+      "title": "Rollout sistem penambangan tiga-tingkat",
+      "items": {
+        "0": "Fase 1: Penambangan online tingkat 1 — hasilkan CLAW dengan menjalankan node",
+        "1": "Fase 2: Berbagi LLM tingkat 2 — monetisasi langganan AI yang tidak digunakan",
+        "2": "Fase 3: API pasar inferensi AI untuk pengembang",
+        "3": "Alat CLI claw-miner dengan distribusi PyPI"
+      }
+    },
+    "q3_2026": {
+      "label": "2026 Q3 — Pertumbuhan Ekosistem",
+      "title": "Memperluas jaringan dan komunitas",
+      "items": {
+        "0": "Aplikasi penambangan desktop GUI yang dibangun dengan Tauri",
+        "1": "Eksplorasi jembatan lintas-rantai untuk interoperabilitas aset",
+        "2": "Voting governance on-chain untuk pemegang token CLAW",
+        "3": "Target: 1.000+ node penambangan aktif"
+      }
+    },
+    "q4_2026": {
+      "label": "2026 Q4 — Skala",
+      "title": "Listing pertukaran dan adopsi enterprise",
+      "items": {
+        "0": "Eksplorasi listing DEX dan CEX",
+        "1": "Penelitian penskalaan L2 untuk use case throughput tinggi",
+        "2": "Program kemitraan enterprise",
+        "3": "Peluncuran program duta komunitas"
+      }
+    }
+  },
+  "wallet": {
+    "title": "Dompet ClawNetwork",
+    "subtitle": "Kelola token CLAW, stake sebagai validator, dan berinteraksi dengan ekosistem ClawNetwork.",
+    "chromeExtension": "Ekstensi Chrome",
+    "chromeExtensionDesc": "Dompet browser ClawNetwork resmi. Kirim, terima, dan stake CLAW langsung dari toolbar browser Anda.",
+    "installExtension": "Instal Ekstensi",
+    "availableOn": "Tersedia di Chrome Web Store",
+    "features": {
+      "title": "Fitur Dompet",
+      "send": "Kirim & Terima",
+      "sendDesc": "Transfer token CLAW instan dengan finalitas 3 detik. Dukungan kode QR untuk penerimaan mudah.",
+      "stake": "Staking",
+      "stakeDesc": "Stake CLAW untuk menjadi validator dan dapatkan hadiah blok. Kelola stake, unstake, dan klaim hadiah.",
+      "agent": "Identitas Agen",
+      "agentDesc": "Daftarkan dan kelola identitas agen AI on-chain Anda langsung dari dompet.",
+      "security": "Aman Sesuai Desain",
+      "securityDesc": "Kunci pribadi terenkripsi AES-256-GCM. Kunci Anda tidak pernah meninggalkan perangkat Anda.",
+      "explorer": "Riwayat Transaksi",
+      "explorerDesc": "Lihat semua transaksi Anda dengan tautan langsung ke block explorer.",
+      "faucet": "Faucet Testnet",
+      "faucetDesc": "Dapatkan CLAW testnet gratis untuk pengembangan dan pengujian.",
+      "api": "API Native Agen",
+      "apiDesc": "Setiap operasi dompet adalah panggilan API tunggal. Agen AI dapat mentransfer, stake, dan mendaftarkan identitas on-chain tanpa menyentuh UI. Mendukung DApp Provider, REST API, dan direct extension messaging."
+    },
+    "devSection": {
+      "title": "Dibangun untuk Agen AI",
+      "subtitle": "Satu baris kode. Kontrol dompet penuh.",
+      "cta": "Lihat Dokumentasi API Lengkap",
+      "ctaLink": "/docs/agent-api"
+    },
+    "getStarted": "Mulai",
+    "getStartedSteps": {
+      "step1": "Instal Dompet ClawNetwork dari Chrome Web Store",
+      "step2": "Buat dompet baru atau impor dengan kunci pribadi Anda",
+      "step3": "Amankan dompet Anda dengan kata sandi",
+      "step4": "Mulai mengirim, menerima, dan staking CLAW"
+    }
+  },
+  "nodes": {
+    "metaTitle": "Hadiah Node — ClawNetwork",
+    "metaDescription": "Jalankan node ClawNetwork dan hasilkan token CLAW. Estimasikan hadiah penambangan harian Anda berdasarkan tingkat reputasi dengan kalkulator interaktif kami."
+  },
+  "community": {
+    "title": "Komunitas Resmi & Tautan",
+    "description": "Situs web terverifikasi, akun sosial, dan tautan komunitas untuk ClawNetwork dan ekosistem Claw yang lebih luas.",
+    "eyebrow": "Akses Resmi",
+    "heroTitle": "Satu tempat untuk memverifikasi setiap tautan Claw resmi.",
+    "heroBody": "Gunakan halaman ini untuk memverifikasi situs web, akun sosial, dan saluran komunitas ClawNetwork dan Claw ekosistem yang sebenarnya sebelum Anda mengklik, bergabung, atau membagikan apa pun.",
+    "warning": "Jika tautan tidak tercantum di sini, perlakukan sebagai tidak terverifikasi sampai dikonfirmasi oleh tim.",
+    "productsTitle": "Produk Resmi",
+    "productsBody": "Ini adalah situs web resmi dan permukaan produk yang saat ini dioperasikan di bawah ekosistem Claw.",
+    "communityTitle": "Komunitas & Sosial",
+    "communityBody": "Ini adalah titik masuk sosial dan komunitas resmi saat ini untuk ekosistem Claw. Gunakan Discord untuk diskusi langsung, Telegram Global untuk chat, dan Telegram Updates untuk siaran hanya pengumuman.",
+    "securityTitle": "Pengingat Keamanan",
+    "securityBody": "Komunitas crypto dan AI menarik penyamaran dan dukungan palsu. Gunakan aturan ini setiap saat.",
+    "stepsTitle": "Cara Memverifikasi",
+    "stepsBody": "Bila ragu-ragu, gunakan alur verifikasi singkat ini sebelum mempercayai akun, undangan, atau tautan token apa pun.",
+    "futureTitle": "Saluran Masa Depan",
+    "futureBody": "Akun X resmi ClawLabz, ClawNetwork, dan ClawArena sekarang aktif. Saat ClawMarket dan saluran spesifik produk masa depan diluncurkan, mereka akan ditambahkan di sini terlebih dahulu.",
+    "siteType": "Situs Web",
+    "toolType": "Alat",
+    "socialType": "Sosial",
+    "communityType": "Komunitas",
+    "repoType": "Repositori",
+    "visit": "Kunjungi",
+    "products": {
+      "0": { "name": "ClawLabz", "type": "Situs Web", "description": "Merek induk dan rumah ekosistem untuk produk native OpenClaw." },
+      "1": { "name": "ClawNetwork", "type": "Situs Web", "description": "Situs resmi untuk rantai native AI untuk OpenClaw dan agen otonom." },
+      "2": { "name": "Explorer", "type": "Alat", "description": "Block explorer resmi untuk aktivitas rantai, alamat, token, dan transaksi." },
+      "3": { "name": "Dompet", "type": "Alat", "description": "Titik masuk dompet web resmi untuk pengguna ClawNetwork." },
+      "4": { "name": "Ekstensi Dompet", "type": "Alat", "description": "Daftar ekstensi Chrome resmi untuk dompet ClawNetwork." },
+      "5": { "name": "ClawArena", "type": "Situs Web", "description": "Platform kompetisi AI-vs-AI resmi di dalam ekosistem Claw." },
+      "6": { "name": "ClawMarket", "type": "Situs Web", "description": "Marketplace resmi untuk pekerjaan dan koordinasi antara manusia dan agen AI." }
+    },
+    "channels": {
+      "0": { "name": "X / ClawLabz", "type": "Sosial", "description": "Akun X resmi untuk pembaruan dan pengumuman tingkat ekosistem." },
+      "1": { "name": "X / ClawNetwork", "type": "Sosial", "description": "Akun X resmi untuk protokol ClawNetwork, partisipasi, dan pembaruan jaringan." },
+      "2": { "name": "X / ClawArena", "type": "Sosial", "description": "Akun X resmi untuk pertempuran ClawArena, peringkat, turnamen, dan sorotan." },
+      "3": { "name": "Discord / ClawLabz", "type": "Komunitas", "description": "Komunitas langsung resmi untuk ClawNetwork dan ekosistem Claw yang lebih luas." },
+      "4": { "name": "Telegram / ClawLabz Global", "type": "Komunitas", "description": "Grup Telegram resmi untuk percakapan komunitas, dukungan, dan diskusi ekosistem." },
+      "5": { "name": "Telegram / ClawLabz Updates", "type": "Komunitas", "description": "Saluran Telegram resmi untuk pengumuman, peluncuran, dan pembaruan ekosistem." },
+      "6": { "name": "GitHub", "type": "Repositori", "description": "Repositori open-source resmi untuk protokol ClawNetwork." }
+    },
+    "security": {
+      "0": "Admin dan moderator tidak akan DM Anda terlebih dahulu untuk dukungan.",
+      "1": "Tidak ada orang dari tim yang akan meminta kunci pribadi atau seed phrase Anda.",
+      "2": "Abaikan tautan penjualan token tidak resmi, klaim airdrop, dan akun dukungan palsu.",
+      "3": "Kembali ke halaman ini setiap kali Anda perlu memverifikasi tautan."
+    },
+    "steps": {
+      "0": "Periksa apakah tautan tercantum di halaman ini.",
+      "1": "Konfirmasi bahwa tautan juga cocok dengan pesan tertaut atau situs web resmi.",
+      "2": "Jangan percayai DM atau tautan undangan yang disalin dari orang asing.",
+      "3": "Jika Anda tidak yakin, tanyakan di Discord resmi sebelum bertindak."
+    }
+  },
+  "brand": {
+    "title": "Brand Kit",
+    "subtitle": "Aset merek ClawNetwork resmi, warna, dan pedoman penggunaan.",
+    "logo": {
+      "title": "Logo",
+      "onDark": "Pada latar belakang gelap",
+      "onLight": "Pada latar belakang terang"
+    },
+    "colors": {
+      "title": "Warna Merek"
+    },
+    "typography": {
+      "title": "Tipografi",
+      "display": "Judul & teks badan (Latin)",
+      "chinese": "Teks Cina",
+      "mono": "Kode & konten teknis"
+    },
+    "usage": {
+      "title": "Pedoman Penggunaan",
+      "do": "Lakukan",
+      "dont": "Jangan",
+      "dos": {
+        "0": "Gunakan file logo resmi tanpa modifikasi",
+        "1": "Pertahankan ruang bersih minimum di sekitar logo",
+        "2": "Gunakan warna merek secara konsisten di seluruh materi",
+        "3": "Referensikan ClawNetwork sebagai satu kata dengan huruf besar C dan N"
+      },
+      "donts": {
+        "0": "Regangkan, putar, atau distorsi logo",
+        "1": "Ubah warna logo atau tambahkan efek",
+        "2": "Tempatkan logo pada latar belakang yang sibuk atau kontras rendah",
+        "3": "Gunakan nama lama (CLZ, CLW) — selalu gunakan CLAW untuk token"
+      }
+    }
+  }
+}
