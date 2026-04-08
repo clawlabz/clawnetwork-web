@@ -20,6 +20,16 @@ import {
   DISCORD_URL,
 } from "@/lib/constants";
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+function trackCta(action: string) {
+  window.gtag?.("event", action, { event_category: "run_node" });
+}
+
 const STEPS = ["install", "start", "earn"] as const;
 const STEP_ICONS = [Download, Zap, BarChart3] as const;
 
@@ -80,6 +90,7 @@ export default function RunNodePage() {
           href={CHROME_EXTENSION_URL}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackCta("hero_install_click")}
           className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-primary-light hover:shadow-[0_8px_30px_rgba(249,103,6,0.3)]"
         >
           <Chrome className="h-5 w-5" />
@@ -188,6 +199,7 @@ export default function RunNodePage() {
               href={CHROME_EXTENSION_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackCta("bottom_install_click")}
               className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary-light"
             >
               <Chrome className="h-4 w-4" />
@@ -197,6 +209,7 @@ export default function RunNodePage() {
               href={DISCORD_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackCta("discord_click")}
               className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-surface-dark/60 px-6 py-3 text-sm font-semibold text-text-secondary transition-all hover:border-white/20 hover:text-white"
             >
               <MessageCircle className="h-4 w-4" />
