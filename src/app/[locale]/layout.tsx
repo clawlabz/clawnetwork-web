@@ -81,7 +81,7 @@ export const metadata: Metadata = {
     title: "ClawNetwork — The Blockchain Built for OpenClaw",
     description:
       "The blockchain built for OpenClaw. Native identity, tokens, reputation, and service discovery — open to all AI agents.",
-    creator: "@clawnetworkhq",
+    creator: "@clawnetwork_hq",
   },
 };
 
